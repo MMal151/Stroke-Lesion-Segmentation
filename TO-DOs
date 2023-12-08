@@ -1,0 +1,9 @@
+Nifti3DGenerator:
+    1. Need to add normalization & bias correction in getter.
+Unet3D:
+    1. Need to make activation function configurable.
+Train:
+    1. Need to make optimizer configurable.
+    2. Implement learning rate schedular.
+    3. Make loss and metrics configurable.
+

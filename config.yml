@@ -1,0 +1,24 @@
+logging_config:
+  filename: "UNET_"
+  level: "info"
+common_config:
+  process: "train"
+  parallel_process: False
+  gpus: "2,3,4"
+  model_type: 'unet'
+data:
+  input_path: "/hpc/mmal151/ATLAS_Cleaned/"
+  img_ext: "T1_bet_cropped.nii.gz"
+  lbl_ext: "LESION_cropped.nii.gz"
+  min_filter: 64
+  image_shape: "(140,170,144)"
+  output_classes: 1
+  seed: 2023
+train:
+  valid_ratio: 0.2
+  batch_size: 4
+  dropout: 0.2
+  learning_rate: 0.0001
+  model_name: unet_
+  epochs: 50
+
