@@ -7,3 +7,42 @@ Train:
     2. Implement learning rate schedular.
     3. Make loss and metrics configurable.
 
+Required Stuff:
+    1. Implement augmentation within the work flow.
+
+
+---------------------Optimization/Improvement To-Dos---------------------
+
+To-Dos:
+0. Need to add dropout in the model.
+    a.
+    b. Add depthwise seperable convolutions for each network. [No default tensorflow implementation for 3D convolutions https://github.com/alexandrosstergiou/keras-DepthwiseConv3D]
+    c. Add support to choose downsampling vs cropping in generators
+1. Add performance metrics in arguments & add patching
+    1a. Create a separate function for getting performance metrics.
+    1b. Also need to change where the getter for the base class is called.
+    1c. Add support for loading 2D shape. Currently hard coded to 3D shape.
+    1d. Add support for configuring the performance metric (Add support in testing and training)
+    1e. Add support for patching both 3D and 2D for testing
+    1f. Need to add different normalization method for 2D data.
+    1j. Add support for calculating average performance
+    1k. Need to make custom_objects when loading model changeable. [Test & Training]
+
+2. Check custom activation usage.
+3. Add the train-test and test mode.
+    -> Test mode added & 'test'ed. [09-November-2023]
+4. Look into super convergence.
+5. Check the performance with mixed floating point.
+6. Refactor the U-Net model into the current structure.
+7. Add support for 2D data generator.
+8. Add support for 2.5D data generator.
+9. Different augmentation techniques can be implemented alongside cravemix.
+10. Move the pre-processing code to a different repository.
+11. Need to add file logging support, log4j etc.
+    -> Could look into icecream
+12. Implement k-folds into the structure
+13. Some time in the very future, add configuration file rather than command line arguments
+14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
+
+
+---------------------Done---------------------

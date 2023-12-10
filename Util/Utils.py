@@ -1,5 +1,6 @@
 import logging
 import os
+import random
 
 
 def valid_dir(pth):
@@ -39,3 +40,14 @@ def get_filters(min_filter, tot_filters):
     else:
         logging.info("Invalid value of total number of filters. Returning default value [8, 16, 32, 64, 128]")
     return filters
+
+
+# Generate random indexes in-between two ranges.
+def get_random_index(min, max):
+    i = random.randint(min, max)
+    j = random.randint(min, max)
+
+    while i != j:
+        i, j = get_random_index(min, max)
+
+    return i, j

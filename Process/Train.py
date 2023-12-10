@@ -6,6 +6,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
+from Util.Preprocessing import data_augmentation
 from Util.Utils import get_all_possible_files_paths
 
 CLASS_NAME = "[Process/Train]"
@@ -52,6 +53,10 @@ def train(cfg, strategy=None):
         x_train, x_valid, y_train, y_valid = train_valid_div(x_train, y_train, cfg["train"]["valid_ratio"],
                                                              cfg["data"]["seed"])
 
+    if cfg["data"]["apply_augmentation"]:
+        logging.info(f"{lgr}: Applying augmentation to training data. ")
+        x_train, y_train = data_augmentation(cfg, x_train, y_train)
+
     logging.info(f"{lgr}: Creating Generators for training (& validation) data.")
     train_gen = Nifti3DGenerator(cfg, x_train, y_train)
     valid_gen = None
@@ -60,24 +65,24 @@ def train(cfg, strategy=None):
 
     logging.info(f"{lgr}: Generating Model.")
 
-    monitor = 'loss'
-    if valid_gen is not None:
-        monitor = "val_loss"
-
     if strategy is not None:
         with strategy.scope():
-            model = Unet3D(cfg).generate_model()
-            # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
-            model.compile(optimizer=Adam(learning_rate=cfg["train"]["learning_rate"]), loss='binary_crossentropy',
-                          metrics=[dice_coef])
-
-            checkpoint = ModelCheckpoint(cfg["train"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
-                                         save_best_only=True,
-                                         save_freq='epoch')
-            history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
-                                epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
+            fit_model(cfg, train_gen, valid_gen)
     else:
+        fit_model(cfg, train_gen, valid_gen)
+
+
+def fit_model(cfg, train_gen, valid_gen):
+    lgr = CLASS_NAME + "[fit_model()]"
+
+    model = None
+    if cfg["common_config"]["model_type"] == "unet":
         model = Unet3D(cfg).generate_model()
+
+    if model is not None:
+        monitor = 'loss'
+        if valid_gen is not None:
+            monitor = "val_loss"
         # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
         model.compile(optimizer=Adam(learning_rate=cfg["train"]["learning_rate"]), loss='binary_crossentropy',
                       metrics=[dice_coef])
@@ -86,3 +91,5 @@ def train(cfg, strategy=None):
                                      save_freq='epoch')
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
                             epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
+    else:
+        logging.error(f"{lgr}: Invalid model_type. Aborting training process.")

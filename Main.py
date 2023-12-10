@@ -29,12 +29,20 @@ def print_configurations(cfg):
     logging.debug("Minimum Filter: " + str(cfg["data"]["min_filter"]))
     logging.debug("Image Shape: " + cfg["data"]["image_shape"])
     logging.debug("Output Classes: " + str(cfg["data"]["output_classes"]))
+    logging.debug("Apply Augmentation: " + str(cfg["data"]["apply_augmentation"]))
+
+    if cfg["data"]["apply_augmentation"]:
+        logging.debug("-------Augmentation Configurations-------")
+        logging.debug("Factor: " + str(cfg["augmentation"]["factor"]))
+        logging.debug("Technique: " + cfg["augmentation"]["technique"])
+
     logging.debug("-------Model Configurations------")
     logging.debug("Validation Ratio: " + str(cfg["train"]["valid_ratio"]))
     logging.debug("Batch Size: " + str(cfg["train"]["batch_size"]))
     logging.debug("Dropout: " + str(cfg["train"]["dropout"]))
     logging.debug("Learning Rate: " + str(cfg["train"]["learning_rate"]))
     logging.debug("Epochs: " + str(cfg["train"]["epochs"]))
+
 
 
 def configure_gpus(cfg):
