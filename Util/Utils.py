@@ -3,13 +3,17 @@ import os
 import random
 
 
-def valid_dir(pth):
+def is_valid_dir(pth):
     return (pth is not None or pth != "") and os.path.exists(pth) and os.path.isdir(pth)
+
+
+def is_valid_file(file_name):
+    return (file_name is not None or file_name != "") and os.path.exists(file_name)
 
 
 # Returns list of all possible files within the directory & its subdirectories'
 def get_all_possible_files_paths(root: str, ext: str = ".png"):
-    if valid_dir(root):
+    if is_valid_dir(root):
         file_paths = set()
         for curr_dir, sub_dirs, files in os.walk(root):
             for f in files:

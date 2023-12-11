@@ -6,23 +6,10 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
+from Process.Utilities import load_data
 from Util.Preprocessing import data_augmentation
-from Util.Utils import get_all_possible_files_paths
 
 CLASS_NAME = "[Process/Train]"
-
-
-def load_data(input_path, img_ext, lbl_ext):
-    lgr = CLASS_NAME + "[load_data()]"
-
-    logging.info(f"{lgr}: Loading Dataset.")
-
-    # Loading dataset
-    images = get_all_possible_files_paths(input_path, img_ext)
-    labels = get_all_possible_files_paths(input_path, lbl_ext)
-
-    logging.debug(f"{lgr}: Loaded Images: {images} \n Loaded Labels: {labels}")
-    return images, labels
 
 
 # Divides dataset into training and validation set

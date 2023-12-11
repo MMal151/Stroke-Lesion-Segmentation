@@ -1,0 +1,3 @@
+2023-12-11 16:04:31,457 [Process/Utilities][load_data()]: Loading Dataset.
+2023-12-11 16:04:34,666 [Process/Test][test()]: Saving test results for some samples in /Test_Results.
+2023-12-11 16:04:57,920 [Process/Test][test()]: Predicted Dice Coeff for /home/mmal151/Desktop/Dummy_Data/INPUT/D348/D348_T1_brain_cropped.nii.gz: 1.974933385848999

@@ -3,6 +3,8 @@ import logging
 import os
 import tensorflow as tf
 import time
+
+from Process.Test import test
 from Process.Train import train
 
 
@@ -77,5 +79,7 @@ if __name__ == "__main__":
 
     if cfg["common_config"]["process"] == "train":
         train(cfg, configure_gpus(cfg))
+    elif cfg["common_config"]["process"] == "test":
+        test(cfg)
 
 
