@@ -19,7 +19,8 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        X = Y = np.zeros((self.batch_size, *self.image_shape))
+        X = np.zeros((self.batch_size, *self.image_shape))
+        Y = np.zeros((self.batch_size, *self.image_shape))
 
         for i, (img_file, lbl_file) in enumerate(zip(batch_x, batch_y)):
             img = nib.load(img_file).get_fdata()

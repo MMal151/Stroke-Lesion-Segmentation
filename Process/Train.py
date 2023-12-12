@@ -8,6 +8,7 @@ from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
 from Process.Utilities import load_data
 from Util.Preprocessing import data_augmentation
+from Util.Utils import get_all_possible_subdirs, remove_dirs
 
 CLASS_NAME = "[Process/Train]"
 
@@ -31,6 +32,15 @@ def train_valid_div(images, labels, valid_ratio, seed=2023):
 def train(cfg, strategy=None):
     lgr = CLASS_NAME + "[train()]"
     logging.info(f"{lgr}: Starting Training.")
+
+    if cfg["data"]["apply_augmentation"] and cfg["augmentation"]["rem_pre_aug"]:
+        logging.info(f"{lgr}: Removing previous augmentations.")
+        _ = remove_dirs(get_all_possible_subdirs(cfg["data"]["input_path"], "full_path"), "_cm")
+
+    elif cfg["data"]["apply_augmentation"] and not cfg["augmentation"]["rem_pre_aug"]:
+        logging.warning(f"{lgr}: Augmentation is enabled however removing previous augmented datapoints is enabled."
+                        f"This might cause discrepancy in data. It is suggested to remove previous datapoints before"
+                        f"augmenting new ones.")
 
     x_train, y_train = load_data(cfg["data"]["input_path"], cfg["data"]["img_ext"],
                                  cfg["data"]["lbl_ext"])

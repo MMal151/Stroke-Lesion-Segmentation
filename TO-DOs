@@ -8,7 +8,7 @@ Train:
     3. Make loss and metrics configurable.
 
 Required Stuff:
-    1. Implement augmentation within the work flow.
+
 
 
 ---------------------Optimization/Improvement To-Dos---------------------
@@ -46,3 +46,4 @@ To-Dos:
 
 
 ---------------------Done---------------------
+1. Implement augmentation within the work flow. [12-Dec-2023]

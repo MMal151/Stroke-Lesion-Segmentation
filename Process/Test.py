@@ -28,10 +28,10 @@ def test(cfg):
 
         test_gen = Nifti3DGenerator(cfg, x_test, y_test)
 
-        #loss, metric = model.evaluate(test_gen, batch_size=1, steps=len(x_test))
-        #print(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")
+        loss, metric = model.evaluate(test_gen, batch_size=1, steps=len(x_test))
+        print(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")
 
-        #logging.info(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")
+        logging.info(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")
         if cfg["test"]["save_random_samples"]:
             logging.info(f"{lgr}: Saving test results for some samples in /Test_Results.")
             random_idx = set()  # Used to store indexes already processed, to ensure same datapoints are not processed again.
@@ -65,12 +65,9 @@ def test(cfg):
                     save_path = os.path.join("Test_Results", save_name)
                     ni = nib.Nifti1Image(predicted_segmentation, affine=np.eye(4))
                     nib.save(ni, save_path)
-                    #temp = sitk.GetImageFromArray(predict)
-                    #sitk.WriteImage(predict.reshape(image_shape[0], image_shape[1], image_shape[2]), save_path)
-
                     random_idx.add(idx)
                 else:
-                    i = i-1 # Adding this to ensure number of samples remains the same.
+                    i = i-1  # Adding this to ensure number of samples remains the same.
 
 
 

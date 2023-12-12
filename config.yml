@@ -1,14 +1,14 @@
 logging_config:
   filename: "UNET_"
-  level: "info"
+  level: "debug" # Need to change this for production
 common_config:
-  process: "test"
+  process: "train"
   parallel_process: False
   gpus: "2,3,4"
   model_type: 'unet'
 data:
-  input_path: "/home/mmal151/Desktop/Dummy_Data/INPUT"
-  img_ext: "T1_brain_cropped.nii.gz"
+  input_path: "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned"
+  img_ext: "T1_bet_cropped.nii.gz"
   lbl_ext: "LESION_cropped.nii.gz"
   min_filter: 64
   image_shape: "(140,170,144)"
@@ -16,11 +16,12 @@ data:
   seed: 2023
   apply_augmentation: True
 augmentation:
-  factor: 0.3
+  factor: 0.05
   technique: cravemix
+  rem_pre_aug: True # Remove previous augmentations
 train:
   valid_ratio: 0.2
-  batch_size: 4
+  batch_size: 3
   dropout: 0.2
   learning_rate: 0.0001
   model_name: unet_

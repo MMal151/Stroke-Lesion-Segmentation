@@ -1,6 +1,9 @@
 import logging
 import os
 import random
+import shutil
+
+CLASS_NAME = "[Util/Utils]"
 
 
 def is_valid_dir(pth):
@@ -13,6 +16,8 @@ def is_valid_file(file_name):
 
 # Returns list of all possible files within the directory & its subdirectories'
 def get_all_possible_files_paths(root: str, ext: str = ".png"):
+    lgr = CLASS_NAME + "[get_all_possible_files_paths()]"
+
     if is_valid_dir(root):
         file_paths = set()
         for curr_dir, sub_dirs, files in os.walk(root):
@@ -21,8 +26,46 @@ def get_all_possible_files_paths(root: str, ext: str = ".png"):
                     file_paths.add(os.path.join(curr_dir, f))
         return sorted(file_paths)
     else:
-        print("Invalid root path. Either it doesn't exist or is not a directory.")
+        logging.warning(f"{lgr}: Invalid root path. Either it doesn't exist or is not a directory.")
         return -1
+
+
+# Returns all sub-dirs within a folder
+# Input: root -> Path of the folder
+#        mode -> full_path - Return physical path of the folder. Else just return the name of each subdirectory.
+def get_all_possible_subdirs(root: str, mode=""):
+    lgr = CLASS_NAME + "[get_all_possible_subdirs()]"
+
+    if is_valid_dir(root):
+        file_paths = set()
+        for curr_dir, sub_dirs, _ in os.walk(root):
+            for f in sub_dirs:
+                if mode == "full_path":
+                    file_paths.add(os.path.join(curr_dir, f))
+                else:
+                    file_paths.add(f)
+        return sorted(file_paths)
+    else:
+        logging.warning(f"{lgr}: Invalid root path. Either it doesn't exist or is not a directory.")
+
+
+def remove_dirs(path, incl=None):
+    lgr = CLASS_NAME + "[remove_dirs()]"
+
+    if type(path) == list:
+        if incl is None:
+            incl = ""
+        files = []
+        for i in path:
+            if incl in i:
+                logging.debug(f"{lgr}: Deleting directory {i}")
+                shutil.rmtree(i, ignore_errors=True)
+            else:
+                files.append(i)
+        return files
+    else:
+        logging.debug(f"{lgr}: Deleting directory {path}")
+        shutil.rmtree(path)
 
 
 # Convert string to tuple.
@@ -34,6 +77,8 @@ def str_to_tuple(strings):
 
 # Generate list of filters using configured filter value.
 def get_filters(min_filter, tot_filters):
+    lgr = CLASS_NAME + "[get_filters()]"
+
     filters = [8, 16, 32, 64, 128]
     if tot_filters > 0:
         filters.clear()
@@ -42,7 +87,7 @@ def get_filters(min_filter, tot_filters):
             filters.append(curr_filter)
             curr_filter *= 2
     else:
-        logging.info("Invalid value of total number of filters. Returning default value [8, 16, 32, 64, 128]")
+        logging.info(f"{lgr}: Invalid value of total number of filters. Returning default value [8, 16, 32, 64, 128]")
     return filters
 
 
@@ -51,7 +96,7 @@ def get_random_index(min, max):
     i = random.randint(min, max)
     j = random.randint(min, max)
 
-    while i != j:
+    while i == j:
         i, j = get_random_index(min, max)
 
     return i, j
