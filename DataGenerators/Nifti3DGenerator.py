@@ -1,6 +1,9 @@
 import numpy as np
 import tensorflow as tf
 import nibabel as nib
+import SimpleITK as sitk
+
+from Util.Preprocessing import normalize_img
 from Util.Utils import str_to_tuple
 
 
@@ -11,6 +14,7 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         self.x_len = len(x)
         self.batch_size = cfg["train"]["batch_size"]
         self.image_shape = str_to_tuple(cfg["data"]["image_shape"])
+        self.aply_norm = cfg["data"]["apply_norm"]
 
     def __len__(self):
         return int(np.ceil(self.x_len / float(self.batch_size)))
@@ -26,7 +30,8 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
             img = nib.load(img_file).get_fdata()
             lbl = nib.load(lbl_file).get_fdata()
 
-            # TO-DO: Need to add normalization & bias correction
+            if self.aply_norm:
+                img = normalize_img(img)
 
             X[i, :, :, :] = img
             Y[i, :, :, :] = lbl

@@ -9,6 +9,7 @@ from Model.Unet3D import Unet3D
 from Process.Utilities import load_data
 from Util.Preprocessing import data_augmentation
 from Util.Utils import get_all_possible_subdirs, remove_dirs
+from Util.Visualization import show_history
 
 CLASS_NAME = "[Process/Train]"
 
@@ -78,8 +79,10 @@ def fit_model(cfg, train_gen, valid_gen):
 
     if model is not None:
         monitor = 'loss'
+        validation = False
         if valid_gen is not None:
-            monitor = "val_loss"
+            monitor = "val_dice_coef"
+            validation = True
         # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
         model.compile(optimizer=Adam(learning_rate=cfg["train"]["learning_rate"]), loss='binary_crossentropy',
                       metrics=[dice_coef])
@@ -88,5 +91,6 @@ def fit_model(cfg, train_gen, valid_gen):
                                      save_freq='epoch')
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
                             epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
+        show_history(history, validation)
     else:
         logging.error(f"{lgr}: Invalid model_type. Aborting training process.")

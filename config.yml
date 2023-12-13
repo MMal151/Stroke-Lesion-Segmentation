@@ -1,22 +1,24 @@
 logging_config:
-  filename: "UNET_"
-  level: "debug" # Need to change this for production
+  filename: "UNET_Aug30_"
+  level: "info" # Need to change this for production
 common_config:
   process: "train"
-  parallel_process: False
+  parallel_process: True
   gpus: "2,3,4"
   model_type: 'unet'
 data:
   input_path: "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned"
+  #input_path: "/hpc/mmal151/ATLAS_Cleaned"
   img_ext: "T1_bet_cropped.nii.gz"
   lbl_ext: "LESION_cropped.nii.gz"
   min_filter: 64
   image_shape: "(140,170,144)"
   output_classes: 1
   seed: 2023
-  apply_augmentation: True
+  apply_augmentation: False
+  apply_norm: True  # Apply normalization (Standardization) on the input image.
 augmentation:
-  factor: 0.05
+  factor: 0.3
   technique: cravemix
   rem_pre_aug: True # Remove previous augmentations
 train:

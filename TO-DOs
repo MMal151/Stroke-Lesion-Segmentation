@@ -1,15 +1,12 @@
 Nifti3DGenerator:
-    1. Need to add normalization & bias correction in getter.
 Unet3D:
     1. Need to make activation function configurable.
 Train:
     1. Need to make optimizer configurable.
     2. Implement learning rate schedular.
     3. Make loss and metrics configurable.
-
 Required Stuff:
-
-
+    1. Need to add V-Net model. Check for convergence.
 
 ---------------------Optimization/Improvement To-Dos---------------------
 
@@ -46,4 +43,7 @@ To-Dos:
 
 
 ---------------------Done---------------------
-1. Implement augmentation within the work flow. [12-Dec-2023]
+Implement augmentation within the work flow. [12-Dec-2023]
+Need to add normalization & bias correction in getter. [13-Dec-2023]
+    -> [Bias Correction should be manually performed, adding it for runtime adds complexity to data type as well
+    makes the training process slower as bias correction takes noticeable time.]

@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Syncing with local copy">
-      <change afterPath="$PROJECT_DIR$/Misc/CraveMix.py" afterDir="false" />
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="1. Fix made in data generator. X and Y were both pointing to batch containing lesion data.&#10;2. Augmentation support added.">
+      <change afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Util/Visualization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TO-DOs" beforeDir="false" afterPath="$PROJECT_DIR$/TO-DOs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UNET_20231211T1559.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UNET_20231211T1602.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UNET_20231211T1603.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UNET_20231211T1604.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_Results/D348_LESION_cropped_Pred.nii.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_Results/Q236_LESION_cropped_Pred.nii.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test_Results/sub-r003s005_LESION_cropped_Pred.nii.gz" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Util/Preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_train.log" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +112,21 @@
       <option name="project" value="LOCAL" />
       <updated>1702331255506</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Syncing with local copy">
+      <created>1702357721344</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1702357721344</updated>
+    </task>
+    <task id="LOCAL-00004" summary="1. Fix made in data generator. X and Y were both pointing to batch containing lesion data.&#10;2. Augmentation support added.">
+      <created>1702357772473</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1702357772473</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -131,7 +142,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Syncing with local copy" />
-    <option name="LAST_COMMIT_MESSAGE" value="Syncing with local copy" />
+    <MESSAGE value="1. Fix made in data generator. X and Y were both pointing to batch containing lesion data.&#10;2. Augmentation support added." />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Fix made in data generator. X and Y were both pointing to batch containing lesion data.&#10;2. Augmentation support added." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -147,19 +159,9 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
           <line>20</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>17</line>
-          <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Main.py</url>
@@ -178,43 +180,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py</url>
-          <line>18</line>
+          <line>22</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py</url>
-          <line>33</line>
+          <line>38</line>
           <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>22</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>35</line>
-          <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Utils.py</url>
           <line>46</line>
           <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>63</line>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>52</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

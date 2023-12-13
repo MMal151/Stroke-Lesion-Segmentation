@@ -62,3 +62,17 @@ def augmentation_cm(cfg, x, y):
                       f"Total number of augmented datapoints should not exceed the total number of datapoints.")
 
     return x, y
+
+
+# Source: https://github.com/fitushar/3D-Medical-Imaging-Preprocessing-All-you-need
+def normalize_img(image):
+    img = image.astype(np.float32)
+
+    mean = np.mean(img)
+    std = np.std(img)
+
+    if std > 0:
+        ret = (img - mean) / std
+    else:
+        ret = img * 0.
+    return ret
