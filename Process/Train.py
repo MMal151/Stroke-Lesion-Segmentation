@@ -6,6 +6,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
+from Model.Vnet import Vnet
 from Process.Utilities import load_data
 from Util.Preprocessing import data_augmentation
 from Util.Utils import get_all_possible_subdirs, remove_dirs
@@ -76,12 +77,14 @@ def fit_model(cfg, train_gen, valid_gen):
     model = None
     if cfg["common_config"]["model_type"] == "unet":
         model = Unet3D(cfg).generate_model()
+    elif cfg["common_config"]["model_type"] == "vnet":
+        model = Vnet(cfg).generate_model()
 
     if model is not None:
         monitor = 'loss'
         validation = False
         if valid_gen is not None:
-            monitor = "val_dice_coef"
+            monitor = "val_loss"
             validation = True
         # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
         model.compile(optimizer=Adam(learning_rate=cfg["train"]["learning_rate"]), loss='binary_crossentropy',

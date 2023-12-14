@@ -1,0 +1,8 @@
+2023-12-15 11:38:36,995 Using MirroredStrategy with devices ('/job:localhost/replica:0/task:0/device:CPU:0',)
+2023-12-15 11:38:37,008 [Process/Train][train()]: Starting Training.
+2023-12-15 11:38:37,008 [Process/Utilities][load_data()]: Loading Dataset.
+2023-12-15 11:38:37,030 [Process/Train][train_valid_div()]: Training-Instances: 523. Validation-Instances: 131
+2023-12-15 11:38:37,030 [Process/Train][train()]: Creating Generators for training (& validation) data.
+2023-12-15 11:38:37,030 [Process/Train][train()]: Generating Model.
+2023-12-15 11:38:39,936 [Model/Vnet][print_info()] Model initialized using the following configurations.
+2023-12-15 11:38:39,937 {'input_shape': (140, 170, 144, 1), 'output_classes': 1, 'dropout': 0.2, 'filters': [64, 128, 256, 512, 1024]}

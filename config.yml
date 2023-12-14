@@ -5,7 +5,7 @@ common_config:
   process: "train"
   parallel_process: True
   gpus: "2,3,4"
-  model_type: 'unet'
+  model_type: 'vnet'
 data:
   input_path: "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned"
   #input_path: "/hpc/mmal151/ATLAS_Cleaned"
