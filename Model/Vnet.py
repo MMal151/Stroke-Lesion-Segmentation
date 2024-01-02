@@ -11,22 +11,29 @@ from Util.Utils import get_filters, str_to_tuple
 #                           convolutional blocks: Con3D Layer followed by a BatchNormalization Layer
 # Returns: x -> convolutional layer;
 #          x_down -> down-sampled layers
-def down_block(x, filters, num_conv_blocks=1, down_sample=True):
-    y = x  # Saving the state of the input tensor to ensure that it can be added later.
+def down_block(y, filters, num_conv_blocks=1, down_sample=True):
+    x = y  # Saving the state of the input tensor to ensure that it can be added later.
     for i in range(0, num_conv_blocks):
         x = Conv3D(filters, 5, padding='same')(x)
         x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
         x = LeakyReLU()(x)  # Original Model -> PReLu
 
     y = Conv3D(filters, (1, 1, 1), padding='same')(y)
-    x = Add()([y, x])
+    x = x + y
 
     # TO-DO: Add option to replace this layer with max_pooling
     if down_sample:
-        x_down = Conv3D(filters, 2, 2, padding='same')(x)
-        return x, x_down
+        return x, down_sampling(x, filters)
     else:
         return x, None
+
+
+def down_sampling(x, filters):
+    x = Conv3D(filters, 2, 2, padding='same')(x)
+    x = BatchNormalization()(x)
+    x = LeakyReLU()(x)
+
+    return x
 
 
 # 3D-Unet Up Sampling
