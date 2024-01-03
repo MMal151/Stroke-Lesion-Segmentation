@@ -1,13 +1,16 @@
 logging_config:
   filename: "UNET_Aug30_"
   level: "info" # Need to change this for production
+#------------------------------------------------------#
 common_config:
   process: "train"
   parallel_process: True
   gpus: "2,3,4"
   model_type: 'vnet'
+#------------------------------------------------------#
 data:
-  input_path: "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned"
+  #Input Path can contain multiple sources comma-separated. The file naming convention should be the same in both sources.
+  input_path: "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned,/home/mmal151/Desktop/Dummy_Data/INPUT"
   #input_path: "/hpc/mmal151/ATLAS_Cleaned"
   img_ext: "T1_bet_cropped.nii.gz"
   lbl_ext: "LESION_cropped.nii.gz"
@@ -17,10 +20,14 @@ data:
   seed: 2023
   apply_augmentation: False
   apply_norm: True  # Apply normalization (Standardization) on the input image.
+#------------------------------------------------------#
 augmentation:
+  #In case of multiple input sources augmentation will be applied separately on each data source.
+  #Same augmentation settings will be used for each data source.
   factor: 0.3
   technique: cravemix
   rem_pre_aug: True # Remove previous augmentations
+#------------------------------------------------------#
 train:
   valid_ratio: 0.2
   batch_size: 3
@@ -28,9 +35,20 @@ train:
   learning_rate: 0.0001
   model_name: unet_
   epochs: 50
+  save_best_only: False # Configuration for "save_best_only" in Model Checkpoints.
+  test_on_same_data: True  # If True testing is performed within the training flow.
+  test_ratio: 0.2 # Will only be checked if "test_on_same_data" is True.
+#------------------------------------------------------#
+model_specific: # Will only be checked if the particular model is being used.
+#------------------------------------------------------#
+  vnet:
+    num_encoder_blocks: "1,1,1,1" # Number of convolutional blocks in each encoder layer.
+    num_decoder_blocks: "1,1,1" # Number of convolutional blocks in each decoder layer.
+#------------------------------------------------------#
 test:
   model_load_state: "/home/mmal151/Desktop/GIthub-Repo/Model_State/Unet_3D/No-Augmentation/unet_50.h5"
   save_random_samples: True
   num_samples: 1
+#------------------------------------------------------#
 
 

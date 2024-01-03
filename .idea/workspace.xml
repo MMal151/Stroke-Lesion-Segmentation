@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="1. Visualization added.&#10;2. Minor changes made.">
-      <change afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Syncing with local copy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TO-DOs" beforeDir="false" afterPath="$PROJECT_DIR$/TO-DOs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Util/Preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Preprocessing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -126,7 +131,35 @@
       <option name="project" value="LOCAL" />
       <updated>1702507090299</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Vnet added">
+      <created>1702593686869</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1702593686869</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Vnet added">
+      <created>1702593709257</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1702593709257</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Syncing with local copy">
+      <created>1702593727219</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1702593727219</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Syncing with local copy">
+      <created>1704234341073</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1704234341073</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -141,10 +174,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Syncing with local copy" />
     <MESSAGE value="1. Fix made in data generator. X and Y were both pointing to batch containing lesion data.&#10;2. Augmentation support added." />
     <MESSAGE value="1. Visualization added.&#10;2. Minor changes made." />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Visualization added.&#10;2. Minor changes made." />
+    <MESSAGE value="Vnet added" />
+    <MESSAGE value="Syncing with local copy" />
+    <option name="LAST_COMMIT_MESSAGE" value="Syncing with local copy" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -166,7 +200,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>82</line>
+          <line>87</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -181,13 +215,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py</url>
-          <line>22</line>
+          <line>25</line>
           <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Utils.py</url>
@@ -196,23 +225,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>79</line>
+          <line>95</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>69</line>
+          <line>79</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>75</line>
+          <line>102</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>87</line>
+          <line>114</line>
           <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Train.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -19,6 +19,9 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
     def __len__(self):
         return int(np.ceil(self.x_len / float(self.batch_size)))
 
+    def get_x_len(self):
+        return self.x_len
+
     def __getitem__(self, idx):
         batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]

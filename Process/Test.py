@@ -28,7 +28,7 @@ def test(cfg):
 
         test_gen = Nifti3DGenerator(cfg, x_test, y_test)
 
-        loss, metric = model.evaluate(test_gen, batch_size=1, steps=len(x_test))
+        loss, metric = model.evaluate(test_gen, batch_size=1, steps=test_gen.get_x_len())
         print(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")
 
         logging.info(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")

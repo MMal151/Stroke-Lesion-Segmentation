@@ -4,6 +4,8 @@ from tensorflow.keras.layers import *
 
 from Util.Utils import get_filters, str_to_tuple
 
+CLASS_NAME = "[Model/Vnet]"
+
 
 # Input: x -> Tensor currently under processing;
 #        filters -> Number of filters to be applied in each layer;
@@ -37,7 +39,7 @@ def down_sampling(x, filters):
 
 
 # 3D-Unet Up Sampling
-def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
+def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=False):
     if use_transpose:
         # Does up-sampling using learnable parameters. Adaptable
         x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same')(x)
@@ -71,10 +73,28 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
 
 class Vnet:
     def __init__(self, cfg):
+        lgr = CLASS_NAME + "[init()]"
         self.input_shape = (*str_to_tuple(cfg["data"]["image_shape"]), 1)
         self.output_classes = cfg["data"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
         self.filters = get_filters(cfg["data"]["min_filter"], 5)
+        num_encoder_blocks = cfg["model_specific"]["vnet"]["num_encoder_blocks"].split(",")
+
+        if len(num_encoder_blocks) >= 4:
+            self.num_encoder_blocks = [int(i) for i in num_encoder_blocks]
+        else:
+            logging.error(f"{lgr}: Invalid number of encoder blocks configured. The total number of blocks should"
+                          f"be 4. Default value of 1,2,3,3 will be used. ")
+            self.num_encoder_blocks = [1, 2, 3, 3]
+
+        num_decoder_blocks = cfg["model_specific"]["vnet"]["num_decoder_blocks"].split(",")
+        if len(num_decoder_blocks) >= 3:
+            self.num_decoder_blocks = [int(i) for i in num_decoder_blocks]
+        else:
+            logging.error(f"{lgr}: Invalid number of decoder blocks configured. The total number of blocks should"
+                          f"be at least 3. Default value of 3,3,2 will be used. ")
+            self.num_decoder_blocks = [3, 3, 2]
+
         self.print_info()
 
         # TO-DO: Need to make activation function configurable.
@@ -83,18 +103,18 @@ class Vnet:
         img = Input(shape=self.input_shape)
 
         # Encoder
-        rc_1, x = down_block(img, self.filters[0], 1)
-        rc_2, x = down_block(x, self.filters[1], 2)
-        rc_3, x = down_block(x, self.filters[2], 3)
-        rc_4, x = down_block(x, self.filters[3], 3)
+        rc_1, x = down_block(img, self.filters[0], self.num_encoder_blocks[0])
+        rc_2, x = down_block(x, self.filters[1], self.num_encoder_blocks[1])
+        rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
+        rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
 
         # Bottleneck layer
-        x, _ = down_block(x, self.filters[4], 3, False)
+        x, _ = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
-        x = up_block(x, rc_4, self.filters[4], 3)
-        x = up_block(x, rc_3, self.filters[3], 3)
-        x = up_block(x, rc_2, self.filters[2], 2)
+        x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0])
+        x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1])
+        x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2])
         x = up_block(x, rc_1, self.filters[1])
 
         x = Dropout(self.dropout)(x)  # Not included in the original model.
