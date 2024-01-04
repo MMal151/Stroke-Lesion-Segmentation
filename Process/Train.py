@@ -16,7 +16,7 @@ CLASS_NAME = "[Process/Train]"
 
 
 # Divides dataset into training and validation set
-def train_valid_div(images, labels, valid_ratio, seed=2023):
+def train_valid_div(images, labels, valid_ratio, seed=2023, div_type='Validation'):
     lgr = CLASS_NAME + "[train_valid_div()]"
     logging.debug(f"{lgr}: Starting train/valid division.")
 
@@ -26,7 +26,7 @@ def train_valid_div(images, labels, valid_ratio, seed=2023):
     logging.debug(f"{lgr}: x_train: {x_train} \n y_train: {y_train} \n x_valid: {x_valid} \n "
                   f"y_valid: {y_valid}")
     logging.info(f"{lgr}: Training-Instances: {len(x_train)}. "
-                 f"Validation-Instances: {len(x_valid)}")
+                 f"{div_type}-Instances: {len(x_valid)}")
 
     return x_train, x_valid, y_train, y_valid
 
@@ -39,11 +39,15 @@ def train(cfg, strategy=None):
     x_train, y_train, x_valid, y_valid, x_test, y_test = [], [], [], [], [], []  # Initializing Validation Set
 
     for i in input_paths:
+        if cfg["augmentation"]["rem_pre_aug"]:
+            logging.info(f"{lgr}: Removing previous augmentations.")
+            _ = remove_dirs(get_all_possible_subdirs(i, "full_path"), "_cm")
+
         x, y = load_data(i.strip(), cfg["data"]["img_ext"], cfg["data"]["lbl_ext"])
 
         if cfg["train"]["test_on_same_data"] and cfg["train"]["test_ratio"] > 0:
             logging.info(f"{lgr}: Separating test data from training and validation set for data source {i}")
-            x, x_temp, y, y_temp = train_valid_div(x, y, cfg["train"]["test_ratio"], cfg["data"]["seed"])
+            x, x_temp, y, y_temp = train_valid_div(x, y, cfg["train"]["test_ratio"], cfg["data"]["seed"], 'Test')
             logging.debug(f"{lgr}: State before merging with test sets. x_temp = {x_temp} \n y_temp = {y_temp} \n "
                           f"x_test = {x_test} \n y_test = {y_test}")
             x_test = x_temp + x_test
@@ -62,7 +66,7 @@ def train(cfg, strategy=None):
 
         if cfg["data"]["apply_augmentation"]:
             logging.info(f"{lgr}: Applying augmentation to training data for data source {i} ")
-            x, y = data_augmentation(cfg, x, y, i)
+            x, y = data_augmentation(cfg, x, y)
 
         logging.debug(f"{lgr}: State before merging with test sets. x = {x} \n y = {y} \n "
                       f"x_train = {x_train} \n y_train = {y_train}")

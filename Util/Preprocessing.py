@@ -10,16 +10,12 @@ from Util.Utils import get_random_index, get_all_possible_subdirs, remove_dirs
 CLASS_NAME = "[Util/Preprocessing]"
 
 
-def data_augmentation(cfg, train_x, train_y, cur_input_path):
+def data_augmentation(cfg, train_x, train_y):
     lgr = CLASS_NAME + "[data_augmentation()]"
     logging.info(f"{lgr}: Starting data augmentation using factor: " + str(cfg["augmentation"]["factor"])
                  + " and technique: " + cfg["augmentation"]["technique"])
 
-    if cfg["augmentation"]["rem_pre_aug"]:
-        logging.info(f"{lgr}: Removing previous augmentations.")
-        _ = remove_dirs(get_all_possible_subdirs(cur_input_path, "full_path"), "_cm")
-
-    elif cfg["data"]["apply_augmentation"] and not cfg["augmentation"]["rem_pre_aug"]:
+    if cfg["data"]["apply_augmentation"] and not cfg["augmentation"]["rem_pre_aug"]:
         logging.warning(f"{lgr}: Augmentation is enabled however removing previous augmented datapoints is enabled."
                         f"This might cause discrepancy in data. It is suggested to remove previous datapoints before"
                         f"augmenting new ones.")

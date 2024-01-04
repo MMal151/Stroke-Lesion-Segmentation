@@ -120,7 +120,7 @@ class Vnet:
         x = Dropout(self.dropout)(x)  # Not included in the original model.
 
         # Update the output layer based on the number of classes
-        output = Conv3D(self.output_classes, 1, activation='softmax')(x)
+        output = Conv3D(self.output_classes, 1, activation='sigmoid')(x)
 
         out = models.Model(img, output, name='vnet')
         out.summary()

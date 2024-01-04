@@ -42,8 +42,8 @@ train:
 model_specific: # Will only be checked if the particular model is being used.
 #------------------------------------------------------#
   vnet:
-    num_encoder_blocks: "1,1,1,1" # Number of convolutional blocks in each encoder layer.
-    num_decoder_blocks: "1,1,1" # Number of convolutional blocks in each decoder layer.
+    num_encoder_blocks: "1,2,3,3" # Number of convolutional blocks in each encoder layer.
+    num_decoder_blocks: "3,3,2" # Number of convolutional blocks in each decoder layer.
 #------------------------------------------------------#
 test:
   model_load_state: "/home/mmal151/Desktop/GIthub-Repo/Model_State/Unet_3D/No-Augmentation/unet_50.h5"
