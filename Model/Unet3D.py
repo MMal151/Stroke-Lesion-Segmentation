@@ -1,18 +1,50 @@
 import logging
+
+from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
 
 from Util.Utils import get_filters, str_to_tuple
+
+CLASS_NAME = "[Model/Unet3D]"
+act = 'leakyRelu'
+
+
+def init_activation(activation):
+    global act
+    lgr = CLASS_NAME + "[init_activation()]"
+    if activation != "" and len(activation) > 1:
+        act = activation
+    else:
+        logging.error(f"{lgr} No valid activation function is defined hence using LeakyReLU as "
+                      f"default activation function.")
+
+
+def Activation(x):
+    lgr = CLASS_NAME + "[Activation()]"
+    if act == 'leakyRelu':
+        return LeakyReLU()(x)
+    elif act == 'relu':
+        return ReLU(x)
+    elif act == 'prelu':
+        return PReLU()(x)
+    elif act == 'gelu':
+        return GELU()(x)
+    elif act == 'snake':
+        return Snake()(x)
+    else:
+        logging.error(f"{lgr} Invalid value given as activation function, using leakyReLU as default value.")
+        return LeakyReLU()(x)
 
 
 # 3D-Unet Down Sampling
 def down_block(x, filters, use_maxpool=True):
     x = Conv3D(filters, 3, padding='same')(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation(x)
     x = Conv3D(filters, 3, padding='same')(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation(x)
     if use_maxpool:
         return MaxPooling3D(strides=(2, 2, 2), padding='same')(x), x
     else:
@@ -41,10 +73,10 @@ def up_block(x, y, filters, use_transpose=True):
     x = Concatenate(axis=-1)([x, y])
     x = Conv3D(filters, 3, padding='same')(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation(x)
     x = Conv3D(filters, 3, padding='same')(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation(x)
     return x
 
 
@@ -54,6 +86,7 @@ class Unet3D:
         self.output_classes = cfg["data"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
         self.filters = get_filters(cfg["data"]["min_filter"], 5)
+        init_activation(cfg["train"]["activation"])
         self.print_info()
 
         # TO-DO: Need to make activation function configurable.
@@ -85,6 +118,5 @@ class Unet3D:
         return out
 
     def print_info(self):
-        logging.info("[Model/Unet3D][print_info()] Model initialized using the following configurations.")
+        logging.info(f"{CLASS_NAME}[print_info()] Model initialized using the following configurations.")
         logging.info(self.__dict__)
-

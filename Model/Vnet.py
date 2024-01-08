@@ -6,6 +6,35 @@ from Util.Utils import get_filters, str_to_tuple
 
 CLASS_NAME = "[Model/Vnet]"
 
+act = 'leakyRelu'
+
+
+def init_activation(activation):
+    global act
+    lgr = CLASS_NAME + "[init_activation()]"
+    if activation != "" and len(activation) > 1:
+        act = activation
+    else:
+        logging.error(f"{lgr} No valid activation function is defined hence using LeakyReLU as "
+                      f"default activation function.")
+
+
+def Activation(x):
+    lgr = CLASS_NAME + "[Activation()]"
+    if act == 'leakyRelu':
+        return LeakyReLU()(x)
+    elif act == 'relu':
+        return ReLU(x)
+    elif act == 'prelu':
+        return PReLU()(x)
+    elif act == 'gelu':
+        return GELU()(x)
+    elif act == 'snake':
+        return Snake()(x)
+    else:
+        logging.error(f"{lgr} Invalid value given as activation function, using leakyReLU as default value.")
+        return LeakyReLU()(x)
+
 
 # Input: x -> Tensor currently under processing;
 #        filters -> Number of filters to be applied in each layer;
@@ -18,7 +47,7 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
     for i in range(0, num_conv_blocks):
         x = Conv3D(filters, 5, padding='same')(x)
         x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
-        x = LeakyReLU()(x)  # Original Model -> PReLu
+        x = Activation(x)  # Original Model -> PReLu
 
     y = Conv3D(filters, (1, 1, 1), padding='same')(y)
     x = x + y
@@ -33,7 +62,7 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
 def down_sampling(x, filters):
     x = Conv3D(filters, 2, 2, padding='same')(x)
     x = BatchNormalization()(x)
-    x = LeakyReLU()(x)
+    x = Activation(x)
 
     return x
 
@@ -63,7 +92,7 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=False):
     for i in range(0, num_conv_blocks):
         x = Conv3D(filters, 3, padding='same')(x)
         x = BatchNormalization()(x)
-        x = LeakyReLU()(x)
+        x = Activation(x)
 
     y = Conv3D(filters, (1, 1, 1), padding='same')(y)
     x = Add()([y, x])
@@ -78,6 +107,8 @@ class Vnet:
         self.output_classes = cfg["data"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
         self.filters = get_filters(cfg["data"]["min_filter"], 5)
+        init_activation(cfg["train"]["activation"])
+
         num_encoder_blocks = cfg["model_specific"]["vnet"]["num_encoder_blocks"].split(",")
 
         if len(num_encoder_blocks) >= 4:

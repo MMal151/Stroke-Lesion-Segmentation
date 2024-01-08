@@ -4,9 +4,9 @@ logging_config:
 #------------------------------------------------------#
 common_config:
   process: "train"
-  parallel_process: True
+  parallel_process: False
   gpus: "2,3,4"
-  model_type: 'vnet'
+  model_type: 'unet'
 #------------------------------------------------------#
 data:
   #Input Path can contain multiple sources comma-separated. The file naming convention should be the same in both sources.
@@ -14,7 +14,7 @@ data:
   #input_path: "/hpc/mmal151/ATLAS_Cleaned"
   img_ext: "T1_bet_cropped.nii.gz"
   lbl_ext: "LESION_cropped.nii.gz"
-  min_filter: 64
+  min_filter: 8
   image_shape: "(140,170,144)"
   output_classes: 1
   seed: 2023
@@ -30,7 +30,7 @@ augmentation:
 #------------------------------------------------------#
 train:
   valid_ratio: 0.2
-  batch_size: 3
+  batch_size: 1
   dropout: 0.2
   learning_rate: 0.0001
   model_name: unet_
@@ -38,6 +38,7 @@ train:
   save_best_only: False # Configuration for "save_best_only" in Model Checkpoints.
   test_on_same_data: True  # If True testing is performed within the training flow.
   test_ratio: 0.2 # Will only be checked if "test_on_same_data" is True.
+  activation: "gelu" # Possible values: leakyRelu, relu, snake, gelu, prelu
 #------------------------------------------------------#
 model_specific: # Will only be checked if the particular model is being used.
 #------------------------------------------------------#

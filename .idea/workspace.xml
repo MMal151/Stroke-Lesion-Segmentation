@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Changes:&#10;1. Added support of using multiple data sources for training.&#10;2. Added support for training and testing within one cycle. &#10;3. Added support for configurable number of encoder and decoder blocks in v-net model. &#10;&#10;**Testing is still pending for change 2 and 3.">
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Changes:&#10;1. Minor changes for train/test mode. &#10;2. Fixed convergence issue with V-NET. (The problem with v-net was the activation function of the output layer, which was softmax. This activation function is for output classes &gt; 1 and does not work well binary-crossentropy loss.)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Unet3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Unet3D.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Preprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TO-DOs" beforeDir="false" afterPath="$PROJECT_DIR$/TO-DOs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Temp/Train_Parallel.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -162,7 +163,14 @@
       <option name="project" value="LOCAL" />
       <updated>1704256458277</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Changes:&#10;1. Minor changes for train/test mode. &#10;2. Fixed convergence issue with V-NET. (The problem with v-net was the activation function of the output layer, which was softmax. This activation function is for output classes &gt; 1 and does not work well binary-crossentropy loss.)">
+      <created>1704335092823</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1704335092823</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -182,7 +190,8 @@
     <MESSAGE value="Vnet added" />
     <MESSAGE value="Syncing with local copy" />
     <MESSAGE value="Changes:&#10;1. Added support of using multiple data sources for training.&#10;2. Added support for training and testing within one cycle. &#10;3. Added support for configurable number of encoder and decoder blocks in v-net model. &#10;&#10;**Testing is still pending for change 2 and 3." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes:&#10;1. Added support of using multiple data sources for training.&#10;2. Added support for training and testing within one cycle. &#10;3. Added support for configurable number of encoder and decoder blocks in v-net model. &#10;&#10;**Testing is still pending for change 2 and 3." />
+    <MESSAGE value="Changes:&#10;1. Minor changes for train/test mode. &#10;2. Fixed convergence issue with V-NET. (The problem with v-net was the activation function of the output layer, which was softmax. This activation function is for output classes &gt; 1 and does not work well binary-crossentropy loss.)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes:&#10;1. Minor changes for train/test mode. &#10;2. Fixed convergence issue with V-NET. (The problem with v-net was the activation function of the output layer, which was softmax. This activation function is for output classes &gt; 1 and does not work well binary-crossentropy loss.)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -194,7 +203,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Unet3D.py</url>
-          <line>61</line>
+          <line>94</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -218,11 +227,6 @@
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py</url>
-          <line>25</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Utils.py</url>
           <line>46</line>
           <option name="timeStamp" value="23" />
@@ -234,17 +238,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>79</line>
+          <line>108</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>102</line>
+          <line>133</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>114</line>
+          <line>145</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -254,13 +258,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>76</line>
+          <line>105</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>50</line>
+          <line>79</line>
           <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Model/Unet3D.py</url>
+          <line>84</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

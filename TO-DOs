@@ -1,53 +1,58 @@
 Nifti3DGenerator:
 Unet3D:
-    1. Need to make activation function configurable.
+    1.
 Train:
     1. Need to make optimizer configurable.
     2. Implement learning rate schedular.
     3. Make loss and metrics configurable.
     4. Need to make augmentation factor configurable for different data sources.
 Required Stuff:
-    1. Add train + testing mode. [Done; Testing pending]
-
+    1. Need to add time / performance stats in the log.
 
 ---------------------Optimization/Improvement To-Dos---------------------
 
 To-Dos:
-0. Need to add dropout in the model.
+0. Need to add dropout in the model. Need to try within multiple layers and make them configurable.
     a.
     b. Add depthwise seperable convolutions for each network. [No default tensorflow implementation for 3D convolutions https://github.com/alexandrosstergiou/keras-DepthwiseConv3D]
     c. Add support to choose downsampling vs cropping in generators
 1. Add performance metrics in arguments & add patching
-    1a. Create a separate function for getting performance metrics.
-    1b. Also need to change where the getter for the base class is called.
-    1c. Add support for loading 2D shape. Currently hard coded to 3D shape.
-    1d. Add support for configuring the performance metric (Add support in testing and training)
-    1e. Add support for patching both 3D and 2D for testing
-    1f. Need to add different normalization method for 2D data.
-    1j. Add support for calculating average performance
-    1k. Need to make custom_objects when loading model changeable. [Test & Training]
+    a. Create a separate function for getting performance metrics.
+    b. Also need to change where the getter for the base class is called.
+    c. Add support for loading 2D shape. Currently hard coded to 3D shape.
+    d. Add support for configuring the performance metric (Add support in testing and training)
+    e. Add support for patching both 3D and 2D for testing
+    f. Need to add different normalization method for 2D data.
+    j. Add support for calculating average performance
+    k. Need to make custom_objects when loading model changeable. [Test & Training]
 
 2. Check custom activation usage.
-3. Add the train-test and test mode.
-    -> Test mode added & 'test'ed. [09-November-2023]
+3.
 4. Look into super convergence.
 5. Check the performance with mixed floating point.
-6. Refactor the U-Net model into the current structure.
+6.
 7. Add support for 2D data generator.
 8. Add support for 2.5D data generator.
 9. Different augmentation techniques can be implemented alongside cravemix.
-10. Move the pre-processing code to a different repository.
-11. Need to add file logging support, log4j etc.
-    -> Could look into icecream
+10.
+11.
 12. Implement k-folds into the structure
-13. Some time in the very future, add configuration file rather than command line arguments
+13.
 14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
 
 
 ---------------------Done---------------------
-Implement augmentation within the work flow. [12-Dec-2023]
-Need to add normalization & bias correction in getter. [13-Dec-2023]
+-Need to make activation function configurable. [8th-Jan-2024]
+-Add train + testing mode. [05-Jan-2024]
+-Implement augmentation within the work flow. [12-Dec-2023]
+-Need to add normalization & bias correction in getter. [13-Dec-2023]
     -> [Bias Correction should be manually performed, adding it for runtime adds complexity to data type as well
     makes the training process slower as bias correction takes noticeable time.]
 
-1. Need to add V-Net model. Check for convergence. [Still not converging]
+-Need to add V-Net model. Check for convergence. [Still not converging]
+    [Fixed - 04/Jan/24] - Issue was in activation function of output layer, which was softmax. Softmax is commonly used to
+    multiple outputs, hence it was not working well with the loss function which was binary crossentropy.
+
+-Need to add file logging support, log4j etc.
+    -> Could look into icecream [Done]
+-Some time in the very future, add configuration file rather than command line arguments [Done]
