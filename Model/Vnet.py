@@ -1,4 +1,6 @@
 import logging
+
+from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
 

@@ -36,7 +36,7 @@ def augmentation_cm(cfg, x, y):
         logging.info(f"{lgr}: CraveMix-based Augmentation started. ")
 
         for k in range(0, total_aug_dp):
-            i, j = get_random_index(0, datapoints)
+            i, j = get_random_index(0, datapoints - 1)
             logging.debug(f"{lgr}: Augmenting Datapoints {x[i]} and {x[j]}")
             vol_a, vol_b = nib.imagestats.mask_volume(nib.load(y[i])), nib.imagestats.mask_volume(nib.load(y[j]))
 

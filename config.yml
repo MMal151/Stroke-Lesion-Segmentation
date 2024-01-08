@@ -6,7 +6,7 @@ common_config:
   process: "train"
   parallel_process: False
   gpus: "2,3,4"
-  model_type: 'unet'
+  model_type: 'vnet'
 #------------------------------------------------------#
 data:
   #Input Path can contain multiple sources comma-separated. The file naming convention should be the same in both sources.
