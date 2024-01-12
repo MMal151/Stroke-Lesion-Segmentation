@@ -38,7 +38,11 @@ train:
   save_best_only: False # Configuration for "save_best_only" in Model Checkpoints.
   test_on_same_data: True  # If True testing is performed within the training flow.
   test_ratio: 0.2 # Will only be checked if "test_on_same_data" is True.
-  activation: "gelu" # Possible values: leakyRelu, relu, snake, gelu, prelu
+  activation: "gelu" # Possible values: leakyrelu, relu, snake, gelu, prelu
+  optimizer: "sgd" # Possible values: adam, sgd, rmsprop, adadelta, adamax, adagrad
+  apply_lr_sch: True # Apply learning rate schedular. Learning Rate related configurations will be read from config_lrs.yml
+  loss: "dice" # Possible custom losses: dice, tverskycoef, tversky, ftversky (focal tversky).
+  # If loss function doesn't exist in the custom losses' list, it will be returned as is.
 #------------------------------------------------------#
 model_specific: # Will only be checked if the particular model is being used.
 #------------------------------------------------------#

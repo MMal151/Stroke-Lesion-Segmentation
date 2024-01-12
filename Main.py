@@ -45,10 +45,12 @@ def print_configurations(cfg):
     logging.debug("Learning Rate: " + str(cfg["train"]["learning_rate"]))
     logging.debug("Epochs: " + str(cfg["train"]["epochs"]))
     logging.debug("save_best_only: " + str(cfg["train"]["save_best_only"]))
+    logging.debug("Activation Function: " + str(cfg["train"]["activation"]))
+    logging.debug("Optimizer: " + str(cfg["train"]["optimizer"]))
 
     if cfg["train"]["test_on_same_data"]:
         logging.debug("-------Testing Configurations-------")
-        logging.debug("Validation Ratio: " + str(cfg["train"]["test_ratio"]))
+        logging.debug("Test Ratio: " + str(cfg["train"]["test_ratio"]))
 
 
 

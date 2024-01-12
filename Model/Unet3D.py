@@ -22,7 +22,7 @@ def init_activation(activation):
 
 def Activation(x):
     lgr = CLASS_NAME + "[Activation()]"
-    if act == 'leakyRelu':
+    if act == 'leakyrelu':
         return LeakyReLU()(x)
     elif act == 'relu':
         return ReLU(x)
@@ -86,7 +86,7 @@ class Unet3D:
         self.output_classes = cfg["data"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
         self.filters = get_filters(cfg["data"]["min_filter"], 5)
-        init_activation(cfg["train"]["activation"])
+        init_activation(cfg["train"]["activation"].lower())
         self.print_info()
 
         # TO-DO: Need to make activation function configurable.

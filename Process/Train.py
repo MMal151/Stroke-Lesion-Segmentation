@@ -1,6 +1,5 @@
 import logging
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.optimizers import Adam
 from keras_unet_collection.losses import dice_coef
 from tensorflow.keras.callbacks import ModelCheckpoint
 
@@ -8,6 +7,8 @@ from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
 from Model.Vnet import Vnet
 from Process.Utilities import load_data
+from Util.Loss import get_loss
+from Util.Optimizers import get_optimizer
 from Util.Preprocessing import data_augmentation
 from Util.Utils import get_all_possible_subdirs, remove_dirs
 from Util.Visualization import show_history
@@ -95,9 +96,9 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
     lgr = CLASS_NAME + "[fit_model()]"
 
     model = None
-    if cfg["common_config"]["model_type"] == "unet":
+    if cfg["common_config"]["model_type"].lower() == "unet":
         model = Unet3D(cfg).generate_model()
-    elif cfg["common_config"]["model_type"] == "vnet":
+    elif cfg["common_config"]["model_type"].lower() == "vnet":
         model = Vnet(cfg).generate_model()
 
     if model is not None:
@@ -107,8 +108,8 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
             monitor = "val_loss"
             validation = True
         # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
-        model.compile(optimizer=Adam(learning_rate=cfg["train"]["learning_rate"]), loss='binary_crossentropy',
-                      metrics=[dice_coef])
+        model.compile(optimizer=get_optimizer(cfg),
+                      loss=get_loss(cfg), metrics=[dice_coef])
         checkpoint = ModelCheckpoint(cfg["train"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
                                      save_best_only=cfg["train"]["save_best_only"],
                                      save_freq='epoch')

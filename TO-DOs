@@ -1,9 +1,8 @@
 Nifti3DGenerator:
 Unet3D:
-    1.
 Train:
-    1. Need to make optimizer configurable.
-    2. Implement learning rate schedular.
+    1.
+    2.
     3. Make loss and metrics configurable.
     4. Need to make augmentation factor configurable for different data sources.
 Required Stuff:
@@ -42,6 +41,8 @@ To-Dos:
 
 
 ---------------------Done---------------------
+-Implement learning rate schedular. [12th-Jan-2024]
+-Need to make optimizer configurable.[9th-Jan-2024]
 -Need to make activation function configurable. [8th-Jan-2024]
 -Add train + testing mode. [05-Jan-2024]
 -Implement augmentation within the work flow. [12-Dec-2023]
