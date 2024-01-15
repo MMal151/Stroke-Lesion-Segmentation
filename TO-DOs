@@ -1,12 +1,7 @@
 Nifti3DGenerator:
 Unet3D:
 Train:
-    1.
-    2.
-    3. Make loss and metrics configurable.
-    4. Need to make augmentation factor configurable for different data sources.
 Required Stuff:
-    1. Need to add time / performance stats in the log.
 
 ---------------------Optimization/Improvement To-Dos---------------------
 
@@ -16,13 +11,8 @@ To-Dos:
     b. Add depthwise seperable convolutions for each network. [No default tensorflow implementation for 3D convolutions https://github.com/alexandrosstergiou/keras-DepthwiseConv3D]
     c. Add support to choose downsampling vs cropping in generators
 1. Add performance metrics in arguments & add patching
-    a. Create a separate function for getting performance metrics.
-    b. Also need to change where the getter for the base class is called.
     c. Add support for loading 2D shape. Currently hard coded to 3D shape.
-    d. Add support for configuring the performance metric (Add support in testing and training)
     e. Add support for patching both 3D and 2D for testing
-    f. Need to add different normalization method for 2D data.
-    j. Add support for calculating average performance
     k. Need to make custom_objects when loading model changeable. [Test & Training]
 
 2. Check custom activation usage.
@@ -38,9 +28,12 @@ To-Dos:
 12. Implement k-folds into the structure
 13.
 14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
+15. Thresholding for the post-processing.
 
 
 ---------------------Done---------------------
+-Need to add time / performance stats in the log. [15th-Jan-2024]
+-Make loss and metrics configurable. Need to add recall, precision. [15th-Jan-2024]
 -Implement learning rate schedular. [12th-Jan-2024]
 -Need to make optimizer configurable.[9th-Jan-2024]
 -Need to make activation function configurable. [8th-Jan-2024]

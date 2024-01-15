@@ -3,14 +3,14 @@ logging_config:
   level: "info" # Need to change this for production
 #------------------------------------------------------#
 common_config:
-  process: "train"
+  process: "test"
   parallel_process: False
   gpus: "2,3,4"
   model_type: 'vnet'
 #------------------------------------------------------#
 data:
   #Input Path can contain multiple sources comma-separated. The file naming convention should be the same in both sources.
-  input_path: "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned,/home/mmal151/Desktop/Dummy_Data/INPUT"
+  input_path: "/home/mmal151/Desktop/Dummy_Data/Temp"
   #input_path: "/hpc/mmal151/ATLAS_Cleaned"
   img_ext: "T1_bet_cropped.nii.gz"
   lbl_ext: "LESION_cropped.nii.gz"
@@ -34,15 +34,18 @@ train:
   dropout: 0.2
   learning_rate: 0.0001
   model_name: unet_
-  epochs: 50
+  epochs: 1
   save_best_only: False # Configuration for "save_best_only" in Model Checkpoints.
-  test_on_same_data: True  # If True testing is performed within the training flow.
+  test_on_same_data: False  # If True testing is performed within the training flow.
   test_ratio: 0.2 # Will only be checked if "test_on_same_data" is True.
   activation: "gelu" # Possible values: leakyrelu, relu, snake, gelu, prelu
   optimizer: "sgd" # Possible values: adam, sgd, rmsprop, adadelta, adamax, adagrad
   apply_lr_sch: True # Apply learning rate schedular. Learning Rate related configurations will be read from config_lrs.yml
   loss: "dice" # Possible custom losses: dice, tverskycoef, tversky, ftversky (focal tversky).
   # If loss function doesn't exist in the custom losses' list, it will be returned as is.
+  perf_metrics: "recall, prec, mean_iou, dice_coef" # Comma/space separated list of metrics to be calculated.
+  # Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
+  # recall (Recall), and prec (Precision).
 #------------------------------------------------------#
 model_specific: # Will only be checked if the particular model is being used.
 #------------------------------------------------------#
@@ -51,8 +54,8 @@ model_specific: # Will only be checked if the particular model is being used.
     num_decoder_blocks: "3,3,2" # Number of convolutional blocks in each decoder layer.
 #------------------------------------------------------#
 test:
-  model_load_state: "/home/mmal151/Desktop/GIthub-Repo/Model_State/Unet_3D/No-Augmentation/unet_50.h5"
-  save_random_samples: True
+  model_load_state: "unet_01.h5"
+  save_random_samples: False
   num_samples: 1
 #------------------------------------------------------#
 

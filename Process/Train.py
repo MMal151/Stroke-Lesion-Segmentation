@@ -1,13 +1,16 @@
 import logging
+from time import time
+
 from sklearn.model_selection import train_test_split
-from keras_unet_collection.losses import dice_coef
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
 from Model.Vnet import Vnet
+from Process.Test import log_test_results
 from Process.Utilities import load_data
 from Util.Loss import get_loss
+from Util.Metrics import get_metrics
 from Util.Optimizers import get_optimizer
 from Util.Preprocessing import data_augmentation
 from Util.Utils import get_all_possible_subdirs, remove_dirs
@@ -95,6 +98,7 @@ def train(cfg, strategy=None):
 def fit_model(cfg, train_gen, valid_gen, test_gen):
     lgr = CLASS_NAME + "[fit_model()]"
 
+    start_time = time()
     model = None
     if cfg["common_config"]["model_type"].lower() == "unet":
         model = Unet3D(cfg).generate_model()
@@ -107,19 +111,24 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
         if valid_gen is not None:
             monitor = "val_loss"
             validation = True
+
+        metrics, eval_list = get_metrics(cfg["train"]["perf_metrics"])
         # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
         model.compile(optimizer=get_optimizer(cfg),
-                      loss=get_loss(cfg), metrics=[dice_coef])
+                      loss=get_loss(cfg), metrics=metrics)
         checkpoint = ModelCheckpoint(cfg["train"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
                                      save_best_only=cfg["train"]["save_best_only"],
                                      save_freq='epoch')
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
                             epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
         show_history(history, validation)
+        logging.info(f"{lgr}: Total Training Time: [{time() - start_time}] seconds")
 
         if test_gen is not None:
             logging.info(f"{lgr}: Starting testing.")
-            loss, metric = model.evaluate(test_gen, batch_size=1, steps=test_gen.get_x_len())
-            print(f"{lgr}: Testing Loss: {loss} \n Testing Dice-Coeff: {metric}")
+            results = model.evaluate(test_gen, batch_size=1, steps=test_gen.get_x_len())
+            log_test_results(eval_list, results)
     else:
         logging.error(f"{lgr}: Invalid model_type. Aborting training process.")
+
+

@@ -14,6 +14,10 @@ def is_valid_file(file_name):
     return (file_name is not None or file_name != "") and os.path.exists(file_name)
 
 
+def is_valid_str(in_str):
+    return in_str is not None and len(in_str) > 0 and in_str.strip() != ""
+
+
 # Returns list of all possible files within the directory & its subdirectories'
 def get_all_possible_files_paths(root: str, ext: str = ".png"):
     lgr = CLASS_NAME + "[get_all_possible_files_paths()]"

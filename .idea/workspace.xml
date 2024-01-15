@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Fix: Import for custom activation added for V-Net.">
-      <change afterPath="$PROJECT_DIR$/Util/Optimizers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config_lrs.yml" afterDir="false" />
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Changes: 1. Learning Schedular Added.&#10;2. Loss function is now configurable.">
+      <change afterPath="$PROJECT_DIR$/Util/Metrics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Unet3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Unet3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TO-DOs" beforeDir="false" afterPath="$PROJECT_DIR$/TO-DOs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Util/Loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Loss.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Util/Optimizers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Optimizers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Util/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,14 +44,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/mmal151/Desktop/GIthub-Repo/Stroke-Lesion-Segmentation",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mmal151/Desktop/GIthub-Repo/Stroke-Lesion-Segmentation&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -60,7 +59,28 @@
       <recent name="$PROJECT_DIR$/Temp" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.Main">
+    <configuration name="Loss" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Stroke-Lesion-Segmentation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Util" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Util/Loss.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Stroke-Lesion-Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -85,6 +105,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.Main" />
+        <item itemvalue="Python.Loss" />
       </list>
     </recent_temporary>
   </component>
@@ -188,7 +209,14 @@
       <option name="project" value="LOCAL" />
       <updated>1704755256721</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Changes: 1. Learning Schedular Added.&#10;2. Loss function is now configurable.">
+      <created>1705040940478</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1705040940478</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -211,7 +239,8 @@
     <MESSAGE value="Changes:&#10;1. Minor changes for train/test mode. &#10;2. Fixed convergence issue with V-NET. (The problem with v-net was the activation function of the output layer, which was softmax. This activation function is for output classes &gt; 1 and does not work well binary-crossentropy loss.)" />
     <MESSAGE value="Changes:&#10;1. Activation functions were made configurable." />
     <MESSAGE value="Fix: Import for custom activation added for V-Net." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: Import for custom activation added for V-Net." />
+    <MESSAGE value="Changes: 1. Learning Schedular Added.&#10;2. Loss function is now configurable." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes: 1. Learning Schedular Added.&#10;2. Loss function is now configurable." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -223,7 +252,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>20</line>
+          <line>38</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -233,17 +262,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>34</line>
+          <line>51</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>64</line>
+          <line>83</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>100</line>
+          <line>104</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -273,13 +302,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Optimizers.py</url>
-          <line>73</line>
+          <line>72</line>
           <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Optimizers.py</url>
-          <line>12</line>
-          <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/python-environments/env_310/lib/python3.10/site-packages/keras_unet_collection/losses.py</url>
@@ -288,13 +312,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Loss.py</url>
-          <line>9</line>
+          <line>8</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Loss.py</url>
-          <line>12</line>
+          <line>11</line>
           <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Train.py</url>
+          <line>98</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Test.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -1,7 +1,6 @@
 import logging
 
 import yaml
-from keras.src.optimizers.schedules import *
 from tensorflow.keras.optimizers import *
 from tensorflow.keras.optimizers.schedules import *
 

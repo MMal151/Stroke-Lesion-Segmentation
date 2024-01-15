@@ -1,10 +1,9 @@
 import logging
 
-import tensorflow as tf
 from keras_unet_collection.losses import *
 
 CLASS_NAME = "[Util/Loss]"
-
+CUSTOM_LOSS_FUNCTIONS = "dice,tverskycoef,tversky,ftversky"
 
 def get_loss(cfg):
     lgr = CLASS_NAME + "[get_loss()]"
