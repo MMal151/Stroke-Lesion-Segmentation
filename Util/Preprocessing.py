@@ -10,7 +10,7 @@ from Util.Utils import get_random_index, get_all_possible_subdirs, remove_dirs
 CLASS_NAME = "[Util/Preprocessing]"
 
 
-def data_augmentation(cfg, train_x, train_y):
+def data_augmentation(cfg, train_x, train_y, in_path):
     lgr = CLASS_NAME + "[data_augmentation()]"
     logging.info(f"{lgr}: Starting data augmentation using factor: " + str(cfg["augmentation"]["factor"])
                  + " and technique: " + cfg["augmentation"]["technique"])
@@ -21,10 +21,10 @@ def data_augmentation(cfg, train_x, train_y):
                         f"augmenting new ones.")
 
     if cfg["augmentation"]["technique"] == "cravemix":
-        return augmentation_cm(cfg, train_x, train_y)
+        return augmentation_cm(cfg, train_x, train_y, in_path)
 
 
-def augmentation_cm(cfg, x, y):
+def augmentation_cm(cfg, x, y, in_path):
     lgr = CLASS_NAME + "[augmentation_cm()]"
 
     total_aug_dp = int(np.ceil(len(x) * cfg["augmentation"]["factor"]))  # Total number of datapoints to be augmented.
@@ -49,7 +49,7 @@ def augmentation_cm(cfg, x, y):
                 new_img, new_label, _, _ = generate_new_sample(x[j], x[i], y[j], y[i])
 
             new_file = x[i].split("/")[-2] + "_" + x[j].split("/")[-2] + "_cm"
-            path_new = os.path.join(cfg["data"]["input_path"], new_file)
+            path_new = os.path.join(in_path, new_file)
             os.makedirs(path_new, exist_ok=True)
 
             img_path = os.path.join(path_new, new_file + "_" + cfg["data"]["img_ext"])

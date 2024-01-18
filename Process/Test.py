@@ -3,43 +3,21 @@ import os
 import random
 import nibabel as nib
 import numpy as np
-import tensorflow as tf
-from keras_unet_collection.activations import GELU, Snake
 
 from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
-from Process.Utilities import load_data
-from Util.Loss import dice_coef_single_label, CUSTOM_LOSS_FUNCTIONS, get_loss
-from Util.Metrics import get_metrics_test, get_metrics
+from Process.Utilities import load_data, load_model
+from Util.Loss import dice_coef_single_label
+from Util.Metrics import get_metrics
 from Util.Utils import is_valid_file, is_valid_dir, str_to_tuple
 
 CLASS_NAME = "[Process/Test]"
-CUSTOM_ACTIVATIONS = "gelu,snake"
-
-
-# Custom Objects includes all custom activations, loss functions, and performance metrics.
-def get_custom_objects(cfg):
-    lgr = CLASS_NAME + "[get_custom_objects()]"
-    custom_objects = get_metrics_test(cfg["train"]["perf_metrics"])
-    if CUSTOM_ACTIVATIONS.__contains__(cfg["train"]["activation"].lower()):
-        logging.debug(f"{lgr}: Adding custom activation function in custom_obj list.")
-        if cfg["train"]["activation"].lower() == "gelu":
-            custom_objects["GELU"] = GELU()
-        elif cfg["train"]["activation"].lower() == "snake":
-            custom_objects["Snake"] = Snake()
-
-    if CUSTOM_LOSS_FUNCTIONS.__contains__(cfg["train"]["loss"].lower()):
-        logging.debug(f"{lgr}: Adding custom loss function in custom_obj list.")
-        custom_objects[cfg["train"]["loss"].lower()] = get_loss(cfg)
-
-    return custom_objects
 
 
 # Before testing, the data should be cropped and skull stripped to match the size of the input.
 def test(cfg):
     lgr = CLASS_NAME + "[test()]"
     if is_valid_file(cfg["test"]["model_load_state"]):
-        model = tf.keras.models.load_model(cfg["test"]["model_load_state"],
-                                           custom_objects=get_custom_objects(cfg))
+        model = load_model(cfg, False)
 
         x_test, y_test = load_data(cfg["data"]["input_path"], cfg["data"]["img_ext"],
                                    cfg["data"]["lbl_ext"])

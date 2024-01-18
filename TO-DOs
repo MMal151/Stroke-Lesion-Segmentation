@@ -6,29 +6,25 @@ Required Stuff:
 ---------------------Optimization/Improvement To-Dos---------------------
 
 To-Dos:
-0. Need to add dropout in the model. Need to try within multiple layers and make them configurable.
-    a.
-    b. Add depthwise seperable convolutions for each network. [No default tensorflow implementation for 3D convolutions https://github.com/alexandrosstergiou/keras-DepthwiseConv3D]
+0. Incorporate ISLES data into the model.
     c. Add support to choose downsampling vs cropping in generators
 1. Add performance metrics in arguments & add patching
     c. Add support for loading 2D shape. Currently hard coded to 3D shape.
     e. Add support for patching both 3D and 2D for testing
     k. Need to make custom_objects when loading model changeable. [Test & Training]
 
-2. Check custom activation usage.
-3.
 4. Look into super convergence.
 5. Check the performance with mixed floating point.
 6.
 7. Add support for 2D data generator.
 8. Add support for 2.5D data generator.
-9. Different augmentation techniques can be implemented alongside cravemix.
 10.
 11.
 12. Implement k-folds into the structure
 13.
 14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
 15. Thresholding for the post-processing.
+16. Try Depthwise convolutions on each axis.
 
 
 ---------------------Done---------------------

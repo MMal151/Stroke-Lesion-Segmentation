@@ -8,7 +8,7 @@ from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
 from Model.Vnet import Vnet
 from Process.Test import log_test_results
-from Process.Utilities import load_data
+from Process.Utilities import load_data, load_model
 from Util.Loss import get_loss
 from Util.Metrics import get_metrics
 from Util.Optimizers import get_optimizer
@@ -70,7 +70,7 @@ def train(cfg, strategy=None):
 
         if cfg["data"]["apply_augmentation"]:
             logging.info(f"{lgr}: Applying augmentation to training data for data source {i} ")
-            x, y = data_augmentation(cfg, x, y)
+            x, y = data_augmentation(cfg, x, y, i)
 
         logging.debug(f"{lgr}: State before merging with test sets. x = {x} \n y = {y} \n "
                       f"x_train = {x_train} \n y_train = {y_train}")
@@ -99,10 +99,11 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
     lgr = CLASS_NAME + "[fit_model()]"
 
     start_time = time()
-    model = None
-    if cfg["common_config"]["model_type"].lower() == "unet":
+    model = load_model(cfg, cfg["train"]["resume_training"])
+
+    if cfg["common_config"]["model_type"].lower() == "unet" and model is None:
         model = Unet3D(cfg).generate_model()
-    elif cfg["common_config"]["model_type"].lower() == "vnet":
+    elif cfg["common_config"]["model_type"].lower() == "vnet" and model is None:
         model = Vnet(cfg).generate_model()
 
     if model is not None:
@@ -130,5 +131,4 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
             log_test_results(eval_list, results)
     else:
         logging.error(f"{lgr}: Invalid model_type. Aborting training process.")
-
 
