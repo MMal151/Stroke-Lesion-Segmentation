@@ -3,7 +3,8 @@ learning_schedular:
   decay_steps: -1 # Default value will be used. It may vary depending on the type of the schedular.
 
   cosine:
-    warmup_steps: 1000 # If <=0, default value be used.
+    warmup_steps: -1 # If <=0, will be considered as disabled.
+    target_lr: -1 #
 
   exponential:
     decay_rate: 0.96 # If < -1 default value be used.

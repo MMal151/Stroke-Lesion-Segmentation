@@ -54,6 +54,8 @@ model_specific: # Will only be checked if the particular model is being used.
   vnet:
     num_encoder_blocks: "1,2,3,3" # Number of convolutional blocks in each encoder layer.
     num_decoder_blocks: "3,3,2" # Number of convolutional blocks in each decoder layer.
+    use_transpose: True # Use Transpose Convolutions for upscaling.
+    use_sne_layer: False # Use squeeze and excitation layer for each residual connection
 #------------------------------------------------------#
 test:
   model_load_state: "unet_01_temp.h5"

@@ -1,8 +1,8 @@
 import logging
 
 import yaml
+import tensorflow as tf
 from tensorflow.keras.optimizers import *
-from tensorflow.keras.optimizers.schedules import *
 
 CLASS_NAME = "[Util/Optimizers]"
 
@@ -16,18 +16,15 @@ def get_schedular(lr):
     opt = cfg["learning_schedular"]["type"].lower()
 
     if opt == "cosine":
-        decay_steps = warmup_steps = 1000
+        decay_steps = 1000
 
         if cfg["learning_schedular"]["decay_steps"] > 0:
             decay_steps = cfg["learning_schedular"]["decay_steps"]
-        if cfg["learning_schedular"]["cosine"]["warmup_steps"] >= 0:
-            warmup_steps = cfg["learning_schedular"]["cosine"]["warmup_steps"]
 
         logging.debug(f"{lgr}: Using Cosine Decay learning schedular with configurations initial_learning_rate: [{lr}]"
-                      f" decay_steps: [{decay_steps}]"
-                      f" and warmup_steps: [{warmup_steps}].")
+                      f" decay_steps: [{decay_steps}]")
 
-        return CosineDecay(lr, decay_steps, warmup_steps=warmup_steps)
+        return tf.keras.optimizers.schedules.CosineDecay(lr, decay_steps)
 
     elif opt == "exponential":
         decay_steps = 100000
@@ -42,7 +39,7 @@ def get_schedular(lr):
                       f" decay_steps: [{decay_steps}]"
                       f" and decay_rate: [{decay_rate}].")
 
-        return ExponentialDecay(lr, decay_steps, decay_rate)
+        return tf.keras.optimizers.schedules.ExponentialDecay(lr, decay_steps, decay_rate)
 
     elif opt == "polynomial":
         decay_steps = 10000
@@ -57,7 +54,7 @@ def get_schedular(lr):
                       f" decay_steps: [{decay_steps}]"
                       f" and end_learning_rate: [{end_learning_rate}].")
 
-        return PolynomialDecay(lr, decay_steps, end_learning_rate)
+        return tf.keras.optimizers.schedules.PolynomialDecay(lr, decay_steps, end_learning_rate)
 
     return lr
 

@@ -1,0 +1,1 @@
+pip install tf-models-official==2.8.0
