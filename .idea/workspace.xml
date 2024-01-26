@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Fixes: 1. CosineDecay fix.&#10;Changes: 1. Regularization and Dropout added for VNet">
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Changes: 1. Dice Loss was added.&#10;2. Dice Coef's implementation was added. keras_unet collection's implementation was causing inf for some casses. &#10;3. Down sampling support added.&#10;4. Tensorflow dataset was added in the pipeline.&#10;5. Support for better parallelism added in training process. &#10;6. Number of dropout layers reduced in VNet.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Loss.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Metrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -237,7 +230,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705987850333</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Changes: 1. Dice Loss was added.&#10;2. Dice Coef's implementation was added. keras_unet collection's implementation was causing inf for some casses. &#10;3. Down sampling support added.&#10;4. Tensorflow dataset was added in the pipeline.&#10;5. Support for better parallelism added in training process. &#10;6. Number of dropout layers reduced in VNet.">
+      <created>1706233934838</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1706233934838</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -264,7 +264,8 @@
     <MESSAGE value="Changes: 1. Training time added in logs.&#10;2. Performance Metrics were made configurable." />
     <MESSAGE value="Changes: 1. Added support to resume training from previous model states.&#10;Fixes: 1. Augmentation folder fix." />
     <MESSAGE value="Fixes: 1. CosineDecay fix.&#10;Changes: 1. Regularization and Dropout added for VNet" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixes: 1. CosineDecay fix.&#10;Changes: 1. Regularization and Dropout added for VNet" />
+    <MESSAGE value="Changes: 1. Dice Loss was added.&#10;2. Dice Coef's implementation was added. keras_unet collection's implementation was causing inf for some casses. &#10;3. Down sampling support added.&#10;4. Tensorflow dataset was added in the pipeline.&#10;5. Support for better parallelism added in training process. &#10;6. Number of dropout layers reduced in VNet." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes: 1. Dice Loss was added.&#10;2. Dice Coef's implementation was added. keras_unet collection's implementation was causing inf for some casses. &#10;3. Down sampling support added.&#10;4. Tensorflow dataset was added in the pipeline.&#10;5. Support for better parallelism added in training process. &#10;6. Number of dropout layers reduced in VNet." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
