@@ -49,7 +49,8 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
     x = y  # Saving the state of the input tensor to ensure that it can be added later.
 
     for i in range(0, num_conv_blocks):
-        x = Conv3D(filters, 5, padding='same', kernel_regularizer=L1(l1=0.01))(x)
+        #kernel_regularizer=L1(l1=0.001)
+        x = Conv3D(filters, 5, padding='same')(x)
         x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
         x = Activation(x)  # Original Model -> PReLu
 
@@ -64,7 +65,7 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
 
 
 def down_sampling(x, filters):
-    x = Conv3D(filters, 2, 2, padding='same', kernel_regularizer=L1(l1=0.01))(x)
+    x = Conv3D(filters, 2, 2, padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation(x)
 
@@ -76,7 +77,7 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
 
     if use_transpose:
         # Does up-sampling using learnable parameters. Adaptable
-        x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same', kernel_regularizer=L1(l1=0.01))(x)
+        x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same')(x)
     else:
         # Does up-sampling by applying different mathematical functions. Fixed algorithm.
         x = UpSampling3D()(x)
@@ -95,7 +96,7 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
     x = Concatenate(axis=-1)([x, rc])
 
     for i in range(0, num_conv_blocks):
-        x = Conv3D(filters, 3, padding='same', kernel_regularizer=L1(l1=0.01))(x)
+        x = Conv3D(filters, 3, padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(x)
 
@@ -142,24 +143,19 @@ class Vnet:
 
         # Encoder
         rc_1, x = down_block(img, self.filters[0], self.num_encoder_blocks[0])
-        x = Dropout(self.dropout)(x)
         rc_2, x = down_block(x, self.filters[1], self.num_encoder_blocks[1])
         x = Dropout(self.dropout)(x)
         rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
-        x = Dropout(self.dropout)(x)
         rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
         x = Dropout(self.dropout)(x)
-
         # Bottleneck layer
         x, _ = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
         x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
-        x = Dropout(self.dropout)(x)
         x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose)
         x = Dropout(self.dropout)(x)
         x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose)
-        x = Dropout(self.dropout)(x)
         x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose)
 
         x = Dropout(self.dropout)(x)  # Not included in the original model.

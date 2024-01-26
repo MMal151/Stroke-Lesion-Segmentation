@@ -24,7 +24,7 @@ def test(cfg):
 
         test_gen = Nifti3DGenerator(cfg, x_test, y_test)
 
-        results = model.evaluate(test_gen, batch_size=1, steps=test_gen.get_x_len())
+        results = model.evaluate(test_gen, batch_size=1, steps=test_gen.x_len)
         _, eval_list = get_metrics(cfg["train"]["perf_metrics"])
         log_test_results(eval_list, results)
         if cfg["test"]["save_random_samples"]:

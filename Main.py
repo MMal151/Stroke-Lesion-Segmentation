@@ -16,7 +16,8 @@ def configure_logger(filename, level=""):
     elif level == "warn":
         log_level = logging.WARN
 
-    logging.basicConfig(filename=filename + str(time.strftime('%Y%m%dT%H%M')) + ".log", encoding='utf-8', level=log_level,
+    logging.basicConfig(filename=filename + str(time.strftime('%Y%m%dT%H%M')) + ".log", encoding='utf-8',
+                        level=log_level,
                         format='%(asctime)s %(message)s')
 
 
@@ -53,7 +54,6 @@ def print_configurations(cfg):
         logging.debug("Test Ratio: " + str(cfg["train"]["test_ratio"]))
 
 
-
 def configure_gpus(cfg):
     os.environ["CUDA_VISIBLE_DEVICES"] = cfg["common_config"]["gpus"]
 
@@ -88,5 +88,3 @@ if __name__ == "__main__":
         train(cfg, configure_gpus(cfg))
     elif cfg["common_config"]["process"] == "test":
         test(cfg)
-
-

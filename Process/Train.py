@@ -79,19 +79,20 @@ def train(cfg, strategy=None):
         logging.debug(f"{lgr}: State before merging with test sets. x_train = {x_train} \n y_train = {y_train}")
 
     logging.info(f"{lgr}: Creating Generators for training (& validation & test) data.")
-    train_gen = Nifti3DGenerator(cfg, x_train, y_train)
-    valid_gen, test_gen = None, None
-    if x_valid is not []:
-        valid_gen = Nifti3DGenerator(cfg, x_valid, y_valid)
-    if x_test is not []:
-        test_gen = Nifti3DGenerator(cfg, x_test, y_test)
 
-    logging.info(f"{lgr}: Generating Model.")
+    params = {"x_train": x_train,
+              "y_train": y_train,
+              "x_valid": x_valid,
+              "y_valid": y_valid,
+              "x_test": x_test,
+              "y_test": y_test}
 
     if strategy is not None:
         with strategy.scope():
+            train_gen, valid_gen, test_gen = get_generators(cfg, **params)
             fit_model(cfg, train_gen, valid_gen, test_gen)
     else:
+        train_gen, valid_gen, test_gen = get_generators(cfg, **params)
         fit_model(cfg, train_gen, valid_gen, test_gen)
 
 
@@ -114,7 +115,6 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
             validation = True
 
         metrics, eval_list = get_metrics(cfg["train"]["perf_metrics"])
-        # TO-DO: 1. Need to make optimizer configurable. 2. Implement learning rate schedular. 3. Make loss and metrics configurable.
         model.compile(optimizer=get_optimizer(cfg),
                       loss=get_loss(cfg), metrics=metrics)
         checkpoint = ModelCheckpoint(cfg["train"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
@@ -131,4 +131,18 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
             log_test_results(eval_list, results)
     else:
         logging.error(f"{lgr}: Invalid model_type. Aborting training process.")
+
+
+def get_generators(cfg, x_train, y_train, x_valid, y_valid, x_test, y_test):
+    lgr = CLASS_NAME + "[get_generators()]"
+    train_gen = Nifti3DGenerator(cfg, x_train, y_train)
+    valid_gen, test_gen = None, None
+    if len(x_valid) > 0:
+        valid_gen = Nifti3DGenerator(cfg, x_valid, y_valid)
+    if len(x_test) > 0:
+        test_gen = Nifti3DGenerator(cfg, x_test, y_test)
+
+    logging.info(f"{lgr}: Generating Model.")
+
+    return train_gen, valid_gen, test_gen
 

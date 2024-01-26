@@ -1,6 +1,6 @@
 import logging
 
-from keras_unet_collection.losses import dice_coef
+import tensorflow as tf
 from tensorflow.keras.metrics import *
 
 from Util.Utils import is_valid_str
@@ -58,4 +58,21 @@ def get_metrics_test(met_list="dice_coef"):
 
     return metrics
 
+
+def dice_coef(y_true, y_pred, smooth=1e-7):
+    axis = [1, 2]
+    # Assuming data is 3D, shape would be (None, height, width, depth, channel)
+    if len(tf.shape(y_true)) >= 4:
+        axis = [1, 2, 3]
+
+    y_true_pos = y_true
+    y_pred_pos = y_pred
+
+    true_pos = tf.reduce_sum(y_true_pos * y_pred_pos, axis=axis)  # Sum across spatial dimensions
+    false_neg = tf.reduce_sum(y_true_pos * (1 - y_pred_pos), axis=axis)
+    false_pos = tf.reduce_sum((1 - y_true_pos) * y_pred_pos, axis=axis)
+
+    dice_val = (2.0 * true_pos + smooth) / (2.0 * true_pos + false_pos + false_neg + smooth)
+
+    return dice_val
 
