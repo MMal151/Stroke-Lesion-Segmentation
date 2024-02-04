@@ -70,14 +70,25 @@ def augmentation_cm(cfg, x, y, in_path):
 
 
 # Source: https://github.com/fitushar/3D-Medical-Imaging-Preprocessing-All-you-need
-def normalize_img(image):
-    img = image.astype(np.float32)
+def normalize_img(image, smooth=1e-8):
+    mean = np.mean(image)
+    std = np.std(image)
+    image -= mean
+    image /= (max(std, smooth))
+    return image
 
-    mean = np.mean(img)
-    std = np.std(img)
 
-    if std > 0:
-        ret = (img - mean) / std
-    else:
-        ret = img * 0.
-    return ret
+def random_patch_3D(img, lbl, target_shape):
+    assert img.shape == lbl.shape, f"Image and Label should be of the same shape. " \
+                                   f"Image's Shape: [{img.shape}] != Label's Shape: [{lbl.shape}]"
+    dif = [img.shape[i] - target_shape[i] for i in range(0, 3)]
+
+    assert all(dif[i] > 0 for i in range(0, 3)), f"Patch's size should be smaller than Image's shape. " \
+                                                 f"Image Shape: [{img.shape}] < Patch Size: [{target_shape}]"
+
+    i, j, k = np.random.randint((0, 0, 0), tuple(dif))
+
+    img_patch = img[i:i + target_shape[0], j:j + target_shape[1], k:k + target_shape[2]]
+    lbl_patch = lbl[i:i + target_shape[0], j:j + target_shape[1], k:k + target_shape[2]]
+
+    return img_patch, lbl_patch

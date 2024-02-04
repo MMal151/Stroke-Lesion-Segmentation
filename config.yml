@@ -12,14 +12,14 @@ data:
   #Input Path can contain multiple sources comma-separated. The file naming convention should be the same in both sources.
   input_path: "/home/mmal151/Desktop/Dummy_Data/T1"
   #input_path: "/hpc/mmal151/ATLAS_Cleaned"
-  img_ext: "T1_bet_BC_cropped.nii.gz"
-  lbl_ext: "LESION_cropped.nii.gz"
+  img_ext: "T1_bet_BC.nii.gz"
+  lbl_ext: "LESION.nii.gz"
   min_filter: 4
-  image_shape: "(140,170,144)"
+  image_shape: "(128, 128, 128)"
   output_classes: 1
   seed: 2023
   apply_augmentation: False
-  apply_norm: True  # Apply normalization (Standardization) on the input image.
+  apply_norm: False  # Apply normalization (Standardization) on the input image.
   shuffle: True  # Shuffle data at the end of every epoch.
 #------------------------------------------------------#
 augmentation:
@@ -33,12 +33,12 @@ train:
   resume_training: False
   model_file: /home/mmal151/Desktop/GIthub-Repo/Model_State/VNet/No_Aug_Dice_Loss/vnet_50.h5
   valid_ratio: 0.1
-  batch_size: 1
+  batch_size: 2
   dropout: 0.2
   learning_rate: 0.0001
   model_name: unet_
   epochs: 5
-  save_best_only: False # Configuration for "save_best_only" in Model Checkpoints.
+  save_best_only: True # Configuration for "save_best_only" in Model Checkpoints.
   test_on_same_data: False  # If True testing is performed within the training flow.
   test_ratio: 0.2 # Will only be checked if "test_on_same_data" is True.
   activation: "prelu" # Possible values: leakyrelu, relu, snake, gelu, prelu

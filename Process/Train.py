@@ -4,7 +4,7 @@ from time import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
+from DataGenerators.NiftiGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
 from Model.Vnet import Vnet
 from Process.Test import log_test_results

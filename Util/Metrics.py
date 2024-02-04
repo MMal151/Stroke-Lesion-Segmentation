@@ -59,20 +59,22 @@ def get_metrics_test(met_list="dice_coef"):
     return metrics
 
 
-def dice_coef(y_true, y_pred, smooth=1e-7):
-    axis = [1, 2]
-    # Assuming data is 3D, shape would be (None, height, width, depth, channel)
-    if len(tf.shape(y_true)) >= 4:
-        axis = [1, 2, 3]
+@tf.function
+def dice_coef(y_true, y_pred, smooth=1e-7, batch=True):
+    # First axis is added for ensure batches are considered for dice calculation.
+    if batch:
+        axis = list(range(0, len(y_true.shape)))  # Assuming tensor is channel last. Expected Tensor Shape (B, H, W, D, C)
+    else:
+        axis = list(range(1, len(y_true.shape)))
 
-    y_true_pos = y_true
-    y_pred_pos = y_pred
+    # y_true_pos = tf.keras.backend.flatten(y_true)
+    # y_pred_pos = tf.keras.backend.flatten(y_pred)
 
-    true_pos = tf.reduce_sum(y_true_pos * y_pred_pos, axis=axis)  # Sum across spatial dimensions
-    false_neg = tf.reduce_sum(y_true_pos * (1 - y_pred_pos), axis=axis)
-    false_pos = tf.reduce_sum((1 - y_true_pos) * y_pred_pos, axis=axis)
+    true_pos = tf.reduce_sum((y_true * y_pred), axis=axis, keepdims=False)  # Sum across spatial dimensions
+    false_neg = tf.reduce_sum((y_true * (1 - y_pred)), axis=axis, keepdims=False)
+    false_pos = tf.reduce_sum(((1 - y_true) * y_pred), axis=axis, keepdims=False)
 
-    dice_val = (2.0 * true_pos + smooth) / (2.0 * true_pos + false_pos + false_neg + smooth)
-
-    return dice_val
-
+    n = 2.0 * true_pos + smooth
+    d = 2.0 * true_pos + false_pos + false_neg + smooth
+    # Need to check clip_by_value function
+    return tf.reduce_mean(n / tf.clip_by_value(d, d, 1e-8))

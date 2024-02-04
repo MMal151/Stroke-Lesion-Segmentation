@@ -1,5 +1,6 @@
 import logging
 
+import tensorflow as tf
 from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
@@ -61,7 +62,7 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
     if down_sample:
         return x, down_sampling(x, filters)
     else:
-        return x, None
+        return x
 
 
 def down_sampling(x, filters):
@@ -140,21 +141,17 @@ class Vnet:
 
     def generate_model(self):
         img = Input(shape=self.input_shape)
-
         # Encoder
         rc_1, x = down_block(img, self.filters[0], self.num_encoder_blocks[0])
         rc_2, x = down_block(x, self.filters[1], self.num_encoder_blocks[1])
-        x = Dropout(self.dropout)(x)
         rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
         rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
-        x = Dropout(self.dropout)(x)
         # Bottleneck layer
-        x, _ = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
+        x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
         x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
         x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose)
-        x = Dropout(self.dropout)(x)
         x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose)
         x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose)
 
