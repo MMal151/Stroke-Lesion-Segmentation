@@ -40,6 +40,4 @@ def dice(y_true, y_pred, smooth=1e-7):
     y_pred = tf.convert_to_tensor(y_pred)
     y_true = tf.cast(y_true, y_pred.dtype)
 
-    loss = 1 - dice_coef(y_true, y_pred, smooth)
-
-    return loss
+    return 1 - dice_coef(y_true, y_pred, smooth)

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Changes: Vnet reverted to original state.">
-      <change afterPath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" afterDir="false" />
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Changes: Vnet.py: Unused imports removed.&#10;CraveMix.py: Unused code removed.&#10;Loss.py: Dice Loss revamped. &#10;Metrics.py: Dice_coef code added.&#10;NiftiGenerator.py: Patch related code added. Tensorflow Dataset removed.&#10;Preprocessing.py: normalize_img code revamped. Patch generation code added.">
+      <change afterPath="$PROJECT_DIR$/Process/Inference.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/Nifti3DGenerator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Misc/CraveMix.py" beforeDir="false" afterPath="$PROJECT_DIR$/Misc/CraveMix.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TO-DOs" beforeDir="false" afterPath="$PROJECT_DIR$/TO-DOs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Util/Loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Loss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Util/Metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Metrics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Util/Preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Visualization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -105,9 +105,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Stroke-Lesion-Segmentation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Util" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Util/Preprocessing.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Main" />
+        <item itemvalue="Python.Preprocessing" />
         <item itemvalue="Python.Loss" />
       </list>
     </recent_temporary>
@@ -254,7 +276,14 @@
       <option name="project" value="LOCAL" />
       <updated>1706234397445</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Changes: Vnet.py: Unused imports removed.&#10;CraveMix.py: Unused code removed.&#10;Loss.py: Dice Loss revamped. &#10;Metrics.py: Dice_coef code added.&#10;NiftiGenerator.py: Patch related code added. Tensorflow Dataset removed.&#10;Preprocessing.py: normalize_img code revamped. Patch generation code added.">
+      <created>1707050777153</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1707050777153</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -283,7 +312,8 @@
     <MESSAGE value="Fixes: 1. CosineDecay fix.&#10;Changes: 1. Regularization and Dropout added for VNet" />
     <MESSAGE value="Changes: 1. Dice Loss was added.&#10;2. Dice Coef's implementation was added. keras_unet collection's implementation was causing inf for some casses. &#10;3. Down sampling support added.&#10;4. Tensorflow dataset was added in the pipeline.&#10;5. Support for better parallelism added in training process. &#10;6. Number of dropout layers reduced in VNet." />
     <MESSAGE value="Changes: Vnet reverted to original state." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes: Vnet reverted to original state." />
+    <MESSAGE value="Changes: Vnet.py: Unused imports removed.&#10;CraveMix.py: Unused code removed.&#10;Loss.py: Dice Loss revamped. &#10;Metrics.py: Dice_coef code added.&#10;NiftiGenerator.py: Patch related code added. Tensorflow Dataset removed.&#10;Preprocessing.py: normalize_img code revamped. Patch generation code added." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes: Vnet.py: Unused imports removed.&#10;CraveMix.py: Unused code removed.&#10;Loss.py: Dice Loss revamped. &#10;Metrics.py: Dice_coef code added.&#10;NiftiGenerator.py: Patch related code added. Tensorflow Dataset removed.&#10;Preprocessing.py: normalize_img code revamped. Patch generation code added." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -300,7 +330,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>89</line>
+          <line>90</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -325,7 +355,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>51</line>
+          <line>52</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -334,29 +364,29 @@
           <option name="timeStamp" value="63" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>33</line>
-          <option name="timeStamp" value="73" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>61</line>
-          <option name="timeStamp" value="77" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>81</line>
+          <line>82</line>
           <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>70</line>
-          <option name="timeStamp" value="79" />
+          <url>file://$PROJECT_DIR$/Process/Inference.py</url>
+          <line>21</line>
+          <option name="timeStamp" value="87" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>75</line>
-          <option name="timeStamp" value="80" />
+          <url>file://$PROJECT_DIR$/Process/Inference.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="89" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Inference.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="98" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Inference.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="99" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

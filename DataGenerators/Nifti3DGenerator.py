@@ -82,12 +82,9 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
 
             assert img.shape == lbl.shape, "Loaded image's shape != loaded label's shape"
 
-
-
             lbl = (lbl > 0).astype(np.float32)
 
             images[i, :, :, :] = img
             labels[i, :, :, :] = lbl
 
         return images.astype(np.float32), labels.astype(np.float32)
-

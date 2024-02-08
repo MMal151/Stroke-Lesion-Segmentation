@@ -47,7 +47,7 @@ def test(cfg):
                     curr_label = (nib.load(x_test[idx]).get_fdata()).reshape(1, image_shape[0], image_shape[1],
                                                                              image_shape[2], 1).astype(np.float32)
                     predict = model.predict(curr_img)
-                    dice = dice_coef(curr_label, predict, batch=False)
+                    dice = dice_coef(curr_label, predict)
                     logging.info(f"{lgr}: Predicted Dice Coeff for {x_test[idx]}: {dice}")
 
                     if not is_valid_dir("Test_Results"):

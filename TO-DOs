@@ -23,7 +23,6 @@ To-Dos:
 13.
 14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
 15. Thresholding for the post-processing.
-16. Try Depthwise convolutions on each axis.
 
 
 ---------------------Done---------------------

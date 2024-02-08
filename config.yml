@@ -3,7 +3,7 @@ logging_config:
   level: "info" # Need to change this for production
 #------------------------------------------------------#
 common_config:
-  process: "train"
+  process: "inference"
   parallel_process: True
   gpus: "0,1,2"
   model_type: 'vnet'
@@ -15,12 +15,15 @@ data:
   img_ext: "T1_bet_BC.nii.gz"
   lbl_ext: "LESION.nii.gz"
   min_filter: 4
-  image_shape: "(128, 128, 128)"
+  image_shape: "(128, 128, 128)" # If patching enabled, then image_size will be used as patch_size
   output_classes: 1
   seed: 2023
   apply_augmentation: False
   apply_norm: False  # Apply normalization (Standardization) on the input image.
   shuffle: True  # Shuffle data at the end of every epoch.
+  aply_patch: True
+  patching:
+    no_patches: 32 # Total number of patches to be extracted from each image.
 #------------------------------------------------------#
 augmentation:
   #In case of multiple input sources augmentation will be applied separately on each data source.
@@ -49,6 +52,7 @@ train:
   perf_metrics: "recall, prec, mean_iou, dice_coef" # Comma/space separated list of metrics to be calculated.
   # Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
   # recall (Recall), and prec (Precision).
+  num_iterations: -1 # If < 0, the number of iterations will be batch_size / total_training_datapoints
 #------------------------------------------------------#
 model_specific: # Will only be checked if the particular model is being used.
 #------------------------------------------------------#
@@ -59,7 +63,7 @@ model_specific: # Will only be checked if the particular model is being used.
     use_sne_layer: False # Use squeeze and excitation layer for each residual connection
 #------------------------------------------------------#
 test:
-  model_load_state: "unet_01_temp.h5"
+  model_load_state: "vnet_13.h5"
   save_random_samples: False
   num_samples: 1
 #------------------------------------------------------#

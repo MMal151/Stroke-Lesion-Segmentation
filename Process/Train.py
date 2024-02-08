@@ -120,6 +120,7 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
         checkpoint = ModelCheckpoint(cfg["train"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
                                      save_best_only=cfg["train"]["save_best_only"],
                                      save_freq='epoch')
+
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
                             epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
         show_history(history, validation)

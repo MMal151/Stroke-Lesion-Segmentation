@@ -5,6 +5,7 @@ import nibabel as nib
 import SimpleITK as sitk
 
 from Misc.CraveMix import generate_new_sample
+from Process.Utilities import load_data
 from Util.Utils import get_random_index, get_all_possible_subdirs, remove_dirs
 
 CLASS_NAME = "[Util/Preprocessing]"
@@ -81,7 +82,7 @@ def normalize_img(image, smooth=1e-8):
 def random_patch_3D(img, lbl, target_shape):
     assert img.shape == lbl.shape, f"Image and Label should be of the same shape. " \
                                    f"Image's Shape: [{img.shape}] != Label's Shape: [{lbl.shape}]"
-    dif = [img.shape[i] - target_shape[i] for i in range(0, 3)]
+    dif = [img.shape[i] - target_shape[i] - 1 for i in range(0, 3)]
 
     assert all(dif[i] > 0 for i in range(0, 3)), f"Patch's size should be smaller than Image's shape. " \
                                                  f"Image Shape: [{img.shape}] < Patch Size: [{target_shape}]"
