@@ -82,10 +82,10 @@ def up_block(x, y, filters, use_transpose=True):
 
 class Unet3D:
     def __init__(self, cfg):
-        self.input_shape = (*str_to_tuple(cfg["data"]["image_shape"]), 1)
-        self.output_classes = cfg["data"]["output_classes"]
+        self.input_shape = (*str_to_tuple(cfg["train"]["data"]["image_shape"]), 1)
+        self.output_classes = cfg["train"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
-        self.filters = get_filters(cfg["data"]["min_filter"], 5)
+        self.filters = get_filters(cfg["train"]["min_filter"], 5)
         init_activation(cfg["train"]["activation"].lower())
         self.print_info()
 

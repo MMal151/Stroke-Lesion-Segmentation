@@ -1,12 +1,10 @@
 import logging
 
-import tensorflow as tf
 from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
-from tensorflow.keras.regularizers import L1
 
-from Util.Utils import get_filters, str_to_tuple
+from Util.Utils import get_filters, str_to_tuple, get_configurations
 
 CLASS_NAME = "[Model/Vnet]"
 
@@ -50,7 +48,7 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
     x = y  # Saving the state of the input tensor to ensure that it can be added later.
 
     for i in range(0, num_conv_blocks):
-        #kernel_regularizer=L1(l1=0.001)
+        # kernel_regularizer=L1(l1=0.001)
         x = Conv3D(filters, 5, padding='same')(x)
         x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
         x = Activation(x)  # Original Model -> PReLu
@@ -75,7 +73,6 @@ def down_sampling(x, filters):
 
 # 3D-Unet Up Sampling
 def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
-
     if use_transpose:
         # Does up-sampling using learnable parameters. Adaptable
         x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same')(x)
@@ -110,13 +107,15 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
 class Vnet:
     def __init__(self, cfg):
         lgr = CLASS_NAME + "[init()]"
-        self.input_shape = (*str_to_tuple(cfg["data"]["image_shape"]), 1)
-        self.output_classes = cfg["data"]["output_classes"]
+        self.input_shape = (*str_to_tuple(cfg["train"]["data"]["image_shape"]), 1)
+        self.output_classes = cfg["train"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
-        self.filters = get_filters(cfg["data"]["min_filter"], 5)
+        self.filters = get_filters(cfg["train"]["min_filter"], 5)
         init_activation(cfg["train"]["activation"].lower())
 
-        num_encoder_blocks = cfg["model_specific"]["vnet"]["num_encoder_blocks"].split(",")
+        model_config = get_configurations("config_model.yml")
+
+        num_encoder_blocks = model_config["vnet"]["encoder_blocks"].split(",")
 
         if len(num_encoder_blocks) >= 4:
             self.num_encoder_blocks = [int(i) for i in num_encoder_blocks]
@@ -125,7 +124,7 @@ class Vnet:
                           f"be 4. Default value of 1,2,3,3 will be used. ")
             self.num_encoder_blocks = [1, 2, 3, 3]
 
-        num_decoder_blocks = cfg["model_specific"]["vnet"]["num_decoder_blocks"].split(",")
+        num_decoder_blocks = model_config["vnet"]["decoder_blocks"].split(",")
         if len(num_decoder_blocks) >= 3:
             self.num_decoder_blocks = [int(i) for i in num_decoder_blocks]
         else:
@@ -133,7 +132,7 @@ class Vnet:
                           f"be at least 3. Default value of 3,3,2 will be used. ")
             self.num_decoder_blocks = [3, 3, 2]
 
-        self.use_transpose = cfg["model_specific"]["vnet"]["use_transpose"]
+        self.use_transpose = model_config["vnet"]["use_transpose"]
 
         self.print_info()
 

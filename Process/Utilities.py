@@ -1,4 +1,7 @@
 import logging
+import os
+import nibabel as nib
+import numpy as np
 import tensorflow as tf
 from keras_unet_collection.activations import GELU, Snake
 
@@ -44,12 +47,115 @@ def get_custom_objects(cfg):
 def load_model(cfg, resume_train):
     model = None
     if resume_train:
-        model_file = cfg["train"]["model_file"]
+        model_file = cfg["train"]["resume"]["model_path"]
     else:
-        model_file = cfg["test"]["model_load_state"]
+        model_file = cfg["test"]["model"]["load_path"]
 
     if is_valid_file(model_file):
         model = tf.keras.models.load_model(model_file,
                                            custom_objects=get_custom_objects(cfg))
 
     return model
+
+
+def print_train_configurations(cfg):
+    lgr = CLASS_NAME + "[print_train_configurations()]"
+
+    logging.info(f"{lgr}: Following configurations were loaded from configuration file.")
+
+    logging.info(f"\n #------------- General Configurations -------------#")
+
+    logging.info(f"\n #------------ GPU-Based Configurations ------------#")
+    logging.info(f"Allow parallel processing of data points across multiple GPUs: ["
+                 + str(cfg["misc"]["gpu"]["alw_para_prs"]) + "]")
+    logging.info(f"Parallel processing strategy: [" + cfg["misc"]["gpu"]["strategy"] + "]")
+    logging.info(f"GPUs to be used for processing: [" + cfg["misc"]["gpu"]["no_gpus"] + "]")
+
+    logging.info(f"\n #------------ Training Configurations -------------#")
+    logging.info(f"Model type: [" + cfg["train"]["model_type"] + "]")
+    logging.info(f"Total number of iterations: [" + str(cfg["train"]["num_iter"]) + "]")
+    logging.info(f"Epochs: [" + str(cfg["train"]["epochs"]) + "]")
+
+    logging.info(f"Performance Metrics to be used: ")
+    if cfg["train"]["perf_metrics"].__contains__("acc"):
+        logging.info(f"\n Accuracy")
+    if cfg["train"]["perf_metrics"].__contains__("mean_iou"):
+        logging.info(f"\n MeanIoU")
+    if cfg["train"]["perf_metrics"].__contains__("recall"):
+        logging.info(f"\n Recall")
+    if cfg["train"]["perf_metrics"].__contains__("prec"):
+        logging.info(f"\n Precision")
+    if cfg["train"]["perf_metrics"].__contains__("dice_coef"):
+        logging.info(f"\n Dice Coefficient")
+
+    logging.info(f"Activation Function to be used: [" + cfg["train"]["activation"] + "]")
+    logging.info(f"Output Classes: [" + str(cfg["train"]["output_classes"]) + "]")
+    logging.info(f"Dropout: [" + str(cfg["train"]["dropout"]) + "]")
+    logging.info(f"Minimum Filter Size: [" + str(cfg["train"]["min_filter"]) + "]")
+    logging.info(f"Optimizer: [" + cfg["train"]["optimizer"] + "]")
+    logging.info(f"Learning Rate: [" + str(cfg["train"]["learning_rate"]) + "]")
+    logging.info(f"Apply Learning Rate Schedular: [" + str(cfg["train"]["aply_lr_sch"]) + "]")
+    logging.info(f"Loss Function: [" + str(cfg["train"]["loss"]) + "]")
+    logging.info(f"Model Save Path / Filename: [" + str(cfg["train"]["save"]["model_name"]) + "]")
+    logging.info(f"Save best model only: [" + str(cfg["train"]["save"]["best_only"]) + "]")
+
+    logging.info(f"\n #--------- Training Data Configurations -----------#")
+    logging.info(f"Input Sources: [" + cfg["train"]["data"]["inputs"] + "]")
+    logging.info(f"Input Scan;s Extension: [" + cfg["train"]["data"]["img_ext"] + "]")
+    logging.info(f"Label's Extension: [" + cfg["train"]["data"]["lbl_ext"] + "]")
+    logging.info(f"Image Shape: [" + cfg["train"]["data"]["image_shape"] + "]")
+    logging.info(f"Batch Size: [" + str(cfg["train"]["data"]["batch_size"]) + "]")
+    logging.info(f"Normalize Data: [" + str(cfg["train"]["data"]["norm_data"]) + "]")
+    logging.info(f"Shuffle Data on each epoch: [" + str(cfg["train"]["data"]["shuffle"]) + "]")
+    logging.info(f"Remove previously augmented datapoints: [" + str(cfg["train"]["data"]["rem_pre_aug"]) + "]")
+    logging.info(f"Training/Validation Division Seed: [" + str(cfg["train"]["data"]["valid"]["seed"]) + "]")
+    logging.info(f"Validation Ratio: [" + str(cfg["train"]["data"]["valid"]["ratio"]) + "]")
+
+    if cfg["train"]["data"]["test"]["alw_test"]:
+        logging.info(f"\n #---------- Testing Data Configurations -----------#")
+        logging.info(f"Testing Ratio: [" + str(cfg["train"]["data"]["test"]["ratio"]) + "]")
+        logging.info(f"Division Seed: [" + str(cfg["train"]["data"]["test"]["seed"]) + "]")
+
+    if cfg["train"]["data"]["augmentation"]["alw_aug"]:
+        logging.info(f"\n #------- Data Augmentation Configurations ---------#")
+        logging.info(f"Augmentation Factor: [" + str(cfg["train"]["data"]["augmentation"]["factor"]) + "]")
+        logging.info(f"Augmentation Technique: [" +
+                     cfg["train"]["data"]["augmentation"]["technique"] + "]")
+
+    if cfg["train"]["data"]["patch"]["alw_patching"]:
+        logging.info(f"\n #--------- Patch Related Configurations -----------#")
+        logging.info(f"Patch Shape: [" + cfg["train"]["data"]["patch"]["patch_size"] + "]")
+        logging.info(f"Total Patches: [" + str(cfg["train"]["data"]["patch"]["total_patches"]) + "]")
+
+    if cfg["train"]["resume"]["resume_train"]:
+        logging.info(f"Model Path: [" + cfg["train"]["resume"]["model_path"] + "]")
+
+
+def print_test_configurations(cfg):
+    lgr = CLASS_NAME + "[print_test_configurations()]"
+    logging.info(f"{lgr}: Following configurations were loaded from configuration file.")
+
+    logging.info(f"\n #------------- Testing Configurations -------------#")
+    logging.info(f"Model Load Path: [" + cfg["test"]["model"]["load_path"] + "]")
+
+    logging.info(f"\n #---------- Testing Data Configurations -----------#")
+    logging.info(f"Input Sources: [" + cfg["test"]["data"]["inputs"] + "]")
+    logging.info(f"Input Scan;s Extension: [" + cfg["test"]["data"]["img_ext"] + "]")
+    logging.info(f"Label's Extension: [" + cfg["test"]["data"]["lbl_ext"] + "]")
+    logging.info(f"Image Shape: [" + cfg["test"]["data"]["image_shape"] + "]")
+
+    if cfg["test"]["data"]["patch"]["alw_patching"]:
+        logging.info(f"\n #--------- Patch Related Configurations -----------#")
+        logging.info(f"Patch Shape: [" + cfg["test"]["data"]["patch"]["patch_size"] + "]")
+        logging.info(f"Total Patches: [" + str(cfg["test"]["data"]["patch"]["total_patches"]) + "]")
+
+    if cfg["test"]["samples"]["save_samples"]:
+        logging.info(f"\n # Save Random Samples for Visualization of Results #")
+        logging.info(f"Number of samples to save: [" + str(cfg["test"]["samples"]["no_samples"]) + "]")
+        logging.info(f"Save random samples: [" + str(cfg["test"]["samples"]["random_samples"]) + "]")
+
+
+def save_img(img, filename):
+    save_path = os.path.join("Test_Results", filename)
+    ni = nib.Nifti1Image(img, affine=np.eye(4))
+    nib.save(ni, save_path)

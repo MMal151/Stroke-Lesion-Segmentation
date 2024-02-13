@@ -22,10 +22,10 @@ To-Dos:
 11.
 13.
 14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
-15. Thresholding for the post-processing.
-
+15. Need to make meaniou configurable.
 
 ---------------------Done---------------------
+-Thresholding for the post-processing. [9th-Feb-2024]
 -Need to add time / performance stats in the log. [15th-Jan-2024]
 -Make loss and metrics configurable. Need to add recall, precision. [15th-Jan-2024]
 -Implement learning rate schedular. [12th-Jan-2024]

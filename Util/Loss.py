@@ -7,16 +7,9 @@ from Util.Metrics import dice_coef
 CLASS_NAME = "[Util/Loss]"
 CUSTOM_LOSS_FUNCTIONS = "dice,tverskycoef,tversky,ftversky"
 
-parallel_process = False
 
-
-def get_loss(cfg):
+def get_loss(loss):
     lgr = CLASS_NAME + "[get_loss()]"
-    loss = cfg["train"]["loss"].lower()
-
-    if cfg["common_config"]["parallel_process"]:
-        global parallel_process
-        parallel_process = True
 
     if loss == 'dice':
         logging.debug(f"{lgr}: Using Dice Function as Loss Function.")

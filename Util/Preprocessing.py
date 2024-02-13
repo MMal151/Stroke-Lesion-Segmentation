@@ -5,30 +5,32 @@ import nibabel as nib
 import SimpleITK as sitk
 
 from Misc.CraveMix import generate_new_sample
-from Process.Utilities import load_data
-from Util.Utils import get_random_index, get_all_possible_subdirs, remove_dirs
+from Util.Utils import get_random_index
 
 CLASS_NAME = "[Util/Preprocessing]"
 
 
 def data_augmentation(cfg, train_x, train_y, in_path):
     lgr = CLASS_NAME + "[data_augmentation()]"
-    logging.info(f"{lgr}: Starting data augmentation using factor: " + str(cfg["augmentation"]["factor"])
-                 + " and technique: " + cfg["augmentation"]["technique"])
+    logging.info(f"{lgr}: Starting data augmentation using factor: "
+                 + str(cfg["train"]["data"]["augmentation"]["factor"])
+                 + " and technique: " + cfg["train"]["data"]["augmentation"]["technique"])
 
-    if cfg["data"]["apply_augmentation"] and not cfg["augmentation"]["rem_pre_aug"]:
+    if cfg["train"]["data"]["augmentation"]["alw_aug"] and not cfg["train"]["data"]["rem_pre_aug"]:
         logging.warning(f"{lgr}: Augmentation is enabled however removing previous augmented datapoints is enabled."
                         f"This might cause discrepancy in data. It is suggested to remove previous datapoints before"
                         f"augmenting new ones.")
 
-    if cfg["augmentation"]["technique"] == "cravemix":
+    if cfg["train"]["data"]["augmentation"]["technique"] == "cravemix":
         return augmentation_cm(cfg, train_x, train_y, in_path)
 
 
 def augmentation_cm(cfg, x, y, in_path):
     lgr = CLASS_NAME + "[augmentation_cm()]"
 
-    total_aug_dp = int(np.ceil(len(x) * cfg["augmentation"]["factor"]))  # Total number of datapoints to be augmented.
+    # Total number of datapoints to be augmented.
+    total_aug_dp = int(np.floor(len(x) * cfg["train"]["data"]["augmentation"]["factor"]))
+
     # Storing the state of len before adding augmented datapoints.
     # This ensures that no augmented datapoint will be used for further augmentation.
     datapoints = len(x)
@@ -53,8 +55,8 @@ def augmentation_cm(cfg, x, y, in_path):
             path_new = os.path.join(in_path, new_file)
             os.makedirs(path_new, exist_ok=True)
 
-            img_path = os.path.join(path_new, new_file + "_" + cfg["data"]["img_ext"])
-            lbl_path = os.path.join(path_new, new_file + "_" + cfg["data"]["lbl_ext"])
+            img_path = os.path.join(path_new, new_file + "_" + cfg["train"]["data"]["img_ext"])
+            lbl_path = os.path.join(path_new, new_file + "_" + cfg["train"]["data"]["lbl_ext"])
 
             sitk.WriteImage(new_img, img_path)
             sitk.WriteImage(new_label, lbl_path)

@@ -13,7 +13,7 @@ def get_segmentation(cfg):
     lgr = CLASS_NAME + "[get_segmentation()]"
     if is_valid_file(cfg["test"]["model_load_state"]):
         model = load_model(cfg, False)
-        x_test, y_test = load_data(cfg["data"]["input_path"], cfg["data"]["img_ext"],
+        x_test, y_test = load_data(cfg["train"]["data"]["inputs"], cfg["data"]["img_ext"],
                                    cfg["data"]["lbl_ext"])
         image_shape = str_to_tuple(cfg["data"]["image_shape"])
         dc_total = 0
@@ -22,7 +22,7 @@ def get_segmentation(cfg):
             img = nib.load(x).get_fdata()
             lbl = nib.load(y).get_fdata()
 
-            if cfg["data"]["aply_patch"]:
+            if cfg["train"]["data"]["patch"]["alw_patching"]:
                 patches = generate_patches(img, image_shape)
                 predicts = []
                 logging.debug(

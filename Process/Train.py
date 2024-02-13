@@ -27,8 +27,8 @@ def train_valid_div(images, labels, valid_ratio, seed=2023, div_type='Validation
     x_train, x_valid, y_train, y_valid = train_test_split(images, labels, test_size=valid_ratio,
                                                           random_state=seed)
 
-    logging.debug(f"{lgr}: x_train: {x_train} \n y_train: {y_train} \n x_valid: {x_valid} \n "
-                  f"y_valid: {y_valid}")
+    logging.debug(f"{lgr}: x_train: {x_train} \n y_train: {y_train} \n x_{div_type}: {x_valid} \n "
+                  f"y_{div_type}: {y_valid}")
     logging.info(f"{lgr}: Training-Instances: {len(x_train)}. "
                  f"{div_type}-Instances: {len(x_valid)}")
 
@@ -39,36 +39,34 @@ def train(cfg, strategy=None):
     lgr = CLASS_NAME + "[train()]"
     logging.info(f"{lgr}: Starting Training.")
 
-    input_paths = cfg["data"]["input_path"].split(",")
+    input_paths = cfg["train"]["data"]["inputs"].split(",")
     x_train, y_train, x_valid, y_valid, x_test, y_test = [], [], [], [], [], []  # Initializing Validation Set
 
     for i in input_paths:
-        if cfg["augmentation"]["rem_pre_aug"]:
+        if cfg["train"]["data"]["rem_pre_aug"]:
             logging.info(f"{lgr}: Removing previous augmentations.")
             _ = remove_dirs(get_all_possible_subdirs(i, "full_path"), "_cm")
 
-        x, y = load_data(i.strip(), cfg["data"]["img_ext"], cfg["data"]["lbl_ext"])
+        x, y = load_data(i.strip(), cfg["train"]["data"]["img_ext"], cfg["train"]["data"]["lbl_ext"])
 
-        if cfg["train"]["test_on_same_data"] and cfg["train"]["test_ratio"] > 0:
+        if cfg["train"]["data"]["test"]["alw_test"] and cfg["train"]["data"]["test"]["ratio"] > 0:
             logging.info(f"{lgr}: Separating test data from training and validation set for data source {i}")
-            x, x_temp, y, y_temp = train_valid_div(x, y, cfg["train"]["test_ratio"], cfg["data"]["seed"], 'Test')
-            logging.debug(f"{lgr}: State before merging with test sets. x_temp = {x_temp} \n y_temp = {y_temp} \n "
-                          f"x_test = {x_test} \n y_test = {y_test}")
+            x, x_temp, y, y_temp = train_valid_div(x, y, cfg["train"]["data"]["test"]["ratio"],
+                                                   cfg["train"]["data"]["test"]["seed"], 'Test')
             x_test = x_temp + x_test
             y_test = y_temp + y_test
             logging.debug(f"{lgr}: State after merging with test sets. x_test = {x_test} \n y_test = {y_test}")
 
-        if cfg["train"]["valid_ratio"] > 0:
+        if cfg["train"]["data"]["valid"]["ratio"] > 0:
             logging.info(f"{lgr}: Separating validation data from training and validation set for data source {i}")
-            x, x_val, y, y_val = train_valid_div(x, y, cfg["train"]["valid_ratio"], cfg["data"]["seed"])
-            logging.debug(f"{lgr}: State before merging with validation sets. x_val = {x_val} \n x_val = {x_val} \n "
-                          f"x_valid = {x_valid} \n y_valid = {y_valid}")
+            x, x_val, y, y_val = train_valid_div(x, y, cfg["train"]["data"]["valid"]["ratio"],
+                                                 cfg["train"]["data"]["valid"]["seed"])
             x_valid = x_valid + x_val
             y_valid = y_valid + y_val
             logging.debug(
-                f"{lgr}: State before merging with validation sets. x_valid = {x_valid} \n y_valid = {y_valid}")
+                f"{lgr}: State after merging with validation sets. x_valid = {x_valid} \n y_valid = {y_valid}")
 
-        if cfg["data"]["apply_augmentation"]:
+        if cfg["train"]["data"]["augmentation"]["alw_aug"]:
             logging.info(f"{lgr}: Applying augmentation to training data for data source {i} ")
             x, y = data_augmentation(cfg, x, y, i)
 
@@ -78,13 +76,7 @@ def train(cfg, strategy=None):
         y_train = y_train + y
         logging.debug(f"{lgr}: State before merging with test sets. x_train = {x_train} \n y_train = {y_train}")
 
-    logging.info(f"{lgr}: Creating Generators for training (& validation & test) data.")
-
-    params = {"x_train": x_train,
-              "y_train": y_train,
-              "x_valid": x_valid,
-              "y_valid": y_valid,
-              "x_test": x_test,
+    params = {"x_train": x_train, "y_train": y_train, "x_valid": x_valid, "y_valid": y_valid, "x_test": x_test,
               "y_test": y_test}
 
     if strategy is not None:
@@ -100,11 +92,13 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
     lgr = CLASS_NAME + "[fit_model()]"
 
     start_time = time()
-    model = load_model(cfg, cfg["train"]["resume_training"])
+    model = None
+    if cfg["train"]["resume"]["resume_train"]:
+        model = load_model(cfg, True)
 
-    if cfg["common_config"]["model_type"].lower() == "unet" and model is None:
+    if cfg["train"]["model_type"].lower() == "unet" and model is None:
         model = Unet3D(cfg).generate_model()
-    elif cfg["common_config"]["model_type"].lower() == "vnet" and model is None:
+    elif cfg["train"]["model_type"].lower() == "vnet" and model is None:
         model = Vnet(cfg).generate_model()
 
     if model is not None:
@@ -116,9 +110,9 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
 
         metrics, eval_list = get_metrics(cfg["train"]["perf_metrics"])
         model.compile(optimizer=get_optimizer(cfg),
-                      loss=get_loss(cfg), metrics=metrics)
-        checkpoint = ModelCheckpoint(cfg["train"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
-                                     save_best_only=cfg["train"]["save_best_only"],
+                      loss=get_loss(cfg["train"]["loss"].lower()), metrics=metrics)
+        checkpoint = ModelCheckpoint(cfg["train"]["save"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
+                                     save_best_only=cfg["train"]["save"]["best_only"],
                                      save_freq='epoch')
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
@@ -128,7 +122,7 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
 
         if test_gen is not None:
             logging.info(f"{lgr}: Starting testing.")
-            results = model.evaluate(test_gen, batch_size=1, steps=test_gen.get_x_len())
+            results = model.evaluate(test_gen, batch_size=1, steps=len(test_gen))
             log_test_results(eval_list, results)
     else:
         logging.error(f"{lgr}: Invalid model_type. Aborting training process.")
@@ -136,6 +130,8 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
 
 def get_generators(cfg, x_train, y_train, x_valid, y_valid, x_test, y_test):
     lgr = CLASS_NAME + "[get_generators()]"
+    logging.info(f"{lgr}: Creating Generators for training (& validation & test) data.")
+
     train_gen = Nifti3DGenerator(cfg, x_train, y_train)
     valid_gen, test_gen = None, None
     if len(x_valid) > 0:
@@ -146,4 +142,3 @@ def get_generators(cfg, x_train, y_train, x_valid, y_valid, x_test, y_test):
     logging.info(f"{lgr}: Generating Model.")
 
     return train_gen, valid_gen, test_gen
-

@@ -4,13 +4,14 @@ import yaml
 import tensorflow as tf
 from tensorflow.keras.optimizers import *
 
+from Util.Utils import get_configurations
+
 CLASS_NAME = "[Util/Optimizers]"
 
 
 def get_schedular(lr):
     # Reading Learning Rate Schedular configurations from config file.
-    with open("config_lrs.yml", "r") as configFile:
-        cfg = yaml.safe_load(configFile)
+    cfg = get_configurations("config_lrs.yml")
 
     lgr = CLASS_NAME + "[get_schedular()]"
     opt = cfg["learning_schedular"]["type"].lower()
@@ -64,7 +65,7 @@ def get_optimizer(cfg):
 
     opt, lr = cfg["train"]["optimizer"].lower(), cfg["train"]["learning_rate"]
 
-    if cfg["train"]["apply_lr_sch"]:
+    if cfg["train"]["aply_lr_sch"]:
         lr = get_schedular(lr)
 
     if opt == 'adam':

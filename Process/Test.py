@@ -4,7 +4,7 @@ import random
 import nibabel as nib
 import numpy as np
 
-from DataGenerators.Nifti3DGenerator import Nifti3DGenerator
+from DataGenerators.NiftiGenerator import Nifti3DGenerator
 from Process.Utilities import load_data, load_model
 from Util.Metrics import get_metrics, dice_coef
 from Util.Utils import is_valid_file, is_valid_dir, str_to_tuple

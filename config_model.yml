@@ -1,0 +1,5 @@
+vnet:
+  encoder_blocks: "1,2,3,3"
+  decoder_blocks: "3,3,4"
+  use_transpose: True
+

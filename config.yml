@@ -1,71 +1,97 @@
-logging_config:
-  filename: "UNET_Aug30_"
-  level: "info" # Need to change this for production
-#------------------------------------------------------#
-common_config:
-  process: "inference"
-  parallel_process: True
-  gpus: "0,1,2"
-  model_type: 'vnet'
-#------------------------------------------------------#
-data:
-  #Input Path can contain multiple sources comma-separated. The file naming convention should be the same in both sources.
-  input_path: "/home/mmal151/Desktop/Dummy_Data/T1"
-  #input_path: "/hpc/mmal151/ATLAS_Cleaned"
-  img_ext: "T1_bet_BC.nii.gz"
-  lbl_ext: "LESION.nii.gz"
-  min_filter: 4
-  image_shape: "(128, 128, 128)" # If patching enabled, then image_size will be used as patch_size
-  output_classes: 1
-  seed: 2023
-  apply_augmentation: False
-  apply_norm: False  # Apply normalization (Standardization) on the input image.
-  shuffle: True  # Shuffle data at the end of every epoch.
-  aply_patch: True
-  patching:
-    no_patches: 32 # Total number of patches to be extracted from each image.
-#------------------------------------------------------#
-augmentation:
-  #In case of multiple input sources augmentation will be applied separately on each data source.
-  #Same augmentation settings will be used for each data source.
-  factor: 0.3
-  technique: cravemix
-  rem_pre_aug: True # Remove previous augmentations
-#------------------------------------------------------#
+#------------- General Configurations -------------#
+misc:
+# Supported Values: train (Training), test (Testing), inference (Testing 2.0, patching supported)
+  mode: "test"
+#---------- Logging Level Configurations ----------#
+  logging:
+    filename: "VNET_Aug0_"
+    level: "info"
+#------------ GPU-Based Configurations ------------#
+  gpu:
+    alw_para_prs: True # Allow parallel processing across multiple GPUs.
+    strategy: "mirrored" # Which strategy to apply when parallel processing is allowed.
+    no_gpus: "9" # Which GPUs to be used for processing.
+#------------- Training Configurations ------------#
 train:
-  resume_training: False
-  model_file: /home/mmal151/Desktop/GIthub-Repo/Model_State/VNet/No_Aug_Dice_Loss/vnet_50.h5
-  valid_ratio: 0.1
-  batch_size: 2
+  model_type: "vnet"
+# Number of iterations per epoch. If < 0, then (batch_size / total datapoints)
+  num_iter: 200
+  epochs: 200
+# Comma/space separated list of metrics to be calculated.
+# Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
+# recall (Recall), and prec (Precision).
+  perf_metrics: "recall, prec, mean_iou, dice_coef"
+# Possible values: leakyrelu, relu, snake, gelu, prelu
+  activation: "prelu"
+  output_classes: 1
   dropout: 0.2
-  learning_rate: 0.0001
-  model_name: unet_
-  epochs: 5
-  save_best_only: True # Configuration for "save_best_only" in Model Checkpoints.
-  test_on_same_data: False  # If True testing is performed within the training flow.
-  test_ratio: 0.2 # Will only be checked if "test_on_same_data" is True.
-  activation: "prelu" # Possible values: leakyrelu, relu, snake, gelu, prelu
-  optimizer: "Adam" # Possible values: adam, sgd, rmsprop, adadelta, adamax, adagrad
-  apply_lr_sch: True # Apply learning rate schedular. Learning Rate related configurations will be read from config_lrs.yml
-  loss: "dice" # Possible custom losses: dice, tverskycoef, tversky, ftversky (focal tversky).
-  # If loss function doesn't exist in the custom losses' list, it will be returned as is.
-  perf_metrics: "recall, prec, mean_iou, dice_coef" # Comma/space separated list of metrics to be calculated.
-  # Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
-  # recall (Recall), and prec (Precision).
-  num_iterations: -1 # If < 0, the number of iterations will be batch_size / total_training_datapoints
-#------------------------------------------------------#
-model_specific: # Will only be checked if the particular model is being used.
-#------------------------------------------------------#
-  vnet:
-    num_encoder_blocks: "1,2,3,3" # Number of convolutional blocks in each encoder layer.
-    num_decoder_blocks: "3,3,2" # Number of convolutional blocks in each decoder layer.
-    use_transpose: True # Use Transpose Convolutions for upscaling.
-    use_sne_layer: False # Use squeeze and excitation layer for each residual connection
-#------------------------------------------------------#
+  min_filter: 4
+# Possible values: adam, sgd, rmsprop, adadelta, adamax, adagrad
+  optimizer: "adam"
+  learning_rate: 0.001
+ # Whether to use learning rate schedular or not. Configurations for it are in "config_lrs.yml"
+  aply_lr_sch: False
+  loss: "dice"
+  #--------------- Data Configurations --------------#
+  data:
+  # Input Path can contain multiple sources comma-separated. The file naming convention should be the
+  # same in both sources. Image and Label extensions should be same in all input sources.
+    inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
+    img_ext: "T1_bet_BC.nii.gz"
+    lbl_ext: "LESION.nii.gz"
+    image_shape: "(140, 144, 140)"
+    batch_size: 4
+# Remove previous augmented results.
+    rem_pre_aug: True
+# Normalize Data (using Standardization)
+    norm_data: True
+    shuffle: True
+#---------- Same Test Data Configurations ---------#
+    test:
+        alw_test: False # Use same source for test data
+        ratio: 0.2
+        seed: 2023
+#--------- Validation Data Configurations ---------#
+    valid:
+        ratio: 0.2
+        seed: 2024
+#----------- Patch Related Configurations ---------#
+    patch:
+      alw_patching: True
+      patch_size: "(128, 128, 128)"
+      total_patches: 32
+#-------- Data Augmentation Configurations --------#
+    augmentation:
+      alw_aug: True
+      factor: 0.3
+      technique: "cravemix"
+#---------- Model Related Configurations ----------#
+  resume:
+    resume_train: False
+    model_path: "vnet_13.h5"
+#--------- Model State Save Configurations --------#
+  save:
+    model_name: "vnet_"
+    best_only: True # If True, only best model will be saved
+#------------- Testing Configurations -------------#
 test:
-  model_load_state: "vnet_13.h5"
-  save_random_samples: False
-  num_samples: 1
-#------------------------------------------------------#
+  model:
+    load_path: "vnet_178.h5"
+  data:
+    inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
+    img_ext: "T1_bet_BC.nii.gz"
+    lbl_ext: "LESION.nii.gz"
+    image_shape: "(140, 144, 140)"
+#----------- Patch Related Configurations ---------#
+# Should matching the training configurations
+    patch:
+      alw_patching: True
+      patch_size: "(128, 128, 128)"
+      total_patches: 32 # If -1, the number of patches will be (img.shape / patch_size) + 1.
+#-------------- Save Random Samples ---------------#
+  samples:
+    save_samples: False
+    no_samples: 5
+    random_samples: True
 
 

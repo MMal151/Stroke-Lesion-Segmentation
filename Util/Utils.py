@@ -3,6 +3,8 @@ import os
 import random
 import shutil
 
+import yaml
+
 CLASS_NAME = "[Util/Utils]"
 
 
@@ -22,16 +24,14 @@ def is_valid_str(in_str):
 def get_all_possible_files_paths(root: str, ext: str = ".png"):
     lgr = CLASS_NAME + "[get_all_possible_files_paths()]"
 
-    if is_valid_dir(root):
-        file_paths = set()
-        for curr_dir, sub_dirs, files in os.walk(root):
-            for f in files:
-                if f.endswith(ext) and (not os.path.isdir(f)):
-                    file_paths.add(os.path.join(curr_dir, f))
-        return sorted(file_paths)
-    else:
-        logging.warning(f"{lgr}: Invalid root path. Either it doesn't exist or is not a directory.")
-        return -1
+    assert is_valid_dir(root), f"{lgr}: Invalid root path. Either it doesn't exist or is not a directory."
+
+    file_paths = set()
+    for curr_dir, sub_dirs, files in os.walk(root):
+        for f in files:
+            if f.endswith(ext) and (not os.path.isdir(f)):
+                file_paths.add(os.path.join(curr_dir, f))
+    return sorted(file_paths)
 
 
 # Returns all sub-dirs within a folder
@@ -96,11 +96,16 @@ def get_filters(min_filter, tot_filters):
 
 
 # Generate random indexes in-between two ranges.
-def get_random_index(min, max):
-    i = random.randint(min, max)
-    j = random.randint(min, max)
+def get_random_index(min_idx, max_idx):
+    i = random.randint(min_idx, max_idx)
+    j = random.randint(min_idx, max_idx)
 
     while i == j:
-        i, j = get_random_index(min, max)
+        i, j = get_random_index(min_idx, max_idx)
 
     return i, j
+
+
+def get_configurations(config_file="_config.yml"):
+    with open(config_file, "r") as configFile:
+        return yaml.safe_load(configFile)
