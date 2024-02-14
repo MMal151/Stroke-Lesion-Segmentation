@@ -107,7 +107,12 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
 class Vnet:
     def __init__(self, cfg):
         lgr = CLASS_NAME + "[init()]"
-        self.input_shape = (*str_to_tuple(cfg["train"]["data"]["image_shape"]), 1)
+
+        if cfg["train"]["data"]["patch"]["alw_patching"]:
+            self.input_shape = (*str_to_tuple(cfg["train"]["data"]["patch"]["patch_size"]), 1)
+        else:
+            self.input_shape = (*str_to_tuple(cfg["train"]["data"]["image_shape"]), 1)
+
         self.output_classes = cfg["train"]["output_classes"]
         self.dropout = cfg["train"]["dropout"]
         self.filters = get_filters(cfg["train"]["min_filter"], 5)

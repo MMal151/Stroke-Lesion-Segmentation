@@ -1,7 +1,7 @@
 #------------- General Configurations -------------#
 misc:
 # Supported Values: train (Training), test (Testing), inference (Testing 2.0, patching supported)
-  mode: "test"
+  mode: "train"
 #---------- Logging Level Configurations ----------#
   logging:
     filename: "VNET_Aug0_"
@@ -39,7 +39,7 @@ train:
     inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
     img_ext: "T1_bet_BC.nii.gz"
     lbl_ext: "LESION.nii.gz"
-    image_shape: "(140, 144, 140)"
+    image_shape: "(197, 233, 189)"
     batch_size: 4
 # Remove previous augmented results.
     rem_pre_aug: True
@@ -59,6 +59,7 @@ train:
     patch:
       alw_patching: True
       patch_size: "(128, 128, 128)"
+      random_patches: False # If False, total_patches will be used as a stride.
       total_patches: 32
 #-------- Data Augmentation Configurations --------#
     augmentation:
@@ -76,7 +77,7 @@ train:
 #------------- Testing Configurations -------------#
 test:
   model:
-    load_path: "vnet_178.h5"
+    load_path: "vnet_182.h5"
   data:
     inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
     img_ext: "T1_bet_BC.nii.gz"
@@ -87,10 +88,10 @@ test:
     patch:
       alw_patching: True
       patch_size: "(128, 128, 128)"
-      total_patches: 32 # If -1, the number of patches will be (img.shape / patch_size) + 1.
+      stride: 32 # If -1, the number of patches will be (img.shape / patch_size) + 1.
 #-------------- Save Random Samples ---------------#
   samples:
-    save_samples: False
+    save_samples: True
     no_samples: 5
     random_samples: True
 

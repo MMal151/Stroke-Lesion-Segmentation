@@ -3,10 +3,9 @@ import os
 import tensorflow as tf
 import time
 
-from Process.Inference import get_segmentation
-from Process.Test_Temp import test
+from Process.Test import test
 from Process.Train import train
-from Process.Utilities import print_train_configurations, print_test_configurations
+from Process.Util import print_train_configurations, print_test_configurations
 from Util.Utils import get_configurations
 
 CLASS_NAME = "[Main]"
@@ -63,5 +62,3 @@ if __name__ == "__main__":
     elif config["misc"]["mode"] == "test":
         print_test_configurations(config)
         test(config)
-    elif config["misc"]["mode"] == "inference":
-        get_segmentation(config)

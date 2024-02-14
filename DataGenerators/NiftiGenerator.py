@@ -3,6 +3,8 @@ import logging
 import nibabel as nib
 import numpy as np
 import tensorflow as tf
+
+from Process.Util import generate_patch_idx
 from Util.Preprocessing import normalize_img, random_patch_3D
 from Util.Utils import str_to_tuple
 
@@ -20,6 +22,10 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
             self.patching = True
             self.patch_shape = str_to_tuple(cfg["train"]["data"]["patch"]["patch_size"])
             self.total_patches = cfg["train"]["data"]["patch"]["total_patches"]
+            self.random_patch = cfg["train"]["data"]["patch"]["random_patches"]
+
+            if not cfg["train"]["data"]["patch"]["random_patches"]:
+                self.patch_idx = []
 
         self.image_shape = str_to_tuple(cfg["train"]["data"]["image_shape"])
         self.batch_size = cfg["train"]["data"]["batch_size"]
@@ -35,10 +41,11 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         return int(np.floor(len(self.x) / float(self.batch_size)))
 
     def on_epoch_end(self):
-        datapoints = list(zip(self.x, self.y))
+        datapoints = list(zip(zip(self.x, self.y), self.patch_idx))
         if self.shuffle:
             np.random.shuffle(datapoints)
-        self.x, self.y = map(list, zip(*datapoints))
+        xy, self.patch_idx = map(list, zip(*datapoints))
+        self.x, self.y = zip(*xy)
 
     def __getitem__(self, idx):
         return self.load_batch(idx)
@@ -59,6 +66,9 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         batch_x = self.x[start_index: end_index]
         batch_y = self.y[start_index: end_index]
 
+        if self.patching and not self.random_patch:
+            batch_idx = self.patch_idx[start_index: end_index]
+
         for i, (img_path, lbl_path) in enumerate(zip(batch_x, batch_y)):
             img = (nib.load(img_path).get_fdata())
             lbl = (nib.load(lbl_path).get_fdata())
@@ -69,7 +79,12 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
                 img = normalize_img(img)
 
             if self.patching:
-                img, lbl = random_patch_3D(img, lbl, image_shape)
+                if self.random_patch:
+                    img, lbl = random_patch_3D(img, lbl, image_shape)
+                else:
+                    (ax_1, ax_2, ax_3) = batch_idx[i]
+                    img = img[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
+                    lbl = lbl[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
 
             images[i, :, :, :] = img.astype(np.float32)
             labels[i, :, :, :] = lbl.astype(np.float32)
@@ -79,11 +94,19 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
     def init_dataset(self):
         lgr = CLASS_NAME + "[init_data()]"
         if self.patching:
-            logging.debug(f"{lgr}: Since patching in enabled, each training data point will be used to extract"
-                          f" {self.total_patches} patches.")
-            # Extending each data point as many times as the number of patches,
-            # this method was adopted to limit the memory and also to ensure that the patches of the same data-point
-            # will not be a part of the same batch.
-            self.x.extend(self.x * self.total_patches)
-            self.y.extend(self.y * self.total_patches)
+            if self.random_patch:
+                logging.debug(f"{lgr}: Since random patching in enabled, each training data point will be used to extract"
+                              f" {self.total_patches} patches.")
+                # Extending each data point as many times as the number of patches,
+                # this method was adopted to limit the memory and also to ensure that the patches of the same data-point
+                # will not be a part of the same batch.
+                self.x.extend(self.x * self.total_patches)
+                self.y.extend(self.y * self.total_patches)
+            else:
+                logging.debug(f"{lgr}: Patching is enabled, patches w.r.t stride [{self.total_patches}] will be"
+                              f"extracted from each image.")
+                no_patches, self.patch_idx = generate_patch_idx(self.image_shape, self.total_patches,
+                                                                self.patch_shape, len(self.x))
+                self.x.extend(self.x * no_patches)
+                self.y.extend(self.y * no_patches)
         self.on_epoch_end()

@@ -126,6 +126,7 @@ def print_train_configurations(cfg):
         logging.info(f"\n #--------- Patch Related Configurations -----------#")
         logging.info(f"Patch Shape: [" + cfg["train"]["data"]["patch"]["patch_size"] + "]")
         logging.info(f"Total Patches: [" + str(cfg["train"]["data"]["patch"]["total_patches"]) + "]")
+        logging.info(f"Random Patches: [" + str(cfg["train"]["data"]["patch"]["random_patches"]) + "]")
 
     if cfg["train"]["resume"]["resume_train"]:
         logging.info(f"Model Path: [" + cfg["train"]["resume"]["model_path"] + "]")
@@ -147,7 +148,7 @@ def print_test_configurations(cfg):
     if cfg["test"]["data"]["patch"]["alw_patching"]:
         logging.info(f"\n #--------- Patch Related Configurations -----------#")
         logging.info(f"Patch Shape: [" + cfg["test"]["data"]["patch"]["patch_size"] + "]")
-        logging.info(f"Total Patches: [" + str(cfg["test"]["data"]["patch"]["total_patches"]) + "]")
+        logging.info(f"Stride: [" + str(cfg["test"]["data"]["patch"]["stride"]) + "]")
 
     if cfg["test"]["samples"]["save_samples"]:
         logging.info(f"\n # Save Random Samples for Visualization of Results #")
@@ -156,6 +157,30 @@ def print_test_configurations(cfg):
 
 
 def save_img(img, filename):
-    save_path = os.path.join("Test_Results", filename)
     ni = nib.Nifti1Image(img, affine=np.eye(4))
-    nib.save(ni, save_path)
+    nib.save(ni, filename)
+
+
+def generate_patch_idx(image_shape, stride, patch_shape, repeat=1):
+    lgr = CLASS_NAME + "[generate_patch_idx()]"
+    idx = []
+    total_patches = 0
+    logging.debug(
+        f"{lgr}: Input values: image_shape: [{image_shape}], stride: [{stride}], patch_shape: [{patch_shape}].")
+
+    assert all(image_shape[i] > 0 and patch_shape[i] > 0 for i in range(0, 3)), \
+        f"{lgr}: Invalid image shape [{image_shape}] or patch_shape [{patch_shape}]. All values should be " \
+        f"greater than zero."
+    assert repeat >= 1, f"{lgr}: Invalid value of for repeat [{repeat}]."
+
+    for i in range(0, image_shape[0], stride):
+        for j in range(0, image_shape[1], stride):
+            for k in range(0, image_shape[2], stride):
+                if (i + patch_shape[0]) < image_shape[0] and (j + patch_shape[1]) < image_shape[1] and \
+                        (k + patch_shape[2] < image_shape[2]):
+                    total_patches += 1
+                    for m in range(0, repeat):
+                        idx.append((i, j, k))
+
+    logging.debug(f"{lgr}: Generated Indexes: {idx}")
+    return total_patches, idx

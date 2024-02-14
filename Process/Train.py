@@ -7,8 +7,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from DataGenerators.NiftiGenerator import Nifti3DGenerator
 from Model.Unet3D import Unet3D
 from Model.Vnet import Vnet
-from Process.Test import log_test_results
-from Process.Utilities import load_data, load_model
+from Process.Util import load_data, load_model
 from Util.Loss import get_loss
 from Util.Metrics import get_metrics
 from Util.Optimizers import get_optimizer
@@ -142,3 +141,11 @@ def get_generators(cfg, x_train, y_train, x_valid, y_valid, x_test, y_test):
     logging.info(f"{lgr}: Generating Model.")
 
     return train_gen, valid_gen, test_gen
+
+
+def log_test_results(eval_list, results):
+    lgr = CLASS_NAME + "[log_test_results()]"
+    logging.info(f"{lgr}: Loss = [{results[0]}]")
+
+    for i, metric in enumerate(eval_list, start=1):
+        logging.info(f"{lgr}: {metric} = [{results[i]}]")
