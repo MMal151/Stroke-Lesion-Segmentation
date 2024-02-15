@@ -1,11 +1,12 @@
 import logging
 import os
-import tensorflow as tf
 import time
+
+import tensorflow as tf
 
 from Process.Test import test
 from Process.Train import train
-from Process.Util import print_train_configurations, print_test_configurations
+from Process.Utils import print_train_configurations, print_test_configurations
 from Util.Utils import get_configurations
 
 CLASS_NAME = "[Main]"

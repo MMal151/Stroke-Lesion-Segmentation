@@ -1,13 +1,13 @@
 import logging
-import os
+
 import nibabel as nib
 import numpy as np
 import tensorflow as tf
 from keras_unet_collection.activations import GELU, Snake
 
-from Util.Utils import get_all_possible_files_paths, is_valid_file
 from Util.Loss import CUSTOM_LOSS_FUNCTIONS, get_loss
 from Util.Metrics import get_metrics_test
+from Util.Utils import get_all_possible_files_paths, is_valid_file
 
 CLASS_NAME = "[Process/Utilities]"
 CUSTOM_ACTIVATIONS = "gelu,snake"

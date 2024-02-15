@@ -4,16 +4,16 @@ from time import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-from DataGenerators.NiftiGenerator import Nifti3DGenerator
-from Model.Unet3D import Unet3D
-from Model.Vnet import Vnet
-from Process.Util import load_data, load_model
 from Util.Loss import get_loss
 from Util.Metrics import get_metrics
 from Util.Optimizers import get_optimizer
 from Util.Preprocessing import data_augmentation
 from Util.Utils import get_all_possible_subdirs, remove_dirs
 from Util.Visualization import show_history
+from DataGenerators.NiftiGenerator import Nifti3DGenerator
+from Model.Unet3D import Unet3D
+from Model.Vnet import Vnet
+from Process.Utils import load_data, load_model
 
 CLASS_NAME = "[Process/Train]"
 

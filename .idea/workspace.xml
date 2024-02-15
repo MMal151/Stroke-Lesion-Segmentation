@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Restructured config file.">
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="Refactored - Main, Test, Train, UNet3D, Vnet&#10;Removed - Inference &amp; Test_Temp&#10;&#10;*Support added to choose between random patches and ordered patches.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Unet3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Unet3D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Inference.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Test_Temp.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Postprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Postprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/Util.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -298,7 +292,14 @@
       <option name="project" value="LOCAL" />
       <updated>1707866851589</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Refactored - Main, Test, Train, UNet3D, Vnet&#10;Removed - Inference &amp; Test_Temp&#10;&#10;*Support added to choose between random patches and ordered patches.">
+      <created>1707888361200</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1707888361200</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -330,7 +331,8 @@
     <MESSAGE value="Changes: Vnet.py: Unused imports removed.&#10;CraveMix.py: Unused code removed.&#10;Loss.py: Dice Loss revamped. &#10;Metrics.py: Dice_coef code added.&#10;NiftiGenerator.py: Patch related code added. Tensorflow Dataset removed.&#10;Preprocessing.py: normalize_img code revamped. Patch generation code added." />
     <MESSAGE value="Inference Mode added" />
     <MESSAGE value="Restructured config file." />
-    <option name="LAST_COMMIT_MESSAGE" value="Restructured config file." />
+    <MESSAGE value="Refactored - Main, Test, Train, UNet3D, Vnet&#10;Removed - Inference &amp; Test_Temp&#10;&#10;*Support added to choose between random patches and ordered patches." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored - Main, Test, Train, UNet3D, Vnet&#10;Removed - Inference &amp; Test_Temp&#10;&#10;*Support added to choose between random patches and ordered patches." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -347,7 +349,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>54</line>
+          <line>55</line>
           <option name="timeStamp" value="100" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -401,12 +403,12 @@
           <option name="timeStamp" value="122" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Util.py</url>
+          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
           <line>164</line>
           <option name="timeStamp" value="123" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Util.py</url>
+          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
           <line>185</line>
           <option name="timeStamp" value="124" />
         </line-breakpoint>

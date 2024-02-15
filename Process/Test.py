@@ -1,14 +1,14 @@
 import logging
 import os
-
-import nibabel as nib
 import random
 
+import nibabel as nib
 import numpy as np
-from Process.Util import load_model, load_data, save_img
 from Util.Metrics import dice_coef
 from Util.Postprocessing import thresholding
 from Util.Utils import is_valid_file, str_to_tuple, is_valid_dir
+
+from Process.Utils import load_model, load_data, save_img
 
 CLASS_NAME = "[Process/Test]"
 

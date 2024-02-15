@@ -4,7 +4,7 @@ import nibabel as nib
 import numpy as np
 import tensorflow as tf
 
-from Process.Util import generate_patch_idx
+from Process.Utils import generate_patch_idx
 from Util.Preprocessing import normalize_img, random_patch_3D
 from Util.Utils import str_to_tuple
 
