@@ -48,7 +48,6 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
     x = y  # Saving the state of the input tensor to ensure that it can be added later.
 
     for i in range(0, num_conv_blocks):
-        # kernel_regularizer=L1(l1=0.001)
         x = Conv3D(filters, 5, padding='same')(x)
         x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
         x = Activation(x)  # Original Model -> PReLu
@@ -104,6 +103,30 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
     return x
 
 
+def dilated_bottleneck(x, filters, dilation_rates=None):
+    if dilation_rates is None:
+        dilation_rates = [1, 2, 4, 8]
+
+    org_x = x  # Saving the original state of the tensor, dilation is applied on the original tensor.
+    x = Conv3D(filters, (1, 1, 1), padding='same')(x)
+    for i in range(0, len(dilation_rates)):
+        y = org_x
+        for j in range(0, i + 1):
+            y = dilated_block(y, filters, dilation_rates[j])
+
+        x = Add()([y, x])
+
+    return x
+
+
+def dilated_block(x, filters, dr=1, kernel_size=3):
+    x = Conv3D(filters, kernel_size, dilation_rate=dr, padding='same')(x)
+    x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
+    x = Activation(x)  # Original Model -> PReLu
+
+    return x
+
+
 class Vnet:
     def __init__(self, cfg):
         lgr = CLASS_NAME + "[init()]"
@@ -138,6 +161,15 @@ class Vnet:
             self.num_decoder_blocks = [3, 3, 2]
 
         self.use_transpose = model_config["vnet"]["use_transpose"]
+        self.use_dilated_bottleneck = model_config["vnet"]["use_dltd_bttlnck"]
+
+        if self.use_dilated_bottleneck:
+            dilation_rates = model_config["vnet"]["dilation_rates"].split(",")
+            if len(dilation_rates) >= 1:
+                self.dilation_rates = [int(i) for i in dilation_rates]
+            else:
+                logging.error(f"{lgr}: Invalid dilatation rates configured. Default value: [1, 2, 4, 8] will be used.")
+                self.dilation_rates = [1, 2, 4, 8]
 
         self.print_info()
 
@@ -151,7 +183,10 @@ class Vnet:
         rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
         rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
         # Bottleneck layer
-        x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
+        if self.use_dilated_bottleneck:
+            x = dilated_bottleneck(x, self.filters[4], self.dilation_rates)
+        else:
+            x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
         x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
@@ -169,5 +204,5 @@ class Vnet:
         return out
 
     def print_info(self):
-        logging.info("[Model/Vnet][print_info()] Model initialized using the following configurations.")
+        logging.info("[Model/Vnet][print_info()]: Model initialized using the following configurations.")
         logging.info(self.__dict__)

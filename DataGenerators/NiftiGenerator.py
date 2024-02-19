@@ -12,7 +12,7 @@ CLASS_NAME = "[DataGenerators/NiftiGenerator]"
 
 
 class Nifti3DGenerator(tf.keras.utils.Sequence):
-    def __init__(self, cfg, x, y):
+    def __init__(self, cfg, x, y, is_train, valid_test_ratio):
         self.x = x  # Image Set or NIFTI absolute filepaths
         self.y = y  # Label Set or Lesion absolute filepaths
 
@@ -32,7 +32,11 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         self.normalize = cfg["train"]["data"]["norm_data"]
         self.shuffle = cfg["train"]["data"]["shuffle"]
 
-        self.step_per_epoch = cfg["train"]["num_iter"]
+        if not is_train and cfg["train"]["num_iter"] > 0 and valid_test_ratio > 0:
+            self.step_per_epoch = int(np.ceil(cfg["train"]["num_iter"] * valid_test_ratio))
+        else:
+            self.step_per_epoch = cfg["train"]["num_iter"]
+
         self.init_dataset()
 
     def __len__(self):
@@ -41,11 +45,19 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         return int(np.floor(len(self.x) / float(self.batch_size)))
 
     def on_epoch_end(self):
-        datapoints = list(zip(zip(self.x, self.y), self.patch_idx))
+        if self.patching and not self.random_patch:
+            datapoints = list(zip(zip(self.x, self.y), self.patch_idx))
+        else:
+            datapoints = list((zip(self.x, self.y)))
+
         if self.shuffle:
             np.random.shuffle(datapoints)
-        xy, self.patch_idx = map(list, zip(*datapoints))
-        self.x, self.y = zip(*xy)
+
+        if self.patching and not self.random_patch:
+            xy, self.patch_idx = map(list, zip(*datapoints))
+            self.x, self.y = zip(*xy)
+        else:
+            self.x, self.y = zip(*datapoints)
 
     def __getitem__(self, idx):
         return self.load_batch(idx)
@@ -57,8 +69,7 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         if self.patching:
             image_shape = self.patch_shape
 
-        images, labels = np.zeros((self.batch_size, *image_shape)), \
-                         np.zeros((self.batch_size, *image_shape))
+        images, labels = np.zeros((self.batch_size, *image_shape)), np.zeros((self.batch_size, *image_shape))
 
         start_index = idx * self.batch_size
         end_index = start_index + self.batch_size
@@ -95,8 +106,9 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         lgr = CLASS_NAME + "[init_data()]"
         if self.patching:
             if self.random_patch:
-                logging.debug(f"{lgr}: Since random patching in enabled, each training data point will be used to extract"
-                              f" {self.total_patches} patches.")
+                logging.debug(
+                    f"{lgr}: Since random patching in enabled, each training data point will be used to extract"
+                    f" {self.total_patches} patches.")
                 # Extending each data point as many times as the number of patches,
                 # this method was adopted to limit the memory and also to ensure that the patches of the same data-point
                 # will not be a part of the same batch.

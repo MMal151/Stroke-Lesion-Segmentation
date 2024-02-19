@@ -2,4 +2,6 @@ vnet:
   encoder_blocks: "1,2,3,3"
   decoder_blocks: "3,3,4"
   use_transpose: True
+  use_dltd_bttlnck: True
+  dilation_rates: "1,2,4,8"
 

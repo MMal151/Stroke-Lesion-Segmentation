@@ -59,7 +59,7 @@ train:
     patch:
       alw_patching: True
       patch_size: "(128, 128, 128)"
-      random_patches: False # If False, total_patches will be used as a stride.
+      random_patches: True # If False, total_patches will be used as a stride.
       total_patches: 32
 #-------- Data Augmentation Configurations --------#
     augmentation:

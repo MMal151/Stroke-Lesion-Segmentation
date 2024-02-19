@@ -131,12 +131,12 @@ def get_generators(cfg, x_train, y_train, x_valid, y_valid, x_test, y_test):
     lgr = CLASS_NAME + "[get_generators()]"
     logging.info(f"{lgr}: Creating Generators for training (& validation & test) data.")
 
-    train_gen = Nifti3DGenerator(cfg, x_train, y_train)
+    train_gen = Nifti3DGenerator(cfg, x_train, y_train, True, -1)
     valid_gen, test_gen = None, None
     if len(x_valid) > 0:
-        valid_gen = Nifti3DGenerator(cfg, x_valid, y_valid)
+        valid_gen = Nifti3DGenerator(cfg, x_valid, y_valid, False, cfg["train"]["data"]["valid"]["ratio"])
     if len(x_test) > 0:
-        test_gen = Nifti3DGenerator(cfg, x_test, y_test)
+        test_gen = Nifti3DGenerator(cfg, x_test, y_test, False, cfg["train"]["data"]["test"]["ratio"])
 
     logging.info(f"{lgr}: Generating Model.")
 
