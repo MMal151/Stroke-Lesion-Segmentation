@@ -7,13 +7,9 @@ Created on Thu May 27 15:17:22 2021
 
 # Source:  https://github.com/ZhangxinruBIT/CarveMix/blob/main/Task100_ATLASwithCarveMix/Simple_CarveMix.py
 import numpy as np
-import random
 import SimpleITK as sitk
 import nibabel as nib
 from scipy import ndimage
-from tqdm import tqdm
-import argparse
-import os
 
 
 def get_distance(f, spacing):
@@ -71,7 +67,8 @@ def generate_new_sample(image_a, image_b, label_a, label_b):
     #     λu = -np.min(dis_array)                    #λu = |min(dis_array)|
     #     lam = np.random.uniform(λl,λu,1)           #λ ~ U(λl,λu)
     c = np.random.beta(1, 1)  # [0,1] creat distance
-    c = (c - 0.25) * 2  # [-1.1] # Original value for 0.25 was 0.5. However with 0.25 the results were better for medium sized lesions
+    c = (
+                    c - 0.25) * 2  # [-1.1] # Original value for 0.25 was 0.5. However with 0.25 the results were better for medium sized lesions
     if c > 0:
         lam = c * np.min(dis_array) / 2  # λl = -1/2|min(dis_array)|
     else:

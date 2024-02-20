@@ -31,7 +31,7 @@ train:
   learning_rate: 0.001
  # Whether to use learning rate schedular or not. Configurations for it are in "config_lrs.yml"
   aply_lr_sch: False
-  loss: "dice"
+  loss: "bce_dice"
   #--------------- Data Configurations --------------#
   data:
   # Input Path can contain multiple sources comma-separated. The file naming convention should be the

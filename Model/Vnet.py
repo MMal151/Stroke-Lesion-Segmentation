@@ -1,5 +1,5 @@
 import logging
-
+import tensorflow as tf
 from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
@@ -71,7 +71,7 @@ def down_sampling(x, filters):
 
 
 # 3D-Unet Up Sampling
-def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
+def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True, use_sne=True, sne_params=None):
     if use_transpose:
         # Does up-sampling using learnable parameters. Adaptable
         x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same')(x)
@@ -90,6 +90,10 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
         x = Cropping3D(cropping=((0, crop_depth), (0, crop_height), (0, crop_width)))(x)
 
     y = x  # Saving the state of the input tensor to be added later
+
+    if use_sne:
+        rc = squeeze_excitation_block(rc, **sne_params)
+
     x = Concatenate(axis=-1)([x, rc])
 
     for i in range(0, num_conv_blocks):
@@ -119,11 +123,45 @@ def dilated_bottleneck(x, filters, dilation_rates=None):
     return x
 
 
-def dilated_block(x, filters, dr=1, kernel_size=3):
+def dilated_block(x, filters, dr=2, kernel_size=3):
     x = Conv3D(filters, kernel_size, dilation_rate=dr, padding='same')(x)
-    x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
-    x = Activation(x)  # Original Model -> PReLu
+    x = BatchNormalization()(x)
+    x = Activation(x)
 
+    return x
+
+
+# Squeeze and Excitation Block with residual connection.
+def squeeze_excitation_block(x, ratio=2, use_relu=True, use_res=True):
+    y = x
+    org_shape = x.shape
+
+    # Squeeze
+    x = GlobalAveragePooling3D()(x)
+
+    # Excitation
+    if use_relu:
+        x = Dense(units=(org_shape[-1] / ratio), activation='relu')(x)  # Original Paper
+    else:
+        x = Dense(units=org_shape[-1] / ratio)(x)
+        x = Activation(x)
+
+    x = Dense(org_shape[-1], activation='sigmoid')(x)
+    x = tf.reshape(x, [-1, 1, 1, 1, org_shape[-1]])  # Check this
+
+    # Scaling
+    x = multiply([y, x])  # Check this
+
+    if use_res:
+        y = Conv3D(org_shape[-1], kernel_size=1, strides=1, padding='same')(y)
+        y = SpatialDropout3D(0.1)(y)
+        y = BatchNormalization()(y)
+
+        x = add([y, x])
+        if use_relu:
+            x = ReLU()(x)
+        else:
+            x = Activation(x)
     return x
 
 
@@ -171,6 +209,13 @@ class Vnet:
                 logging.error(f"{lgr}: Invalid dilatation rates configured. Default value: [1, 2, 4, 8] will be used.")
                 self.dilation_rates = [1, 2, 4, 8]
 
+        self.use_sne = model_config["vnet"]["squeeze_excitation"]["use_sne"]
+        if self.use_sne:
+            logging.info(f"{lgr}: Using Squeeze and Excitation blocks for residual connection in up-sampling layer.")
+            self.sne_params = {'ratio': model_config["vnet"]["squeeze_excitation"]["ratio"],
+                               'use_relu': model_config["vnet"]["squeeze_excitation"]["use_relu"],
+                               'use_res': model_config["vnet"]["squeeze_excitation"]["use_res_con"]}
+
         self.print_info()
 
         # TO-DO: Need to make activation function configurable.
@@ -189,12 +234,12 @@ class Vnet:
             x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
-        x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
-        x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose)
-        x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose)
-        x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose)
+        x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose, self.use_sne, self.sne_params)
+        x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose, self.use_sne, self.sne_params)
+        x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose, self.use_sne, self.sne_params)
+        x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose, self.use_sne, self.sne_params)
 
-        x = Dropout(self.dropout)(x)  # Not included in the original model.
+        x = SpatialDropout3D(self.dropout)(x)  # Not included in the original model.
 
         # Update the output layer based on the number of classes
         output = Conv3D(self.output_classes, 1, activation='sigmoid')(x)

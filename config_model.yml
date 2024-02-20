@@ -2,6 +2,11 @@ vnet:
   encoder_blocks: "1,2,3,3"
   decoder_blocks: "3,3,4"
   use_transpose: True
-  use_dltd_bttlnck: True
+  use_dltd_bttlnck: True  # Use a network of cascading dilation network as bottleneck.
   dilation_rates: "1,2,4,8"
-
+# Use squeeze and excitation block based residual connections, will be used for up-scaling.
+  squeeze_excitation:
+    use_sne: True
+    ratio: 2
+    use_relu: True
+    use_res_con: True

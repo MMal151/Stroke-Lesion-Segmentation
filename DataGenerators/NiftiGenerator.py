@@ -106,7 +106,7 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         lgr = CLASS_NAME + "[init_data()]"
         if self.patching:
             if self.random_patch:
-                logging.debug(
+                logging.info(
                     f"{lgr}: Since random patching in enabled, each training data point will be used to extract"
                     f" {self.total_patches} patches.")
                 # Extending each data point as many times as the number of patches,
@@ -115,10 +115,11 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
                 self.x.extend(self.x * self.total_patches)
                 self.y.extend(self.y * self.total_patches)
             else:
-                logging.debug(f"{lgr}: Patching is enabled, patches w.r.t stride [{self.total_patches}] will be"
-                              f"extracted from each image.")
+                logging.info(f"{lgr}: Patching is enabled, patches w.r.t stride [{self.total_patches}] will be"
+                             f"extracted from each image.")
                 no_patches, self.patch_idx = generate_patch_idx(self.image_shape, self.total_patches,
                                                                 self.patch_shape, len(self.x))
                 self.x.extend(self.x * no_patches)
                 self.y.extend(self.y * no_patches)
+                logging.info(f"{lgr}: Total Number of Patches extracted per image: [{no_patches}].")
         self.on_epoch_end()
