@@ -12,7 +12,7 @@ CLASS_NAME = "[DataGenerators/NiftiGenerator]"
 
 
 class Nifti3DGenerator(tf.keras.utils.Sequence):
-    def __init__(self, cfg, x, y, is_train, valid_test_ratio):
+    def __init__(self, cfg, x, y, is_train, valid_test="valid"):
         self.x = x  # Image Set or NIFTI absolute filepaths
         self.y = y  # Label Set or Lesion absolute filepaths
 
@@ -31,11 +31,21 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         self.batch_size = cfg["train"]["data"]["batch_size"]
         self.normalize = cfg["train"]["data"]["norm_data"]
         self.shuffle = cfg["train"]["data"]["shuffle"]
+        self.step_per_epoch = cfg["train"]["num_iter"]
 
-        if not is_train and cfg["train"]["num_iter"] > 0 and valid_test_ratio > 0:
-            self.step_per_epoch = int(np.ceil(cfg["train"]["num_iter"] * valid_test_ratio))
-        else:
-            self.step_per_epoch = cfg["train"]["num_iter"]
+        if not is_train and cfg["train"]["num_iter"] > 0:
+            num_steps, ratio = None, None
+            if valid_test.lower() == "valid":
+                num_steps = cfg["train"]["data"]["valid"]["steps_per_iter"]
+                ratio = cfg["train"]["data"]["valid"]["ratio"]
+            elif valid_test.lower() == "test":
+                num_steps = cfg["train"]["data"]["test"]["steps_per_iter"]
+                ratio = cfg["train"]["data"]["test"]["ratio"]
+
+            if num_steps == -1:
+                self.step_per_epoch = int(np.ceil(cfg["train"]["num_iter"] * ratio))
+            elif num_steps > 0:
+                self.step_per_epoch = num_steps
 
         self.init_dataset()
 

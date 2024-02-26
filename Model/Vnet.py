@@ -71,7 +71,7 @@ def down_sampling(x, filters):
 
 
 # 3D-Unet Up Sampling
-def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True, use_sne=True, sne_params=None):
+def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
     if use_transpose:
         # Does up-sampling using learnable parameters. Adaptable
         x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same')(x)
@@ -90,10 +90,6 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True, use_sne=True
         x = Cropping3D(cropping=((0, crop_depth), (0, crop_height), (0, crop_width)))(x)
 
     y = x  # Saving the state of the input tensor to be added later
-
-    if use_sne:
-        rc = squeeze_excitation_block(rc, **sne_params)
-
     x = Concatenate(axis=-1)([x, rc])
 
     for i in range(0, num_conv_blocks):
@@ -119,6 +115,18 @@ def dilated_bottleneck(x, filters, dilation_rates=None):
             y = dilated_block(y, filters, dilation_rates[j])
 
         x = Add()([y, x])
+
+    return x
+
+
+def dilated_res_connection(x, filters, dilation_rates=None):
+    if dilation_rates is None:
+        dilation_rates = [1, 2, 4, 8]
+
+    for i in dilation_rates:
+        x = Conv3D(filters, 3, dilation_rate=i, padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Activation(x)
 
     return x
 
@@ -165,6 +173,25 @@ def squeeze_excitation_block(x, ratio=2, use_relu=True, use_res=True):
     return x
 
 
+def res_con(x, use_sne=False, sne_params=None, use_dlt_con=False, filters=None, dlt_rates=None, add_cons=False):
+    rc = x  # Saving original state
+    rc_sne, rc_dil = None, None
+    if use_sne:
+        rc_sne = squeeze_excitation_block(x, **sne_params)
+        if not add_cons:
+            x = rc_sne
+
+    if use_dlt_con:
+        rc_dil = dilated_res_connection(x, filters, dlt_rates)
+        if not add_cons:
+            x = rc_dil
+
+    if add_cons and rc_sne is not None and rc_dil is not None:
+        x = Add()([rc, rc_sne, rc_dil])
+
+    return x
+
+
 class Vnet:
     def __init__(self, cfg):
         lgr = CLASS_NAME + "[init()]"
@@ -199,22 +226,25 @@ class Vnet:
             self.num_decoder_blocks = [3, 3, 2]
 
         self.use_transpose = model_config["vnet"]["use_transpose"]
-        self.use_dilated_bottleneck = model_config["vnet"]["use_dltd_bttlnck"]
+        self.use_dlt_res_con = model_config["vnet"]["dilated_res_con"]["use_dltd_res_con"]
+        self.dilation_rates = [1, 2, 4, 8]
 
-        if self.use_dilated_bottleneck:
-            dilation_rates = model_config["vnet"]["dilation_rates"].split(",")
-            if len(dilation_rates) >= 1:
+        if self.use_dlt_res_con:
+            dilation_rates = model_config["vnet"]["dilated_res_con"]["dilation_rates"].split(",")
+            if len(dilation_rates) >= 4:
                 self.dilation_rates = [int(i) for i in dilation_rates]
             else:
                 logging.error(f"{lgr}: Invalid dilatation rates configured. Default value: [1, 2, 4, 8] will be used.")
-                self.dilation_rates = [1, 2, 4, 8]
 
+        self.sne_params = None
         self.use_sne = model_config["vnet"]["squeeze_excitation"]["use_sne"]
         if self.use_sne:
             logging.info(f"{lgr}: Using Squeeze and Excitation blocks for residual connection in up-sampling layer.")
             self.sne_params = {'ratio': model_config["vnet"]["squeeze_excitation"]["ratio"],
                                'use_relu': model_config["vnet"]["squeeze_excitation"]["use_relu"],
                                'use_res': model_config["vnet"]["squeeze_excitation"]["use_res_con"]}
+
+        self.add_res_cons = model_config["vnet"]["add_both_res_con"]
 
         self.print_info()
 
@@ -228,16 +258,21 @@ class Vnet:
         rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
         rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
         # Bottleneck layer
-        if self.use_dilated_bottleneck:
-            x = dilated_bottleneck(x, self.filters[4], self.dilation_rates)
-        else:
-            x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
+        x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
-        x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose, self.use_sne, self.sne_params)
-        x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose, self.use_sne, self.sne_params)
-        x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose, self.use_sne, self.sne_params)
-        x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose, self.use_sne, self.sne_params)
+        rc_4 = res_con(rc_4, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[3],
+                       self.dilation_rates[0:1], self.add_res_cons)
+        x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
+        rc_3 = res_con(rc_3, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[2],
+                       self.dilation_rates[0:2], self.add_res_cons)
+        x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose)
+        rc_2 = res_con(rc_2, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[1],
+                       self.dilation_rates[0:3], self.add_res_cons)
+        x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose)
+        rc_1 = res_con(rc_1, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[0],
+                       self.dilation_rates, self.add_res_cons)
+        x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose)
 
         x = SpatialDropout3D(self.dropout)(x)  # Not included in the original model.
 

@@ -6,7 +6,7 @@ from keras_unet_collection.losses import tversky_coef, tversky, focal_tversky
 from Util.Metrics import dice_coef
 
 CLASS_NAME = "[Util/Loss]"
-CUSTOM_LOSS_FUNCTIONS = "dice,tverskycoef,tversky,ftversky"
+CUSTOM_LOSS_FUNCTIONS = "dice, tverskycoef, tversky, ftversky, bce_dice"
 
 
 def get_loss(loss):

@@ -51,16 +51,22 @@ train:
         alw_test: False # Use same source for test data
         ratio: 0.2
         seed: 2023
+# If 0, same number of steps as train will be used. If -1, steps will be calculated for valid_ratio.
+# If > 0, those number of steps will be used.
+        steps_per_iter: 0
 #--------- Validation Data Configurations ---------#
     valid:
         ratio: 0.2
         seed: 2024
+# If 0, same number of steps as train will be used. If -1, steps will be calculated for valid_ratio.
+# If > 0, those number of steps will be used.
+        steps_per_iter: 0
 #----------- Patch Related Configurations ---------#
     patch:
       alw_patching: True
       patch_size: "(128, 128, 128)"
-      random_patches: True # If False, total_patches will be used as a stride.
-      total_patches: 32
+      random_patches: False # If False, total_patches will be used as a stride.
+      total_patches: 4
 #-------- Data Augmentation Configurations --------#
     augmentation:
       alw_aug: True
@@ -88,7 +94,7 @@ test:
     patch:
       alw_patching: True
       patch_size: "(128, 128, 128)"
-      stride: 32 # If -1, the number of patches will be (img.shape / patch_size) + 1.
+      stride: 4 # If -1, the number of patches will be (img.shape / patch_size) + 1.
 #-------------- Save Random Samples ---------------#
   samples:
     save_samples: True

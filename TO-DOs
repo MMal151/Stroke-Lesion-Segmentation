@@ -6,6 +6,7 @@ Required Stuff:
 ---------------------Optimization/Improvement To-Dos---------------------
 
 To-Dos:
+-1. Implement Weighted Binary Cross-entropy Loss.
 0. Incorporate ISLES data into the model.
     c. Add support to choose downsampling vs cropping in generators
 1. Add performance metrics in arguments & add patching
@@ -21,10 +22,10 @@ To-Dos:
 10.
 11.
 13.
-14. Squeeze and Excitation Blocks instead of residual connections in V-Net.
+14.
 
 ---------------------Done---------------------
-
+-Squeeze and Excitation Blocks instead of residual connections in V-Net.
 -Thresholding for the post-processing. [9th-Feb-2024]
 -Need to add time / performance stats in the log. [15th-Jan-2024]
 -Make loss and metrics configurable. Need to add recall, precision. [15th-Jan-2024]

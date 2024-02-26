@@ -107,6 +107,7 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
             monitor = "val_loss"
             validation = True
 
+        weights = {0: 0.05, 1: 0.95}
         metrics, eval_list = get_metrics(cfg["train"]["perf_metrics"])
         model.compile(optimizer=get_optimizer(cfg),
                       loss=get_loss(cfg["train"]["loss"].lower()), metrics=metrics)
@@ -115,7 +116,7 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
                                      save_freq='epoch')
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
-                            epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
+                            epochs=cfg["train"]["epochs"], callbacks=[checkpoint], class_weight=weights)
         show_history(history, validation)
         logging.info(f"{lgr}: Total Training Time: [{time() - start_time}] seconds")
 
@@ -131,12 +132,12 @@ def get_generators(cfg, x_train, y_train, x_valid, y_valid, x_test, y_test):
     lgr = CLASS_NAME + "[get_generators()]"
     logging.info(f"{lgr}: Creating Generators for training (& validation & test) data.")
 
-    train_gen = Nifti3DGenerator(cfg, x_train, y_train, True, -1)
+    train_gen = Nifti3DGenerator(cfg, x_train, y_train, True, "train")
     valid_gen, test_gen = None, None
     if len(x_valid) > 0:
-        valid_gen = Nifti3DGenerator(cfg, x_valid, y_valid, False, cfg["train"]["data"]["valid"]["ratio"])
+        valid_gen = Nifti3DGenerator(cfg, x_valid, y_valid, False, "valid")
     if len(x_test) > 0:
-        test_gen = Nifti3DGenerator(cfg, x_test, y_test, False, cfg["train"]["data"]["test"]["ratio"])
+        test_gen = Nifti3DGenerator(cfg, x_test, y_test, False, "test")
 
     logging.info(f"{lgr}: Generating Model.")
 
