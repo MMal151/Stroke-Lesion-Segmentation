@@ -26,7 +26,7 @@ def Activation(x):
     if act == 'leakyrelu':
         return LeakyReLU()(x)
     elif act == 'relu':
-        return ReLU(x)
+        return ReLU()(x)
     elif act == 'prelu':
         return PReLU()(x)
     elif act == 'gelu':

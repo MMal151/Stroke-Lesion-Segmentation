@@ -107,7 +107,6 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
             monitor = "val_loss"
             validation = True
 
-        weights = {0: 0.05, 1: 0.95}
         metrics, eval_list = get_metrics(cfg["train"]["perf_metrics"])
         model.compile(optimizer=get_optimizer(cfg),
                       loss=get_loss(cfg["train"]["loss"].lower()), metrics=metrics)
@@ -116,7 +115,7 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
                                      save_freq='epoch')
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
-                            epochs=cfg["train"]["epochs"], callbacks=[checkpoint], class_weight=weights)
+                            epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
         show_history(history, validation)
         logging.info(f"{lgr}: Total Training Time: [{time() - start_time}] seconds")
 

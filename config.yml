@@ -67,7 +67,7 @@ train:
       patch_size: "(128, 128, 128)"
       random_patches: False # If False, total_patches will be used as a stride.
       total_patches: 4
-#-------- Data Augmentation Configurations --------#
+    #-------- Data Augmentation Configurations --------#
     augmentation:
       alw_aug: True
       factor: 0.3

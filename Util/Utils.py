@@ -2,8 +2,9 @@ import logging
 import os
 import random
 import shutil
-
 import yaml
+
+import numpy as np
 
 CLASS_NAME = "[Util/Utils]"
 
@@ -109,3 +110,9 @@ def get_random_index(min_idx, max_idx):
 def get_configurations(config_file="_config.yml"):
     with open(config_file, "r") as configFile:
         return yaml.safe_load(configFile)
+
+
+#   Checking if all values within the label are background or not.
+#   Returns True, if all values are background or '0'.
+def chk_empty_patch(lbl):
+    return np.all([np.sum(lbl, axis=i) == 0 for i in range(0, len(lbl.shape))])
