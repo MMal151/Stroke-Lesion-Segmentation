@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="\">
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Unet3D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Unet3D.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,7 +323,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708924630833</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Minor fixes">
+      <created>1712722304136</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1712722304136</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -365,7 +367,8 @@
     <MESSAGE value="Dilated bottleneck added in V-Net" />
     <MESSAGE value="Squeeze and Excitation residual connections added in VNet." />
     <MESSAGE value="Train and NiftiGenerator: Restructuring to limit number of steps taken during training, testing and validation.&#10;VNet: Dilated residual connection added." />
-    <option name="LAST_COMMIT_MESSAGE" value="Train and NiftiGenerator: Restructuring to limit number of steps taken during training, testing and validation.&#10;VNet: Dilated residual connection added." />
+    <MESSAGE value="Minor fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -432,12 +435,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>253</line>
+          <line>252</line>
           <option name="timeStamp" value="131" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>228</line>
+          <line>227</line>
           <option name="timeStamp" value="132" />
         </line-breakpoint>
       </breakpoints>

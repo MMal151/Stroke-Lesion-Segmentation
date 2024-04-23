@@ -93,7 +93,7 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
     x = Concatenate(axis=-1)([x, rc])
 
     for i in range(0, num_conv_blocks):
-        x = Conv3D(filters, 3, padding='same')(x)
+        x = Conv3D(filters, 5, padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(x)
 
@@ -176,15 +176,14 @@ def squeeze_excitation_block(x, ratio=2, use_relu=True, use_res=True):
 def res_con(x, use_sne=False, sne_params=None, use_dlt_con=False, filters=None, dlt_rates=None, add_cons=False):
     rc = x  # Saving original state
     rc_sne, rc_dil = None, None
-    if use_sne:
-        rc_sne = squeeze_excitation_block(x, **sne_params)
-        if not add_cons:
-            x = rc_sne
-
     if use_dlt_con:
         rc_dil = dilated_res_connection(x, filters, dlt_rates)
         if not add_cons:
             x = rc_dil
+    if use_sne:
+        rc_sne = squeeze_excitation_block(x, **sne_params)
+        if not add_cons:
+            x = rc_sne
 
     if add_cons and rc_sne is not None and rc_dil is not None:
         x = Add()([rc, rc_sne, rc_dil])
