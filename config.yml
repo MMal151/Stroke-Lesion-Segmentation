@@ -31,12 +31,14 @@ train:
   learning_rate: 0.001
  # Whether to use learning rate schedular or not. Configurations for it are in "config_lrs.yml"
   aply_lr_sch: False
-  loss: "bce_dice"
+  loss: "focal_tversky"
+ # Apply early stopping when training.
+  aply_early_stpng: True
   #--------------- Data Configurations --------------#
   data:
   # Input Path can contain multiple sources comma-separated. The file naming convention should be the
   # same in both sources. Image and Label extensions should be same in all input sources.
-    inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
+    inputs: "/home/mmal151/Desktop/Dummy_Data/T1/"
     img_ext: "T1_bet_BC.nii.gz"
     lbl_ext: "LESION.nii.gz"
     image_shape: "(197, 233, 189)"
@@ -69,8 +71,8 @@ train:
       total_patches: 4
     #-------- Data Augmentation Configurations --------#
     augmentation:
-      alw_aug: True
-      factor: 0.3
+      alw_aug: False
+      factor: 0.03
       technique: "cravemix"
 #---------- Model Related Configurations ----------#
   resume:
@@ -83,22 +85,34 @@ train:
 #------------- Testing Configurations -------------#
 test:
   model:
-    load_path: "vnet_182.h5"
+    load_path: "/home/mmal151/Desktop/Dummy_Data/Model/Model_91.h5"
   data:
     inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
     img_ext: "T1_bet_BC.nii.gz"
     lbl_ext: "LESION.nii.gz"
-    image_shape: "(140, 144, 140)"
+    image_shape: "(197, 233, 189)"
 #----------- Patch Related Configurations ---------#
 # Should matching the training configurations
     patch:
       alw_patching: True
       patch_size: "(128, 128, 128)"
-      stride: 4 # If -1, the number of patches will be (img.shape / patch_size) + 1.
+      stride: 64 # If -1, the number of patches will be (img.shape / patch_size) + 1.
+      merge_strategy: "max"
 #-------------- Save Random Samples ---------------#
   samples:
     save_samples: True
     no_samples: 5
     random_samples: True
+#-------------- Post-processing steps to be performed ---------------#
+  post-processing:
+    threshold: 0.5 # Probability Threshold
+    # Whether to apply connected component analysis or not
+    apply_cca: True
+    #If apply_cca is True, the below configurations will be used.
+    cca-conf:
+      connectivity: 6 # Connectivity level, must be either 26, 18 or 6.
+      k: 3 #K-largest connected components to be kept.
+
+
 
 

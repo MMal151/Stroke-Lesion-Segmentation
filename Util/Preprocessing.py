@@ -4,7 +4,7 @@ import numpy as np
 import nibabel as nib
 import SimpleITK as sitk
 
-from Misc.CraveMix import generate_new_sample
+from Misc.CarveMix import generate_new_sample
 from Util.Utils import get_random_index
 
 CLASS_NAME = "[Util/Preprocessing]"
@@ -63,7 +63,7 @@ def augmentation_cm(cfg, x, y, in_path):
             x.append(img_path)
             y.append(lbl_path)
 
-        logging.info(f"{lgr}: CraveMix-based Augmentation completed. ")
+        logging.info(f"{lgr}: CarveMix-based Augmentation completed. ")
 
     else:
         logging.error(f"{lgr}: Invalid augmentation factor. "

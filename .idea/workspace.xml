@@ -3,7 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Misc/CraveMix.py" beforeDir="false" afterPath="$PROJECT_DIR$/Misc/CarveMix.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Util/Loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Loss.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Util/Postprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Postprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Util/Preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Preprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,15 +46,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/mmal151/Desktop/GIthub-Repo/Stroke-Lesion-Segmentation&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/home/mmal151/Desktop/GIthub-Repo/Lesion-Segmentation",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -330,7 +340,14 @@
       <option name="project" value="LOCAL" />
       <updated>1712722304136</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Minor fixes">
+      <created>1713916003589</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1713916003589</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -395,37 +412,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>36</line>
-          <option name="timeStamp" value="113" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>107</line>
+          <line>114</line>
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>127</line>
+          <line>133</line>
           <option name="timeStamp" value="116" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>131</line>
+          <line>153</line>
           <option name="timeStamp" value="118" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>79</line>
+          <line>86</line>
           <option name="timeStamp" value="119" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Test.py</url>
-          <line>75</line>
-          <option name="timeStamp" value="120" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Utils.py</url>
-          <line>185</line>
+          <line>189</line>
           <option name="timeStamp" value="124" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -435,19 +442,72 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>252</line>
+          <line>256</line>
           <option name="timeStamp" value="131" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>227</line>
-          <option name="timeStamp" value="132" />
+          <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
+          <line>13</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Train.py</url>
+          <line>120</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Util/Utils.py</url>
+          <line>51</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
+          <line>44</line>
+          <option name="timeStamp" value="137" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="138" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Test.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="139" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Util/Postprocessing.py</url>
+          <line>4</line>
+          <option name="timeStamp" value="143" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Util/Postprocessing.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="144" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Process/Test.py</url>
+          <line>167</line>
+          <option name="timeStamp" value="145" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="146" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
+          <line>112</line>
+          <option name="timeStamp" value="147" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="x" />
+        <watch expression="x" />
+        <watch expression="x" />
+        <watch expression="lbl.max" />
       </configuration>
     </watches-manager>
   </component>

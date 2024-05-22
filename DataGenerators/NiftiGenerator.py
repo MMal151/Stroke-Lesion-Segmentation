@@ -79,7 +79,7 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
         if self.patching:
             image_shape = self.patch_shape
 
-        images, labels = np.zeros((self.batch_size, *image_shape)), np.zeros((self.batch_size, *image_shape))
+        images, labels = np.zeros((self.batch_size, *image_shape, 1)), np.zeros((self.batch_size, *image_shape, 1))
 
         start_index = idx * self.batch_size
         end_index = start_index + self.batch_size
@@ -107,10 +107,10 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
                     img = img[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
                     lbl = lbl[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
 
-            images[i, :, :, :] = img.astype(np.float32)
-            labels[i, :, :, :] = lbl.astype(np.float32)
+            images[i, :, :, :, :] = img.reshape((*image_shape, 1)).astype(np.float32)
+            labels[i, :, :, :, :] = lbl.reshape((*image_shape, 1)).astype(np.float32)
 
-        return images.astype(np.float32), labels.astype(np.float32)
+        return images, labels
 
     def init_dataset(self):
         lgr = CLASS_NAME + "[init_data()]"

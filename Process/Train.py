@@ -2,7 +2,7 @@ import logging
 from time import time
 
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 from Util.Loss import get_loss
 from Util.Metrics import get_metrics
@@ -110,12 +110,21 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
         metrics, eval_list = get_metrics(cfg["train"]["perf_metrics"])
         model.compile(optimizer=get_optimizer(cfg),
                       loss=get_loss(cfg["train"]["loss"].lower()), metrics=metrics)
+
+        callbacks = []
+
         checkpoint = ModelCheckpoint(cfg["train"]["save"]["model_name"] + "{epoch:02d}.h5", monitor=monitor,
                                      save_best_only=cfg["train"]["save"]["best_only"],
                                      save_freq='epoch')
+        callbacks.append(checkpoint)
+
+        if cfg["train"]["aply_early_stpng"]:
+            early_stopping = EarlyStopping(monitor='val_loss', patience=10, min_delta=0.05, mode="min",
+                                           restore_best_weights=True, start_from_epoch=10)
+            callbacks.append(early_stopping)
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
-                            epochs=cfg["train"]["epochs"], callbacks=[checkpoint])
+                            epochs=cfg["train"]["epochs"], callbacks=callbacks)
         show_history(history, validation)
         logging.info(f"{lgr}: Total Training Time: [{time() - start_time}] seconds")
 

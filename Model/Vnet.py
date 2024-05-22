@@ -139,7 +139,7 @@ def dilated_block(x, filters, dr=2, kernel_size=3):
     return x
 
 
-# Squeeze and Excitation Block with residual connection.
+# Squeeze and Excitation Block with residual connection. [SE-WRN]
 def squeeze_excitation_block(x, ratio=2, use_relu=True, use_res=True):
     y = x
     org_shape = x.shape
@@ -155,10 +155,10 @@ def squeeze_excitation_block(x, ratio=2, use_relu=True, use_res=True):
         x = Activation(x)
 
     x = Dense(org_shape[-1], activation='sigmoid')(x)
-    x = tf.reshape(x, [-1, 1, 1, 1, org_shape[-1]])  # Check this
+    x = tf.reshape(x, [-1, 1, 1, 1, org_shape[-1]])
 
     # Scaling
-    x = multiply([y, x])  # Check this
+    x = multiply([y, x])
 
     if use_res:
         y = Conv3D(org_shape[-1], kernel_size=1, strides=1, padding='same')(y)
@@ -187,6 +187,10 @@ def res_con(x, use_sne=False, sne_params=None, use_dlt_con=False, filters=None, 
 
     if add_cons and rc_sne is not None and rc_dil is not None:
         x = Add()([rc, rc_sne, rc_dil])
+    elif add_cons and rc_sne is not None and rc_dil is None:
+        x = Add()([rc, rc_sne])
+    elif add_cons and rc_sne is None and rc_dil is not None:
+        x = Add()([rc, rc_dil])
 
     return x
 

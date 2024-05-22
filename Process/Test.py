@@ -4,8 +4,9 @@ import random
 
 import nibabel as nib
 import numpy as np
+import tensorflow as tf
 from Util.Metrics import dice_coef
-from Util.Postprocessing import thresholding
+from Util.Postprocessing import thresholding, perform_cca
 from Util.Utils import is_valid_file, str_to_tuple, is_valid_dir
 
 from Process.Utils import load_model, load_data, save_img
@@ -18,6 +19,8 @@ def test(cfg):
 
     assert is_valid_file(cfg["test"]["model"]["load_path"]), f"{lgr}: Invalid Model Filename/Path. " \
                                                              f"Valid Model is required to perform testing."
+    assert cfg["test"]["post-processing"]["threshold"] > 0, f"{lgr}: Invalid value for thresholding. Value should be " \
+                                                            f"> 0."
 
     model = load_model(cfg, False)
     input_paths = cfg["test"]["data"]["inputs"].split(",")
@@ -64,21 +67,25 @@ def test(cfg):
                 f"{lgr}: Since, patching is enabled, inference will be done using sliding window technique."
                 f"Following patches were generated patches: [{patches}]")
             for p in patches:
-                curr_img = p[0].reshape((1, patch_shape[0], patch_shape[1], patch_shape[2], 1))
-                pred = model.predict(curr_img)
+                curr_img = p[0].reshape((1, *patch_shape, 1))
+                pred = model.predict(curr_img, batch_size=1)
                 predicts.append((pred.reshape(patch_shape), p[1]))
             predict_lbl = merge_patches(predicts, img.shape)
         else:
             predict_lbl = model.predict(img.reshape((1, image_shape[0], image_shape[1], image_shape[2], 1)))
 
-        pred = predict_lbl.reshape(lbl.shape)
-        dc = dice_coef(lbl, thresholding(pred))
-        logging.info(f"{lgr}: Predicted Dice Coeff for {x}: {dc}")
+        predict_lbl = thresholding(predict_lbl.reshape(lbl.shape), cfg["test"]["post-processing"]["threshold"])
 
+        if cfg["test"]["post-processing"]["apply_cca"]:
+            predict_lbl = perform_cca(predict_lbl, **cfg["test"]["post-processing"]["cca-conf"])
+
+        dc = tf.reduce_mean(dice_coef(lbl, predict_lbl))
+
+        print(f"{lgr}: Predicted Dice Coeff for {x}: {dc}")
         dc_total += dc
 
         if save_idx is not None and i in save_idx:
-            save_img(pred, os.path.join("Test_Results", y.split('/')[-1].split('.nii.gz')[0] + "_Pred.nii.gz"))
+            save_img(predict_lbl, os.path.join("Test_Results", y.split('/')[-1].split('.nii.gz')[0] + "_Pred.nii.gz"))
 
     if dc_total > 0:
         logging.info(f"{lgr}: Average Dice Coefficient: {dc_total / len(x_test)}")
@@ -121,11 +128,26 @@ def generate_overlapped_patches(img, patch_size, stride):
                 for k in range(0, img.shape[2], stride):
                     if i + patch_size[0] < img.shape[0] and j + patch_size[1] < img.shape[1] and k + patch_size[2] < \
                             img.shape[2]:
-                        patch = img[i: i + patch_size[0], j: j + patch_size[1],
-                                k: k + patch_size[2]]
+                        patch = img[i: i + patch_size[0], j: j + patch_size[1], k: k + patch_size[2]]
                         patches.append((patch, (i, j, k)))
 
         return patches
+
+
+def merge_patches_average(predicts, org_shape):
+    predict_lbl = np.zeros(org_shape)
+    patch_ids = []
+
+    for p in predicts:
+        curr_patch = p[0]
+        (i, j, k) = p[1]  # Starting index of patches
+        patch_shape = curr_patch.shape
+        predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]] += \
+            predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]] + curr_patch
+
+    predict_lbl = predict_lbl / len(predicts)
+
+    return predict_lbl
 
 
 def merge_patches(predicts, org_shape):
@@ -136,11 +158,11 @@ def merge_patches(predicts, org_shape):
         (i, j, k) = p[1]
         patch_shape = curr_patch.shape
         predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]] = \
-            predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]] + curr_patch
+            np.maximum(predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]], curr_patch)
 
-        if pre_idx is not None and all(p[1][idx] < pre_idx[idx] + patch_shape[idx] for idx in range(0, 3)):
-            (pre_i, pre_j, pre_k) = pre_idx
-            predict_lbl[i:pre_i + patch_shape[0], j:pre_j + patch_shape[1], k:pre_k + patch_shape[2]] /= 2
-        pre_idx = p[1]
+        # if pre_idx is not None and all(p[1][idx] < pre_idx[idx] + patch_shape[idx] for idx in range(0, 3)):
+        #   (pre_i, pre_j, pre_k) = pre_idx
+        #  predict_lbl[i:pre_i + patch_shape[0], j:pre_j + patch_shape[1], k:pre_k + patch_shape[2]] /= 2
+        # pre_idx = p[1]
 
     return predict_lbl

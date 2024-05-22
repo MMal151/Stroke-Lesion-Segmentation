@@ -5,9 +5,9 @@ import numpy as np
 import tensorflow as tf
 from keras_unet_collection.activations import GELU, Snake
 
-from Util.Loss import CUSTOM_LOSS_FUNCTIONS, get_loss
+from Util.Loss import CUSTOM_LOSS_FUNCTIONS, get_loss, dice
 from Util.Metrics import get_metrics_test
-from Util.Utils import get_all_possible_files_paths, is_valid_file, chk_empty_patch
+from Util.Utils import get_all_possible_files_paths, is_valid_file
 
 CLASS_NAME = "[Process/Utilities]"
 CUSTOM_ACTIVATIONS = "gelu,snake"
@@ -39,7 +39,11 @@ def get_custom_objects(cfg):
 
     if CUSTOM_LOSS_FUNCTIONS.__contains__(cfg["train"]["loss"].lower()):
         logging.debug(f"{lgr}: Adding custom loss function in custom_obj list.")
-        custom_objects[cfg["train"]["loss"].lower()] = get_loss(cfg)
+        loss = get_loss(cfg)
+        custom_objects[cfg["train"]["loss"]] = loss
+
+        #if cfg["train"]["loss"].lower() == "focal_tversky":
+         #   custom_objects["focal_tversky"] = loss
 
     return custom_objects
 

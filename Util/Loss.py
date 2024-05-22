@@ -6,7 +6,7 @@ from keras_unet_collection.losses import tversky_coef, tversky, focal_tversky
 from Util.Metrics import dice_coef
 
 CLASS_NAME = "[Util/Loss]"
-CUSTOM_LOSS_FUNCTIONS = "dice, tverskycoef, tversky, ftversky, bce_dice"
+CUSTOM_LOSS_FUNCTIONS = "dice, tverskycoef, tversky, focal_tversky, bce_dice"
 
 
 def get_loss(loss):
@@ -15,16 +15,16 @@ def get_loss(loss):
     if loss == 'dice':
         logging.debug(f"{lgr}: Using Dice Function as Loss Function.")
         return dice
-    elif loss == 'tverskycoef':
+    elif loss == 'tversky_coef':
         logging.debug(f"{lgr}: Using Tversky Coef as Loss Function.")
         return tversky_coef
     elif loss == "tversky":
         logging.debug(f"{lgr}: Using Tversky as Loss Function.")
         return tversky
-    elif loss == "ftversky":
+    elif loss == "focal_tversky":
         logging.debug(f"{lgr}: Using Focal Tversky as Loss Function.")
         return focal_tversky
-    elif loss == 'bce_dice':
+    elif loss == 'bce_dice_loss':
         logging.debug(f"{lgr}: Using sum of binary cross-entropy and dice as Loss Function.")
         return bce_dice_loss
 
