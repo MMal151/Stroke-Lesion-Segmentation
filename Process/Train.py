@@ -4,6 +4,7 @@ from time import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
+from DatasetLoader import BalancedLoader, DefaultLoader
 from Util.Loss import get_loss
 from Util.Metrics import get_metrics
 from Util.Optimizers import get_optimizer
@@ -17,63 +18,14 @@ from Process.Utils import load_data, load_model
 
 CLASS_NAME = "[Process/Train]"
 
-
-# Divides dataset into training and validation set
-def train_valid_div(images, labels, valid_ratio, seed=2023, div_type='Validation'):
-    lgr = CLASS_NAME + "[train_valid_div()]"
-    logging.debug(f"{lgr}: Starting train/valid division.")
-
-    x_train, x_valid, y_train, y_valid = train_test_split(images, labels, test_size=valid_ratio,
-                                                          random_state=seed)
-
-    logging.debug(f"{lgr}: x_train: {x_train} \n y_train: {y_train} \n x_{div_type}: {x_valid} \n "
-                  f"y_{div_type}: {y_valid}")
-    logging.info(f"{lgr}: Training-Instances: {len(x_train)}. "
-                 f"{div_type}-Instances: {len(x_valid)}")
-
-    return x_train, x_valid, y_train, y_valid
-
-
 def train(cfg, strategy=None):
     lgr = CLASS_NAME + "[train()]"
     logging.info(f"{lgr}: Starting Training.")
 
-    input_paths = cfg["train"]["data"]["inputs"].split(",")
-    x_train, y_train, x_valid, y_valid, x_test, y_test = [], [], [], [], [], []  # Initializing Validation Set
-
-    for i in input_paths:
-        if cfg["train"]["data"]["rem_pre_aug"]:
-            logging.info(f"{lgr}: Removing previous augmentations.")
-            _ = remove_dirs(get_all_possible_subdirs(i, "full_path"), "_cm")
-
-        x, y = load_data(i.strip(), cfg["train"]["data"]["img_ext"], cfg["train"]["data"]["lbl_ext"])
-
-        if cfg["train"]["data"]["test"]["alw_test"] and cfg["train"]["data"]["test"]["ratio"] > 0:
-            logging.info(f"{lgr}: Separating test data from training and validation set for data source {i}")
-            x, x_temp, y, y_temp = train_valid_div(x, y, cfg["train"]["data"]["test"]["ratio"],
-                                                   cfg["train"]["data"]["test"]["seed"], 'Test')
-            x_test = x_temp + x_test
-            y_test = y_temp + y_test
-            logging.debug(f"{lgr}: State after merging with test sets. x_test = {x_test} \n y_test = {y_test}")
-
-        if cfg["train"]["data"]["valid"]["ratio"] > 0:
-            logging.info(f"{lgr}: Separating validation data from training and validation set for data source {i}")
-            x, x_val, y, y_val = train_valid_div(x, y, cfg["train"]["data"]["valid"]["ratio"],
-                                                 cfg["train"]["data"]["valid"]["seed"])
-            x_valid = x_valid + x_val
-            y_valid = y_valid + y_val
-            logging.debug(
-                f"{lgr}: State after merging with validation sets. x_valid = {x_valid} \n y_valid = {y_valid}")
-
-        if cfg["train"]["data"]["augmentation"]["alw_aug"]:
-            logging.info(f"{lgr}: Applying augmentation to training data for data source {i} ")
-            x, y = data_augmentation(cfg, x, y, i)
-
-        logging.debug(f"{lgr}: State before merging with test sets. x = {x} \n y = {y} \n "
-                      f"x_train = {x_train} \n y_train = {y_train}")
-        x_train = x_train + x
-        y_train = y_train + y
-        logging.debug(f"{lgr}: State before merging with test sets. x_train = {x_train} \n y_train = {y_train}")
+    if cfg["train"]["data"]["loader"] == "balanced":
+        x_train, y_train, x_valid, y_valid, x_test, y_test = BalancedLoader.load_dataset(cfg)
+    else:
+        x_train, y_train, x_valid, y_valid, x_test, y_test = DefaultLoader.loader(cfg)
 
     params = {"x_train": x_train, "y_train": y_train, "x_valid": x_valid, "y_valid": y_valid, "x_test": x_test,
               "y_test": y_test}
@@ -119,8 +71,8 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
         callbacks.append(checkpoint)
 
         if cfg["train"]["aply_early_stpng"]:
-            early_stopping = EarlyStopping(monitor='val_loss', patience=10, min_delta=0.05, mode="min",
-                                           restore_best_weights=True, start_from_epoch=10)
+            early_stopping = EarlyStopping(monitor='val_loss', patience=10, min_delta=0.005, mode="min",
+                                           restore_best_weights=True)
             callbacks.append(early_stopping)
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),

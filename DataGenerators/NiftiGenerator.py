@@ -6,7 +6,7 @@ import tensorflow as tf
 
 from Process.Utils import generate_patch_idx
 from Util.Preprocessing import normalize_img, random_patch_3D
-from Util.Utils import str_to_tuple
+from Util.Utils import str_to_tuple, chk_empty_patch
 
 CLASS_NAME = "[DataGenerators/NiftiGenerator]"
 
@@ -26,6 +26,7 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
 
             if not cfg["train"]["data"]["patch"]["random_patches"]:
                 self.patch_idx = []
+            self.non_empty_patches = cfg["train"]["data"]["patch"]["non_empty_patches"]
 
         self.image_shape = str_to_tuple(cfg["train"]["data"]["image_shape"])
         self.batch_size = cfg["train"]["data"]["batch_size"]
@@ -101,11 +102,16 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
 
             if self.patching:
                 if self.random_patch:
-                    img, lbl = random_patch_3D(img, lbl, image_shape)
+                    img_ptch, lbl_ptch = random_patch_3D(img, lbl, image_shape, self.non_empty_patches)
                 else:
                     (ax_1, ax_2, ax_3) = batch_idx[i]
-                    img = img[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
-                    lbl = lbl[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
+                    img_ptch = img[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
+                    lbl_ptch = lbl[ax_1: ax_1 + image_shape[0], ax_2: ax_2 + image_shape[1], ax_3: ax_3 + image_shape[2]]
+
+                    if self.non_empty_patches and chk_empty_patch(lbl_ptch):
+                        img_ptch, lbl_ptch = random_patch_3D(img, lbl, image_shape, self.non_empty_patches)
+                img = img_ptch
+                lbl = lbl_ptch
 
             images[i, :, :, :, :] = img.reshape((*image_shape, 1)).astype(np.float32)
             labels[i, :, :, :, :] = lbl.reshape((*image_shape, 1)).astype(np.float32)
@@ -132,4 +138,5 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
                 self.x.extend(self.x * no_patches)
                 self.y.extend(self.y * no_patches)
                 logging.info(f"{lgr}: Total Number of Patches extracted per image: [{no_patches}].")
+
         self.on_epoch_end()

@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Misc/CraveMix.py" beforeDir="false" afterPath="$PROJECT_DIR$/Misc/CarveMix.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Loss.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Postprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Postprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Util/Preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Util/Preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
-    </list>
+    <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +13,9 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="main" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -46,16 +37,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/mmal151/Desktop/GIthub-Repo/Lesion-Segmentation",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mmal151/Desktop/GIthub-Repo/Stroke-Lesion-Segmentation&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -136,6 +127,9 @@
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>$USER_HOME$/.subversion</configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="" />
@@ -347,7 +341,14 @@
       <option name="project" value="LOCAL" />
       <updated>1713916003589</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Change Summary: &#10;NiftiGenerator.py -&gt; Minor reshaping fix&#10;CraveMix.py -&gt; Renamed to CarveMix.py&#10;Vnet.py -&gt; Residual Connection Changes&#10;Test.py -&gt; Merging patches changed&#10;Train.py -&gt; Implemented EarlyStopping&#10;Utils.py -&gt; Fixed custom loss function loading&#10;Postprocessing.py -&gt; Added implementation for CCA, changed thresholding code&#10;Preprocessing.py, Loss.py -&gt; Minor fixes&#10;config.yml -&gt; Added support for early stopping">
+      <created>1716354616179</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1716354616179</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -385,7 +386,8 @@
     <MESSAGE value="Squeeze and Excitation residual connections added in VNet." />
     <MESSAGE value="Train and NiftiGenerator: Restructuring to limit number of steps taken during training, testing and validation.&#10;VNet: Dilated residual connection added." />
     <MESSAGE value="Minor fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes" />
+    <MESSAGE value="Change Summary: &#10;NiftiGenerator.py -&gt; Minor reshaping fix&#10;CraveMix.py -&gt; Renamed to CarveMix.py&#10;Vnet.py -&gt; Residual Connection Changes&#10;Test.py -&gt; Merging patches changed&#10;Train.py -&gt; Implemented EarlyStopping&#10;Utils.py -&gt; Fixed custom loss function loading&#10;Postprocessing.py -&gt; Added implementation for CCA, changed thresholding code&#10;Preprocessing.py, Loss.py -&gt; Minor fixes&#10;config.yml -&gt; Added support for early stopping" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change Summary: &#10;NiftiGenerator.py -&gt; Minor reshaping fix&#10;CraveMix.py -&gt; Renamed to CarveMix.py&#10;Vnet.py -&gt; Residual Connection Changes&#10;Test.py -&gt; Merging patches changed&#10;Train.py -&gt; Implemented EarlyStopping&#10;Utils.py -&gt; Fixed custom loss function loading&#10;Postprocessing.py -&gt; Added implementation for CCA, changed thresholding code&#10;Preprocessing.py, Loss.py -&gt; Minor fixes&#10;config.yml -&gt; Added support for early stopping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -394,21 +396,6 @@
           <url>file://$USER_HOME$/python-environments/env_310/lib/python3.10/site-packages/keras_unet_collection/losses.py</url>
           <line>136</line>
           <option name="timeStamp" value="49" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>84</line>
-          <option name="timeStamp" value="78" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="100" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
@@ -431,46 +418,6 @@
           <option name="timeStamp" value="119" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
-          <line>189</line>
-          <option name="timeStamp" value="124" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>58</line>
-          <option name="timeStamp" value="127" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Model/Vnet.py</url>
-          <line>256</line>
-          <option name="timeStamp" value="131" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Preprocessing.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="133" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Train.py</url>
-          <line>120</line>
-          <option name="timeStamp" value="134" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Util/Utils.py</url>
-          <line>51</line>
-          <option name="timeStamp" value="135" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="137" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Process/Utils.py</url>
-          <line>39</line>
-          <option name="timeStamp" value="138" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Process/Test.py</url>
           <line>76</line>
           <option name="timeStamp" value="139" />
@@ -491,14 +438,9 @@
           <option name="timeStamp" value="145" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>76</line>
-          <option name="timeStamp" value="146" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataGenerators/NiftiGenerator.py</url>
-          <line>112</line>
-          <option name="timeStamp" value="147" />
+          <url>file://$PROJECT_DIR$/Process/Test.py</url>
+          <line>94</line>
+          <option name="timeStamp" value="148" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

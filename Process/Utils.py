@@ -173,7 +173,7 @@ def generate_patch_idx(image_shape, stride, patch_shape, repeat=1):
         f"{lgr}: Input values: image_shape: [{image_shape}], stride: [{stride}], patch_shape: [{patch_shape}].")
 
     assert all(image_shape[i] > 0 and patch_shape[i] > 0 for i in range(0, 3)), \
-        f"{lgr}: Invalid image shape [{image_shape}] or patch_shape [{patch_shape}]. All values should be " \
+        f"{lgr}: Invalid image shape [{image_shape}] or pgenerate_patch_idxatch_shape [{patch_shape}]. All values should be " \
         f"greater than zero."
     assert repeat >= 1, f"{lgr}: Invalid value of for repeat [{repeat}]."
 

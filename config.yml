@@ -36,9 +36,10 @@ train:
   aply_early_stpng: True
   #--------------- Data Configurations --------------#
   data:
+    loader: "balanced"
   # Input Path can contain multiple sources comma-separated. The file naming convention should be the
   # same in both sources. Image and Label extensions should be same in all input sources.
-    inputs: "/home/mmal151/Desktop/Dummy_Data/T1/"
+    inputs: "/home/mmal151/resmed202200021-IMPRESS_data/Mishaim/ATLAS_2_Cleaned"
     img_ext: "T1_bet_BC.nii.gz"
     lbl_ext: "LESION.nii.gz"
     image_shape: "(197, 233, 189)"
@@ -69,6 +70,7 @@ train:
       patch_size: "(128, 128, 128)"
       random_patches: False # If False, total_patches will be used as a stride.
       total_patches: 4
+      non_empty_patches: True  # All the generated patches must have foreground value in the lesion mask.
     #-------- Data Augmentation Configurations --------#
     augmentation:
       alw_aug: False

@@ -115,4 +115,8 @@ def get_configurations(config_file="_config.yml"):
 #   Checking if all values within the label are background or not.
 #   Returns True, if all values are background or '0'.
 def chk_empty_patch(lbl):
-    return np.all([np.sum(lbl, axis=i) == 0 for i in range(0, len(lbl.shape))])
+    return np.sum([np.sum(lbl, axis=i) for i in range(0, len(lbl.shape))]) < 50
+
+
+def str_to_list(input):
+    return [i for i in input.split(",")]

@@ -5,7 +5,7 @@ import nibabel as nib
 import SimpleITK as sitk
 
 from Misc.CarveMix import generate_new_sample
-from Util.Utils import get_random_index
+from Util.Utils import get_random_index, chk_empty_patch
 
 CLASS_NAME = "[Util/Preprocessing]"
 
@@ -81,17 +81,24 @@ def normalize_img(image, smooth=1e-8):
     return image
 
 
-def random_patch_3D(img, lbl, target_shape):
+def random_patch_3D(img, lbl, target_shape, non_empty_patches):
     assert img.shape == lbl.shape, f"Image and Label should be of the same shape. " \
                                    f"Image's Shape: [{img.shape}] != Label's Shape: [{lbl.shape}]"
     dif = [img.shape[i] - target_shape[i] - 1 for i in range(0, 3)]
+    empty_patch = True
 
     assert all(dif[i] > 0 for i in range(0, 3)), f"Patch's size should be smaller than Image's shape. " \
                                                  f"Image Shape: [{img.shape}] < Patch Size: [{target_shape}]"
 
-    i, j, k = np.random.randint((0, 0, 0), tuple(dif))
+    while empty_patch:
+        i, j, k = np.random.randint((0, 0, 0), tuple(dif))
 
-    img_patch = img[i:i + target_shape[0], j:j + target_shape[1], k:k + target_shape[2]]
-    lbl_patch = lbl[i:i + target_shape[0], j:j + target_shape[1], k:k + target_shape[2]]
+        img_patch = img[i:i + target_shape[0], j:j + target_shape[1], k:k + target_shape[2]]
+        lbl_patch = lbl[i:i + target_shape[0], j:j + target_shape[1], k:k + target_shape[2]]
+
+        if non_empty_patches:
+            empty_patch = chk_empty_patch(lbl_patch)
+        else:
+            empty_patch = False
 
     return img_patch, lbl_patch
