@@ -1,120 +1,38 @@
-#------------- General Configurations -------------#
-misc:
-# Supported Values: train (Training), test (Testing), inference (Testing 2.0, patching supported)
-  mode: "train"
-#---------- Logging Level Configurations ----------#
-  logging:
-    filename: "VNET_Aug0_"
-    level: "info"
-#------------ GPU-Based Configurations ------------#
-  gpu:
-    alw_para_prs: True # Allow parallel processing across multiple GPUs.
-    strategy: "mirrored" # Which strategy to apply when parallel processing is allowed.
-    no_gpus: "9" # Which GPUs to be used for processing.
-#------------- Training Configurations ------------#
+mode: "train"
 train:
+  alw_parallel_processing: True
+  gpu: "0" # List of GPUs that can be used.
+  prepare_dataset: True
+  loader:
+    csv_path: "DataFiles/"
+  data:
+    input_shape: "(128, 128, 128)" # If patching is applied, then input shape = patch_shape
+    batch_size: 1
+    normalize: True
+    shuffle: True # Shuffle dataset on each epoch, only applicable for training.
+    steps_per_epoch: # If, -1 default value will be used. Default value: len(x) / batch_size
+      train: 200
+      valid: 100
+      test: 100
+  # Possible Values: unet (U-Net 3D), vnet (V-Net)
   model_type: "vnet"
-# Number of iterations per epoch. If < 0, then (batch_size / total datapoints)
-  num_iter: 200
+  resume_train: True
+  load_path: "" # Load model from this file.
+  save_path: "" # Save model to this naming structure.
+  save_best_only: True
+  # Apply early stopping when training.
+  aply_early_stpng: True
   epochs: 200
-# Comma/space separated list of metrics to be calculated.
-# Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
-# recall (Recall), and prec (Precision).
+  # Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
+  # recall (Recall), and prec (Precision).
   perf_metrics: "recall, prec, mean_iou, dice_coef"
-# Possible values: leakyrelu, relu, snake, gelu, prelu
-  activation: "prelu"
-  output_classes: 1
-  dropout: 0.2
-  min_filter: 4
 # Possible values: adam, sgd, rmsprop, adadelta, adamax, adagrad
   optimizer: "adam"
   learning_rate: 0.001
- # Whether to use learning rate schedular or not. Configurations for it are in "config_lrs.yml"
+ # Whether to use learning rate schedular or not. Configurations can be defined in ConfigurationFiles/LearningSchedularConfig
   aply_lr_sch: False
   loss: "focal_tversky"
- # Apply early stopping when training.
-  aply_early_stpng: True
-  #--------------- Data Configurations --------------#
-  data:
-    loader: "balanced"
-  # Input Path can contain multiple sources comma-separated. The file naming convention should be the
-  # same in both sources. Image and Label extensions should be same in all input sources.
-    inputs: "/home/mmal151/resmed202200021-IMPRESS_data/Mishaim/ATLAS_2_Cleaned"
-    img_ext: "T1_bet_BC.nii.gz"
-    lbl_ext: "LESION.nii.gz"
-    image_shape: "(197, 233, 189)"
-    batch_size: 4
-# Remove previous augmented results.
-    rem_pre_aug: True
-# Normalize Data (using Standardization)
-    norm_data: True
-    shuffle: True
-#---------- Same Test Data Configurations ---------#
-    test:
-        alw_test: False # Use same source for test data
-        ratio: 0.2
-        seed: 2023
-# If 0, same number of steps as train will be used. If -1, steps will be calculated for valid_ratio.
-# If > 0, those number of steps will be used.
-        steps_per_iter: 0
-#--------- Validation Data Configurations ---------#
-    valid:
-        ratio: 0.2
-        seed: 2024
-# If 0, same number of steps as train will be used. If -1, steps will be calculated for valid_ratio.
-# If > 0, those number of steps will be used.
-        steps_per_iter: 0
-#----------- Patch Related Configurations ---------#
-    patch:
-      alw_patching: True
-      patch_size: "(128, 128, 128)"
-      random_patches: False # If False, total_patches will be used as a stride.
-      total_patches: 4
-      non_empty_patches: True  # All the generated patches must have foreground value in the lesion mask.
-    #-------- Data Augmentation Configurations --------#
-    augmentation:
-      alw_aug: False
-      factor: 0.03
-      technique: "cravemix"
-#---------- Model Related Configurations ----------#
-  resume:
-    resume_train: False
-    model_path: "vnet_13.h5"
-#--------- Model State Save Configurations --------#
-  save:
-    model_name: "vnet_"
-    best_only: True # If True, only best model will be saved
-#------------- Testing Configurations -------------#
-test:
-  model:
-    load_path: "/home/mmal151/Desktop/Dummy_Data/Model/Model_91.h5"
-  data:
-    inputs: "/home/mmal151/Desktop/Dummy_Data/T1"
-    img_ext: "T1_bet_BC.nii.gz"
-    lbl_ext: "LESION.nii.gz"
-    image_shape: "(197, 233, 189)"
-#----------- Patch Related Configurations ---------#
-# Should matching the training configurations
-    patch:
-      alw_patching: True
-      patch_size: "(128, 128, 128)"
-      stride: 64 # If -1, the number of patches will be (img.shape / patch_size) + 1.
-      merge_strategy: "max"
-#-------------- Save Random Samples ---------------#
-  samples:
-    save_samples: True
-    no_samples: 5
-    random_samples: True
-#-------------- Post-processing steps to be performed ---------------#
-  post-processing:
-    threshold: 0.5 # Probability Threshold
-    # Whether to apply connected component analysis or not
-    apply_cca: True
-    #If apply_cca is True, the below configurations will be used.
-    cca-conf:
-      connectivity: 6 # Connectivity level, must be either 26, 18 or 6.
-      k: 3 #K-largest connected components to be kept.
-
-
-
-
+  # Possible values: leakyrelu, relu, snake, gelu, prelu
+  activation: "prelu"
+#---Inference---#
+inference:

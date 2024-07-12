@@ -1,6 +1,0 @@
-balanced:
-  voxel_range: "0, 100, 1000, 5000, 10000, 100000"
-  generate_sets: False
-  train_set_file: "train_set.csv"
-  test_set_file: "test_set.csv"
-  valid_set_file: "valid_set.csv"

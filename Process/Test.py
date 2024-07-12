@@ -5,8 +5,11 @@ import random
 import nibabel as nib
 import numpy as np
 import tensorflow as tf
+
+from DatasetLoader import BalancedLoader
 from Util.Metrics import dice_coef
 from Util.Postprocessing import thresholding, perform_cca
+from Util.Preprocessing import normalize_img
 from Util.Utils import is_valid_file, str_to_tuple, is_valid_dir
 
 from Process.Utils import load_model, load_data, save_img
@@ -27,10 +30,13 @@ def test(cfg):
     x_test, y_test = [], []
     image_shape = str_to_tuple(cfg["test"]["data"]["image_shape"])
 
-    for i in input_paths:
-        x, y = load_data(i, cfg["test"]["data"]["img_ext"], cfg["test"]["data"]["lbl_ext"])
-        x_test += x
-        y_test += y
+    if cfg["test"]["data"]["loader"] == "balanced":
+        _, _, _, _, x_test, y_test = BalancedLoader.load_dataset(cfg)
+    else:
+        for i in input_paths:
+            x, y = load_data(i, cfg["test"]["data"]["img_ext"], cfg["test"]["data"]["lbl_ext"])
+            x_test += x
+            y_test += y
 
     logging.debug(f"{lgr}: Loaded x_test: [{x_test}] \n Loaded y_test: [{y_test}]")
 
@@ -52,7 +58,8 @@ def test(cfg):
             os.mkdir("Test_Results/")
 
     for i, (x, y) in enumerate(zip(x_test, y_test)):
-        img = nib.load(x).get_fdata()
+        _img = nib.load(x)
+        img = normalize_img(_img.get_fdata())
         lbl = nib.load(y).get_fdata()
         predict_lbl = np.zeros(lbl.shape)
 
@@ -85,7 +92,7 @@ def test(cfg):
         dc_total += dc
 
         if save_idx is not None and i in save_idx:
-            save_img(predict_lbl, os.path.join("Test_Results", y.split('/')[-1].split('.nii.gz')[0] + "_Pred.nii.gz"))
+            save_img(predict_lbl, os.path.join("Test_Results", y.split('/')[-1].split('.nii.gz')[0] + "_Pred.nii.gz"), _img.affine)
 
     if dc_total > 0:
         logging.info(f"{lgr}: Average Dice Coefficient: {dc_total / len(x_test)}")
@@ -152,17 +159,11 @@ def merge_patches_average(predicts, org_shape):
 
 def merge_patches(predicts, org_shape):
     predict_lbl = np.zeros(org_shape)
-    pre_idx = None
     for p in predicts:
         curr_patch = p[0]
         (i, j, k) = p[1]
         patch_shape = curr_patch.shape
         predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]] = \
             np.maximum(predict_lbl[i:i + patch_shape[0], j:j + patch_shape[1], k:k + patch_shape[2]], curr_patch)
-
-        # if pre_idx is not None and all(p[1][idx] < pre_idx[idx] + patch_shape[idx] for idx in range(0, 3)):
-        #   (pre_i, pre_j, pre_k) = pre_idx
-        #  predict_lbl[i:pre_i + patch_shape[0], j:pre_j + patch_shape[1], k:pre_k + patch_shape[2]] /= 2
-        # pre_idx = p[1]
 
     return predict_lbl

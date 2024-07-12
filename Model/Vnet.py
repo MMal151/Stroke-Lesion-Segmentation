@@ -4,10 +4,11 @@ from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
 
-from Util.Utils import get_filters, str_to_tuple, get_configurations
+from ConfigurationFiles.ConfigurationUtils import MODEL_CFG, get_configurations
+from Process.ProcessUtils import get_filters
+from Utils.CommonUtils import str_to_tuple
 
 CLASS_NAME = "[Model/Vnet]"
-
 act = 'prelu'
 
 
@@ -196,22 +197,19 @@ def res_con(x, use_sne=False, sne_params=None, use_dlt_con=False, filters=None, 
 
 
 class Vnet:
-    def __init__(self, cfg):
+    def __init__(self, input_shape, activation):
         lgr = CLASS_NAME + "[init()]"
 
-        if cfg["train"]["data"]["patch"]["alw_patching"]:
-            self.input_shape = (*str_to_tuple(cfg["train"]["data"]["patch"]["patch_size"]), 1)
-        else:
-            self.input_shape = (*str_to_tuple(cfg["train"]["data"]["image_shape"]), 1)
+        self.input_shape = (*str_to_tuple(input_shape), 1)
+        init_activation(activation.lower())
 
-        self.output_classes = cfg["train"]["output_classes"]
-        self.dropout = cfg["train"]["dropout"]
-        self.filters = get_filters(cfg["train"]["min_filter"], 5)
-        init_activation(cfg["train"]["activation"].lower())
+        cfg = get_configurations(MODEL_CFG)
 
-        model_config = get_configurations("config_model.yml")
+        self.output_classes = cfg["output_classes"]
+        self.dropout = cfg["dropout"]
+        self.filters = get_filters(cfg["min_filter"], 5)
 
-        num_encoder_blocks = model_config["vnet"]["encoder_blocks"].split(",")
+        num_encoder_blocks = cfg["vnet"]["encoder_blocks"].split(",")
 
         if len(num_encoder_blocks) >= 4:
             self.num_encoder_blocks = [int(i) for i in num_encoder_blocks]
@@ -220,7 +218,7 @@ class Vnet:
                           f"be 4. Default value of 1,2,3,3 will be used. ")
             self.num_encoder_blocks = [1, 2, 3, 3]
 
-        num_decoder_blocks = model_config["vnet"]["decoder_blocks"].split(",")
+        num_decoder_blocks = cfg["vnet"]["decoder_blocks"].split(",")
         if len(num_decoder_blocks) >= 3:
             self.num_decoder_blocks = [int(i) for i in num_decoder_blocks]
         else:
@@ -228,26 +226,26 @@ class Vnet:
                           f"be at least 3. Default value of 3,3,2 will be used. ")
             self.num_decoder_blocks = [3, 3, 2]
 
-        self.use_transpose = model_config["vnet"]["use_transpose"]
-        self.use_dlt_res_con = model_config["vnet"]["dilated_res_con"]["use_dltd_res_con"]
+        self.use_transpose = cfg["vnet"]["use_transpose"]
+        self.use_dlt_res_con = cfg["vnet"]["dilated_res_con"]["use_dltd_res_con"]
         self.dilation_rates = [1, 2, 4, 8]
 
         if self.use_dlt_res_con:
-            dilation_rates = model_config["vnet"]["dilated_res_con"]["dilation_rates"].split(",")
+            dilation_rates = cfg["vnet"]["dilated_res_con"]["dilation_rates"].split(",")
             if len(dilation_rates) >= 4:
                 self.dilation_rates = [int(i) for i in dilation_rates]
             else:
                 logging.error(f"{lgr}: Invalid dilatation rates configured. Default value: [1, 2, 4, 8] will be used.")
 
         self.sne_params = None
-        self.use_sne = model_config["vnet"]["squeeze_excitation"]["use_sne"]
+        self.use_sne = cfg["vnet"]["squeeze_excitation"]["use_sne"]
         if self.use_sne:
             logging.info(f"{lgr}: Using Squeeze and Excitation blocks for residual connection in up-sampling layer.")
-            self.sne_params = {'ratio': model_config["vnet"]["squeeze_excitation"]["ratio"],
-                               'use_relu': model_config["vnet"]["squeeze_excitation"]["use_relu"],
-                               'use_res': model_config["vnet"]["squeeze_excitation"]["use_res_con"]}
+            self.sne_params = {'ratio': cfg["vnet"]["squeeze_excitation"]["ratio"],
+                               'use_relu': cfg["vnet"]["squeeze_excitation"]["use_relu"],
+                               'use_res': cfg["vnet"]["squeeze_excitation"]["use_res_con"]}
 
-        self.add_res_cons = model_config["vnet"]["add_both_res_con"]
+        self.add_res_cons = cfg["vnet"]["add_both_res_con"]
 
         self.print_info()
 

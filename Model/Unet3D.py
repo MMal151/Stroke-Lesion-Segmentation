@@ -4,7 +4,9 @@ from keras_unet_collection.activations import GELU, Snake
 from tensorflow.keras import models
 from tensorflow.keras.layers import *
 
-from Util.Utils import get_filters, str_to_tuple
+from ConfigurationFiles.ConfigurationUtils import MODEL_CFG, get_configurations
+from Process.ProcessUtils import get_filters
+from Utils.CommonUtils import str_to_tuple
 
 CLASS_NAME = "[Model/Unet3D]"
 act = 'leakyRelu'
@@ -81,20 +83,16 @@ def up_block(x, y, filters, use_transpose=True):
 
 
 class Unet3D:
-    def __init__(self, cfg):
+    def __init__(self, input_shape, activation):
+        self.input_shape = (*str_to_tuple(input_shape), 1)
 
-        if cfg["train"]["data"]["patch"]["alw_patching"]:
-            self.input_shape = (*str_to_tuple(cfg["train"]["data"]["patch"]["patch_size"]), 1)
-        else:
-            self.input_shape = (*str_to_tuple(cfg["train"]["data"]["image_shape"]), 1)
+        cfg = get_configurations(MODEL_CFG)
 
-        self.output_classes = cfg["train"]["output_classes"]
-        self.dropout = cfg["train"]["dropout"]
-        self.filters = get_filters(cfg["train"]["min_filter"], 5)
-        init_activation(cfg["train"]["activation"].lower())
+        self.output_classes = cfg["output_classes"]
+        self.dropout = cfg["dropout"]
+        self.filters = get_filters(cfg["min_filter"], 5)
+        init_activation(activation.lower())
         self.print_info()
-
-        # TO-DO: Need to make activation function configurable.
 
     def generate_model(self):
         img = Input(shape=self.input_shape)
