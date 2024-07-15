@@ -1,4 +1,4 @@
-mode: "train"
+mode: "inference"
 train:
   alw_parallel_processing: True
   gpu: "0" # List of GPUs that can be used.
@@ -36,3 +36,7 @@ train:
   activation: "prelu"
 #---Inference---#
 inference:
+  data_path: "DataFiles/test.csv" #Path of CSV file containing test cases (already divided into patches).
+  model_path: "/home/mmal151/Desktop/Dummy_Data/Model/vnet_51.h5"
+  threshold: 0.5 # Probability threshold
+  save_inference: True # Whether or not to save the generated mask.

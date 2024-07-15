@@ -3,6 +3,7 @@ import tensorflow as tf
 import logging
 from time import time
 
+from future.backports.datetime import datetime
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 from Loader.DataLoader import load_data
@@ -73,11 +74,17 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
         checkpoint = ModelCheckpoint(cfg["save_path"] + "{epoch:02d}.h5", monitor=monitor,
                                      save_best_only=cfg["save_best_only"],
                                      save_freq='epoch')
+
         callbacks.append(checkpoint)
 
+        log_dir = "tensor_logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+        callbacks.append(tensorboard_callback)
+
         if cfg["aply_early_stpng"]:
-            early_stopping = EarlyStopping(monitor='val_loss', patience=10, min_delta=0.005, mode="min",
-                                           restore_best_weights=True)
+            early_stopping = EarlyStopping(monitor='val_loss', patience=20, min_delta=0.001, mode="min",
+                                           restore_best_weights=False)
             callbacks.append(early_stopping)
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),

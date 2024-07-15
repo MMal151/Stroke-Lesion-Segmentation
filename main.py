@@ -1,5 +1,6 @@
 from ConfigurationFiles.ConfigurationUtils import get_configurations
 from DataPreparation.executor import prepare_dataset
+from Process.Inference import inference
 from Process.Train import train
 
 CFG_FILE = "config.yml"
@@ -12,6 +13,9 @@ if __name__ == "__main__":
         if cfg["prepare_dataset"]:
             prepare_dataset()
         train(cfg)
+
+    elif cfg["mode"] == "inference":
+        inference(cfg)
 
 
 

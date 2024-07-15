@@ -1,6 +1,6 @@
 import logging
 import os
-
+import cc3d as cca
 import nibabel as nib
 import numpy as np
 import tensorflow as tf
@@ -46,13 +46,14 @@ def get_custom_objects(cfg):
     return custom_objects
 
 
+# Used to generate the list of metrics used during training.
 def get_metrics(met_list="dice_coef"):
     lgr = CLASS_NAME + "[get_metrics_test()]"
     metrics = {}
 
     if is_valid_str(met_list):
         if met_list.__contains__("acc"):
-            metrics["acc"] = Accuracy(name="acc")
+            metrics["acc"] = BinaryAccuracy(name="acc")
         if met_list.__contains__("mean_iou"):
             metrics["mean_iou"] = MeanIoU(num_classes=2, name="mean_iou")
         if met_list.__contains__("recall"):
@@ -64,6 +65,37 @@ def get_metrics(met_list="dice_coef"):
     else:
         logging.info(f"{lgr}: Invalid input string: [{met_list}]. Using Dice Coefficient as the default metric.")
         metrics["dice_coef"] = dice_coef
+
+    return metrics
+
+
+# Used to generate performance metrics after inference.
+def get_metrics_inference(lbl, prediction, met_list="dice_coef"):
+    lgr = CLASS_NAME + "[get_metrics_test()]"
+    metrics = {}
+
+    if is_valid_str(met_list):
+        if met_list.__contains__("acc"):
+            m = BinaryAccuracy(name="acc", threshold=0.5)
+            m.update_state(lbl, prediction)
+            metrics["acc"] = m.result()
+        if met_list.__contains__("mean_iou"):
+            m = MeanIoU(num_classes=2, name="mean_iou")
+            m.update_state(lbl, prediction)
+            metrics['mean_iou'] = m.result()
+        if met_list.__contains__("recall"):
+            m = Recall(name="recall")
+            m.update_state(lbl, prediction)
+            metrics["recall"] = m.result()
+        if met_list.__contains__("prec"):
+            m = Precision(name="prec")
+            m.update_state(lbl, prediction)
+            metrics["prec"] = m.result()
+        if met_list.__contains__("dice_coef"):
+            metrics["dice_coef"] = tf.reduce_mean(dice_coef(lbl, prediction))
+    else:
+        logging.info(f"{lgr}: Invalid input string: [{met_list}]. Using Dice Coefficient as the default metric.")
+        metrics["dice_coef"] = tf.reduce_mean(dice_coef(lbl, prediction))
 
     return metrics
 
@@ -192,6 +224,11 @@ def get_filters(min_filter, tot_filters):
     return filters
 
 
+def save_img(img, filename, hdr):
+    ni = nib.Nifti1Image(img, affine=hdr.affine)
+    nib.save(ni, filename)
+
+
 # -- Pre-processing Utils --#
 # Source: https://github.com/fitushar/3D-Medical-Imaging-Preprocessing-All-you-need
 def normalize_img(image, smooth=1e-8):
@@ -248,3 +285,18 @@ def augmentation_cm(x, y, x_ext, y_ext, factor):
                       f"Total number of augmented datapoints should not exceed the total number of datapoints.")
 
     return x, y
+
+
+# -- Post-processing Utils --#
+def thresholding(lbl, thresh=0.5):
+    return np.ones(lbl.shape) * (lbl > thresh)
+
+
+# Perform Connected Component Analysis
+# Inputs: labels_in -> Input Labels
+#         connectivity -> Possible Values: 6, 18, 26 (6 -> Voxel needs to share a face, 18 -> Voxels can share either
+#                                                     a face or an edge, 28 -> Common face, edge or corner)
+#         k -> k-number of highest connected bodies will be considered in the mask.
+def perform_cca(labels_in, connectivity=6, k=3):
+    labels_out = cca.largest_k(labels_in, k=k, connectivity=connectivity, delta=0, return_N=False)
+    return labels_in * (labels_out > 0)

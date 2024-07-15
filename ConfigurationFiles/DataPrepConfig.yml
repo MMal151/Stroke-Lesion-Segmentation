@@ -18,7 +18,10 @@ split:
   patch:
     shape: "(128, 128, 128)"
     random: False # Generate random patches or ordered patches.
-    stride: 8 # If random patches, stride will be used as total number of patches
+    stride:
+      train: 8
+      valid: 32
+      test: 32
     alw_empty_patches: False # Allow empty patches; only used for training set.
 # -- Only used if type = balanced -- #
   balanced:
