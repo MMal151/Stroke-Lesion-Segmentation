@@ -2,18 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DataFiles/test.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataFiles/train.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataFiles/valid.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Process/Inference.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataFiles/ordered_set.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataFiles/ordered_set.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConfigurationFiles/DataPrepConfig.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ConfigurationFiles/DataPrepConfig.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataFiles/test.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataFiles/train.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataFiles/valid.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/DataPreparation/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataPreparation/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/ProcessUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/ProcessUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Process/Test.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,13 +60,16 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/DataFiles" />
+      <recent name="$PROJECT_DIR$/DataPreparation" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/Process" />
       <recent name="$PROJECT_DIR$/DataGenerators" />
-      <recent name="$PROJECT_DIR$/Misc" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/DataFiles/Train_s8_ne_valid-test_s32" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.executor">
     <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Stroke-Lesion-Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -177,8 +177,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.executor" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.Main" />
         <item itemvalue="Python.Test" />
         <item itemvalue="Python.Preprocessing" />
@@ -421,7 +421,14 @@
       <option name="project" value="LOCAL" />
       <updated>1720745555692</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Inference mode added.&#10;-&gt; Early stopping configurations were updated.">
+      <created>1721015508401</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1721015508401</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -436,7 +443,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1. Visualization added.&#10;2. Minor changes made." />
     <MESSAGE value="Vnet added" />
     <MESSAGE value="Syncing with local copy" />
     <MESSAGE value="Changes:&#10;1. Added support of using multiple data sources for training.&#10;2. Added support for training and testing within one cycle. &#10;3. Added support for configurable number of encoder and decoder blocks in v-net model. &#10;&#10;**Testing is still pending for change 2 and 3." />
@@ -461,7 +467,8 @@
     <MESSAGE value="Change Summary: &#10;NiftiGenerator.py -&gt; Minor reshaping fix&#10;CraveMix.py -&gt; Renamed to CarveMix.py&#10;Vnet.py -&gt; Residual Connection Changes&#10;Test.py -&gt; Merging patches changed&#10;Train.py -&gt; Implemented EarlyStopping&#10;Utils.py -&gt; Fixed custom loss function loading&#10;Postprocessing.py -&gt; Added implementation for CCA, changed thresholding code&#10;Preprocessing.py, Loss.py -&gt; Minor fixes&#10;config.yml -&gt; Added support for early stopping" />
     <MESSAGE value="NiftiGenerator.py -&gt; Support for checking empty patches (at runtime) added.&#10;Train.py -&gt; Data Loaders added rather than loading the data in the training cycle.&#10;DatasetLoader -&gt; Different types of datasets added." />
     <MESSAGE value="Refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
+    <MESSAGE value="Inference mode added.&#10;-&gt; Early stopping configurations were updated." />
+    <option name="LAST_COMMIT_MESSAGE" value="Inference mode added.&#10;-&gt; Early stopping configurations were updated." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,16 +1,16 @@
 mode: "gen_splits"
 split:
   # Comma-separated list of input of paths.
-  input_paths: "/home/mmal151/Desktop/Dummy_Data/T1_1,/home/mmal151/Desktop/Dummy_Data/T1_2"
+  input_paths: "/home/mmal151/resmed202200021-IMPRESS_data/Mishaim/ATLAS_2_Cleaned/"
   # File extension of input scan.
   scan_ext: "T1_bet_BC.nii.gz"
   # File extension of lesion mask.
   msk_ext: "LESION.nii.gz"
   type: "default"
-  train_ratio: 0.7
-  test_ratio: 0.3
-  valid_ratio: 0.3 # Taken from the training set. Should be < train_ratio / 2.
-  seed: 2023
+  train_ratio: 0.8
+  test_ratio: 0.2
+  valid_ratio: 0.2 # Taken from the training set. Should be < train_ratio / 2.
+  seed: 0130
   do_patching: True
   do_augmentation: False
   rmv_pre_aug: True # Remove augmented files. Any file ending with _cm from the input folder(s) will be deleted.
@@ -27,7 +27,7 @@ split:
   balanced:
     bin_range: "0, 100, 1000, 5000, 10000, 100000" #List of ranges for the voxels to be divided into. If empty, bins will be generated.
     save_ordered_set: True
-    read_from_file: False # If ordered_set.csv is already generated, bins could be read from the file rather than re-generating the bins.
+    read_from_file: True # If ordered_set.csv is already generated, bins could be read from the file rather than re-generating the bins.
     visualise_dataset: True
 # -- Training set will be augmented using CraveMix -- #
   augmentation:
