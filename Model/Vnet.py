@@ -63,6 +63,24 @@ def down_block(y, filters, num_conv_blocks=1, down_sample=True):
         return x
 
 
+def sne_down_block(y, filters, num_conv_blocks=1, sne_params=None, down_sample=True):
+    x = y  # Saving the state of the input tensor to ensure that it can be added later.
+
+    for i in range(0, num_conv_blocks):
+        x = Conv3D(filters, 5, padding='same')(x)
+        x = BatchNormalization()(x)  # Original Model doesn't support batch normalization
+        x = Activation(x)  # Original Model -> PReLu
+
+    x = squeeze_excitation_block(x, **sne_params)
+    y = Conv3D(filters, (1, 1, 1), padding='same')(y)
+    x = x + y
+
+    if down_sample:
+        return x, down_sampling(x, filters)
+    else:
+        return x
+
+
 def down_sampling(x, filters):
     x = Conv3D(filters, 2, 2, padding='same')(x)
     x = BatchNormalization()(x)
@@ -98,6 +116,40 @@ def up_block(x, rc, filters, num_conv_blocks=1, use_transpose=True):
         x = BatchNormalization()(x)
         x = Activation(x)
 
+    y = Conv3D(filters, (1, 1, 1), padding='same')(y)
+    x = Add()([y, x])
+
+    return x
+
+
+# 3D-Unet Up Sampling
+def sne_up_block(x, rc, filters, num_conv_blocks=1, sne_params=None, use_transpose=True):
+    if use_transpose:
+        # Does up-sampling using learnable parameters. Adaptable
+        x = Conv3DTranspose(filters, kernel_size=2, strides=2, padding='same')(x)
+    else:
+        # Does up-sampling by applying different mathematical functions. Fixed algorithm.
+        x = UpSampling3D()(x)
+
+    # For input images that are not in power of 2, the upsampling may cause a difference in shape. Adding cropping to fix this.
+    if x.shape[1:-1] != rc.shape[1:-1]:
+        # Calculate the amount of cropping needed for each dimension
+        crop_depth = max(0, x.shape[1] - rc.shape[1])
+        crop_height = max(0, x.shape[2] - rc.shape[2])
+        crop_width = max(0, x.shape[3] - rc.shape[3])
+
+        # Apply cropping
+        x = Cropping3D(cropping=((0, crop_depth), (0, crop_height), (0, crop_width)))(x)
+
+    y = x  # Saving the state of the input tensor to be added later
+    x = Concatenate(axis=-1)([x, rc])
+
+    for i in range(0, num_conv_blocks):
+        x = Conv3D(filters, 5, padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Activation(x)
+
+    x = squeeze_excitation_block(x, **sne_params)
     y = Conv3D(filters, (1, 1, 1), padding='same')(y)
     x = Add()([y, x])
 
@@ -244,6 +296,9 @@ class Vnet:
             self.sne_params = {'ratio': cfg["vnet"]["squeeze_excitation"]["ratio"],
                                'use_relu': cfg["vnet"]["squeeze_excitation"]["use_relu"],
                                'use_res': cfg["vnet"]["squeeze_excitation"]["use_res_con"]}
+            self.sne_mode = cfg["vnet"]["mode"]  # if 'res', squeeze and excitation block will be applied in residual connection.
+            # If 'ed', squeeze and excitation block will be applied in each encoder-decoder layer, before down or up sampling layer.
+            # If 'enc', squeeze and excitation block will be applied to encoder block only and similarly if 'dec', sne block will be applied to decoder only.
 
         self.add_res_cons = cfg["vnet"]["add_both_res_con"]
 
@@ -254,26 +309,49 @@ class Vnet:
     def generate_model(self):
         img = Input(shape=self.input_shape)
         # Encoder
-        rc_1, x = down_block(img, self.filters[0], self.num_encoder_blocks[0])
-        rc_2, x = down_block(x, self.filters[1], self.num_encoder_blocks[1])
-        rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
-        rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
+
+        if self.use_sne and (self.sne_mode == 'enc' or self.sne_mode == 'ed'):
+            rc_1, x = sne_down_block(img, self.filters[0], self.num_encoder_blocks[0], self.sne_params)
+            rc_2, x = sne_down_block(x, self.filters[1], self.num_encoder_blocks[1], self.sne_params)
+            rc_3, x = sne_down_block(x, self.filters[2], self.num_encoder_blocks[2], self.sne_params)
+            rc_4, x = sne_down_block(x, self.filters[3], self.num_encoder_blocks[3], self.sne_params)
+        else:
+            rc_1, x = down_block(img, self.filters[0], self.num_encoder_blocks[0])
+            rc_2, x = down_block(x, self.filters[1], self.num_encoder_blocks[1])
+            rc_3, x = down_block(x, self.filters[2], self.num_encoder_blocks[2])
+            rc_4, x = down_block(x, self.filters[3], self.num_encoder_blocks[3])
+
         # Bottleneck layer
         x = down_block(x, self.filters[4], self.num_encoder_blocks[3], False)
 
         # Decoder
-        rc_4 = res_con(rc_4, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[3],
+        rc_4 = res_con(rc_4, (self.use_sne and self.sne_mode == 'res'), self.sne_params, self.use_dlt_res_con, self.filters[3],
                        self.dilation_rates[0:1], self.add_res_cons)
-        x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
-        rc_3 = res_con(rc_3, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[2],
+        if self.use_sne and (self.sne_mode == 'dec' or self.sne_mode == 'ed'):
+            x = sne_up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.sne_params, self.use_transpose)
+        else:
+            x = up_block(x, rc_4, self.filters[4], self.num_decoder_blocks[0], self.use_transpose)
+
+        rc_3 = res_con(rc_3, (self.use_sne and self.sne_mode == 'res'), self.sne_params, self.use_dlt_res_con, self.filters[2],
                        self.dilation_rates[0:2], self.add_res_cons)
-        x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose)
-        rc_2 = res_con(rc_2, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[1],
+
+        if self.use_sne and (self.sne_mode == 'dec' or self.sne_mode == 'ed'):
+            x = sne_up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.sne_params, self.use_transpose)
+        else:
+            x = up_block(x, rc_3, self.filters[3], self.num_decoder_blocks[1], self.use_transpose)
+        rc_2 = res_con(rc_2, (self.use_sne and self.sne_mode == 'res'), self.sne_params, self.use_dlt_res_con, self.filters[1],
                        self.dilation_rates[0:3], self.add_res_cons)
-        x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose)
-        rc_1 = res_con(rc_1, self.use_sne, self.sne_params, self.use_dlt_res_con, self.filters[0],
+        if self.use_sne and (self.sne_mode == 'dec' or self.sne_mode == 'ed'):
+            x = sne_up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.sne_params, self.use_transpose)
+        else:
+            x = up_block(x, rc_2, self.filters[2], self.num_decoder_blocks[2], self.use_transpose)
+
+        rc_1 = res_con(rc_1, (self.use_sne and self.sne_mode == 'res'), self.sne_params, self.use_dlt_res_con, self.filters[0],
                        self.dilation_rates, self.add_res_cons)
-        x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose)
+        if self.use_sne and (self.sne_mode == 'dec' or self.sne_mode == 'ed'):
+            x = sne_up_block(x, rc_1, self.filters[1], 1, self.sne_params, self.use_transpose)
+        else:
+            x = up_block(x, rc_1, self.filters[1], 1, self.use_transpose)
 
         x = SpatialDropout3D(self.dropout)(x)  # Not included in the original model.
 

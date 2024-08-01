@@ -14,6 +14,7 @@ vnet:
     ratio: 2
     use_relu: True
     use_res_con: True
+    mode: 'enc'
   # Use dilated residual connections
   dilated_res_con:
     use_dltd_res_con: True

@@ -25,7 +25,9 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
 
         self.image_shape = str_to_tuple(cfg["input_shape"])
         self.batch_size = cfg["batch_size"]
-        self.normalize = cfg["normalize"]
+        self.normalize = cfg["normalize_img"]
+        if self.normalize:
+            self.norm_tech = cfg["normalize"]["technique"]
         self.shuffle = ["shuffle"]
         self.step_per_epoch = cfg["steps_per_epoch"][mode]
 
@@ -60,7 +62,7 @@ class Nifti3DGenerator(tf.keras.utils.Sequence):
             assert img.shape == lbl.shape, "Loaded image's shape != loaded label's shape"
 
             if self.normalize:
-                img = normalize_img(img)
+                img = normalize_img(img, self.norm_tech)
 
             if len(batch) == 3:
                 (ax_1, ax_2, ax_3) = batch[2]

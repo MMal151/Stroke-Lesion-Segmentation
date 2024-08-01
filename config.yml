@@ -1,14 +1,16 @@
-mode: "inference"
+mode: "train"
 train:
   alw_parallel_processing: True
   gpu: "0" # List of GPUs that can be used.
-  prepare_dataset: True
+  prepare_dataset: False
   loader:
-    csv_path: "DataFiles/"
+    csv_path: "DataFiles/Local_Set/"
   data:
     input_shape: "(128, 128, 128)" # If patching is applied, then input shape = patch_shape
     batch_size: 1
-    normalize: True
+    normalize_img: True
+    normalize:
+      technique: 'greyscale'  # Possible Values: 'default' - Standardization, 'greyscale' - Contrast Stretching
     shuffle: True # Shuffle dataset on each epoch, only applicable for training.
     steps_per_epoch: # If, -1 default value will be used. Default value: len(x) / batch_size
       train: 200
@@ -20,9 +22,15 @@ train:
   load_path: "" # Load model from this file.
   save_path: "" # Save model to this naming structure.
   save_best_only: True
+  epochs: 200
   # Apply early stopping when training.
   aply_early_stpng: True
-  epochs: 200
+  es: # Configurations for early stopping, only check if above parameter is True.
+    monitor: 'val_loss' # Validation Loss
+    patience: 15
+    min_delta: 0.005
+    mode: 'min'
+    restore_best_weights: False # Restore best weights
   # Currently supporting: acc (Accuracy), mean_iou (Mean Intersection over Union), dice-coef (Dice Coefficient),
   # recall (Recall), and prec (Precision).
   perf_metrics: "recall, prec, mean_iou, dice_coef"

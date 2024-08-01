@@ -4,13 +4,22 @@
     <list default="true" id="40b23ebc-d439-4f4b-885d-1a4a066b717b" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/DataFiles/ordered_set.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/DataFiles/ordered_set.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scripts/DataManagement.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scripts/MRI_Preprocessing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scripts/Playground.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scripts/ReadMe.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scripts/Temp.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConfigurationFiles/DataPrepConfig.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ConfigurationFiles/DataPrepConfig.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataFiles/test.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConfigurationFiles/ModelConfigurations.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ConfigurationFiles/ModelConfigurations.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataFiles/test.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DataFiles/test.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataFiles/train.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/DataFiles/valid.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataPreparation/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataPreparation/Dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataGenerators/NiftiGenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Vnet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Vnet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Process/ProcessUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/ProcessUtils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Process/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Process/Train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +29,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Python Unit Test" />
         <option value="Python Script" />
       </list>
     </option>
@@ -47,16 +57,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/mmal151/Desktop/GIthub-Repo/Stroke-Lesion-Segmentation/DataFiles",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "Errors"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mmal151/Desktop/Lesion Segmentation Code/Lesion_Segmentation&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/DataFiles" />
@@ -70,7 +80,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.executor">
-    <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="DataManagement" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Stroke-Lesion-Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -78,11 +88,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scripts" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scripts/DataManagement.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -91,7 +101,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="MRI_Preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Stroke-Lesion-Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -99,11 +109,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Util" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scripts" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Util/Preprocessing.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scripts/MRI_Preprocessing.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -112,7 +122,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Playground" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Stroke-Lesion-Segmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -120,11 +130,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Process" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scripts" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Process/Test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scripts/Playground.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -178,10 +188,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.executor" />
+        <item itemvalue="Python.Playground" />
+        <item itemvalue="Python.DataManagement" />
+        <item itemvalue="Python.MRI_Preprocessing" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.Main" />
-        <item itemvalue="Python.Test" />
-        <item itemvalue="Python.Preprocessing" />
       </list>
     </recent_temporary>
   </component>
@@ -428,7 +438,14 @@
       <option name="project" value="LOCAL" />
       <updated>1721015508401</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Minor fixes.">
+      <created>1721176511643</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1721176511643</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -443,7 +460,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Vnet added" />
     <MESSAGE value="Syncing with local copy" />
     <MESSAGE value="Changes:&#10;1. Added support of using multiple data sources for training.&#10;2. Added support for training and testing within one cycle. &#10;3. Added support for configurable number of encoder and decoder blocks in v-net model. &#10;&#10;**Testing is still pending for change 2 and 3." />
     <MESSAGE value="Changes:&#10;1. Minor changes for train/test mode. &#10;2. Fixed convergence issue with V-NET. (The problem with v-net was the activation function of the output layer, which was softmax. This activation function is for output classes &gt; 1 and does not work well binary-crossentropy loss.)" />
@@ -468,7 +484,8 @@
     <MESSAGE value="NiftiGenerator.py -&gt; Support for checking empty patches (at runtime) added.&#10;Train.py -&gt; Data Loaders added rather than loading the data in the training cycle.&#10;DatasetLoader -&gt; Different types of datasets added." />
     <MESSAGE value="Refactoring" />
     <MESSAGE value="Inference mode added.&#10;-&gt; Early stopping configurations were updated." />
-    <option name="LAST_COMMIT_MESSAGE" value="Inference mode added.&#10;-&gt; Early stopping configurations were updated." />
+    <MESSAGE value="Minor fixes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -520,6 +537,46 @@
           <url>file://$PROJECT_DIR$/main.py</url>
           <line>17</line>
           <option name="timeStamp" value="162" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Scripts/Playground.py</url>
+          <line>89</line>
+          <option name="timeStamp" value="163" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataPreparation/Dataset.py</url>
+          <line>69</line>
+          <option name="timeStamp" value="169" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataPreparation/Dataset.py</url>
+          <line>96</line>
+          <option name="timeStamp" value="173" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataPreparation/Dataset.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="174" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataPreparation/Dataset.py</url>
+          <line>112</line>
+          <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Scripts/Playground.py</url>
+          <line>88</line>
+          <option name="timeStamp" value="176" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Scripts/Playground.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="177" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Scripts/Playground.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="178" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -230,12 +230,27 @@ def save_img(img, filename, hdr):
 
 
 # -- Pre-processing Utils --#
+def normalize_img(image, technique, smooth=1e-8):
+    if technique == 'greyscale':
+        return contrast_stretching(image, smooth)
+    else:
+        return standardization(image, smooth)
+
+
 # Source: https://github.com/fitushar/3D-Medical-Imaging-Preprocessing-All-you-need
-def normalize_img(image, smooth=1e-8):
+def standardization(image, smooth=1e-8):
     mean = np.mean(image)
     std = np.std(image)
     image -= mean
     image /= (max(std, smooth))
+    return image
+
+
+def contrast_stretching(image, smooth=1e-8):
+    min = np.min(image)
+    image -= min
+    image /= max(np.ptp(image), smooth)
+    image = np.round(255*image)
     return image
 
 

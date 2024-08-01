@@ -1,0 +1,256 @@
+import os.path
+import random
+import shutil
+
+import SimpleITK as sitk
+import ants
+import nibabel as nib
+import numpy as np
+from neuroharmony import fetch_trained_model, fetch_sample
+from nibabel.imagestats import mask_volume
+from scipy.ndimage import zoom
+
+import Util.Utils
+from Util.CraveMix import generate_new_sample
+from Util.Preprocessing import data_augmentation_cm
+from Util.Utils import get_all_possible_files_paths, valid_dir, get_absolute_path, remove_dirs, get_all_possible_subdirs
+
+
+
+
+# This file contains the random functions written for either checking something or experimenting with something.
+
+def join_bet_wth_impress(impress_pth, bet_pth):
+    if valid_dir(impress_pth) and valid_dir(bet_pth):
+        for i in get_all_possible_files_paths(bet_pth, "_T1_brain.nii.gz"):
+            shutil.copy(i, os.path.join(impress_pth, i.split('/')[-2]))
+
+#--
+def super_resolution(src_path, prefix: str = "_SS.nii.gz"):
+    for i in get_all_possible_files_paths(src_path, prefix):
+        print(f"In process: {i}")
+        if not os.path.exists(i.split('.nii.gz')[0] + "_SR.nii.gz"):
+            img = ants.image_read(i)
+            target_spacing = (0.275, 0.275, 0.275)
+            resampled_image = ants.resample_image(img, target_spacing, False, 1)
+            ants.image_write(resampled_image, i.split('.nii.gz')[0] + "_SR.nii.gz")
+        else:
+            print("Skipping processing as it already exists.")
+
+
+def bias_correction_single_scan(file_path):
+    input = sitk.ReadImage(file_path, sitk.sitkFloat32)
+    # image = sitk.Cast(input, sitk.sitkFloat32)
+    correctedImg = sitk.N4BiasFieldCorrection(input)
+    sitk.WriteImage(correctedImg,
+                    "/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned/R001_0/R001_0_T1_EDited.nii.gz")  # outfile is just string variable or path
+    dat = nib.load(file_path).get_fdata()
+    something = sitk.N4BiasFieldCorrection(dat)
+    image = sitk.ReadImage(dat, sitk.sitkFloat32)
+    sitk.Show(image, 'original image')
+    sitk.Show(sitk.N4BiasFieldCorrection(dat), 'corrected image')
+
+
+
+def create_validation_set(input_path, valid_ratio=0.3, seed=2023):
+    dest_path = input_path + "_Valid/"
+
+    if os.path.exists(dest_path):
+        print("Removing previously placed data.")
+        shutil.rmtree(dest_path)
+    os.makedirs(dest_path)
+
+    sub_dirs = Util.Utils.get_all_possible_subdirs(input_path)
+    random.seed(seed)
+    random.shuffle(sub_dirs)
+    return sub_dirs[0:len(sub_dirs) * valid_ratio]
+
+
+def organize_data_cravemx(input_path, save_path="", les_ext="LESION.nii.gz", scan_ext="T1.nii.gz"):
+    if valid_dir(input_path):
+        img_path = save_path + "/imagesTr"
+        label_path = save_path + "/labelsTr"
+        if os.path.exists(save_path):
+            print("Removing previously placed data.")
+            shutil.rmtree(save_path)
+        os.makedirs(img_path)
+        os.makedirs(label_path)
+
+        for i, file in enumerate(get_all_possible_files_paths(input_path, les_ext)):
+            print(f"Currently processing: {file}")
+            dest = label_path + "/ATLAS_" + str(i) + ".nii.gz"
+            shutil.copy(file, label_path + "/ATLAS_" + str(i) + ".nii.gz")
+
+        for i, file in enumerate(get_all_possible_files_paths(input_path, scan_ext)):
+            print(f"Currently processing: {file}")
+            shutil.copy(file, img_path + "/ATLAS_" + str(i) + "_0000.nii.gz")
+    else:
+        print("Invalid Directory")
+
+
+def harmonization(file_path):
+    dat = nib.load(file_path).get_fdata()
+    X = fetch_sample()
+    neuroharmony = fetch_trained_model()
+    x_harmonized = neuroharmony.transform(X)
+    data_combat = neuroharmony.transform(dat)
+
+
+
+# inp_shape = input_image.shape
+# label = ants.image_read('/home/mmal151/Desktop/Dummy_Data/IMPRESS_SS/A207/A207_LESION.nii.gz')
+
+# Define the target spacing and target size you want for resampling
+# The smaller the target spacing the better resolution will be
+# target_spacing = (0.275, 0.275, 0.275)  # Replace with your desired spacing (e.g., in millimeters)
+# Resample the MRI image - Upscaling - not useful as it changes the size of the original MRI
+# resampled_image = ants.resample_image(input_image, target_spacing, False, 1)
+# shp = resampled_image.shape
+# re_shape = tuple(np.ceil(resampled_image.shape[i]/128) for i in range(0,3))
+# resampled_image = ants.iMath(input_image, 'Sharpen', 2)
+# resampled_image = ants.crop_image(input_image, label, 1)
+# ants.image_write(resampled_image, '/home/mmal151/Desktop/Dummy_Data/ATLAS_2_Cleaned/R001_0/R001_0_T1_SR.nii.gz')
+# Save the resampled image (replace 'output_image.nii.gz' with your desired output file path)
+
+# re_shape = tuple(np.ceil(input_image.shape[i]/128) for i in range(0,3))
+
+# desired_img = ants.resample_image(input_image, re_shape, False, 1)
+# ants.image_write(desired_img, '/home/mmal151/Desktop/Dummy_Data/IMPRESS_SS/A207/A207_T1_rs.nii.gz')
+
+
+# end_result = ants.resample_image_to_target(resampled_image, desired_img)
+# ants.image_write(end_result, '/home/mmal151/Desktop/Dummy_Data/IMPRESS_SS/A207/A207_T1_SR.nii.gz')
+
+# end_result = ants.resample_image_to_target(resampled_image, input_image)
+# ants.image_write(end_result, '/home/mmal151/Desktop/Dummy_Data/IMPRESS_SS/A207/A207_T1_SR_og_crop.nii.gz')
+
+def crop_nifti(input_path="/home/mmal151/Desktop/Dummy_Data/INPUT", ext=".nii.gz", target_size=(128, 128, 64)):
+    for i in get_all_possible_files_paths(input_path, ext):
+        print(f"Currently Processing: {i}")
+        image = sitk.ReadImage(i, sitk.sitkFloat32)
+        current_size = image.GetSize()
+        size_difference = [current_size[i] - target_size[i] for i in range(3)]
+        origin_indx = [size_difference[i] // 2 for i in range(3)]
+        size_bounding_box = [target_size[i] for i in range(3)]
+        cropped_volume = sitk.RegionOfInterest(image, size_bounding_box, origin_indx)
+        sitk.WriteImage(cropped_volume, i.split(".nii.gz")[0] + "_cropped.nii.gz")
+
+def augment_files(path1, path2, out_pth, img_ext="bet.nii.gz", les_ext="LESION.nii.gz"):
+    vol1, vol2 = get_lesion_volume(get_absolute_path(path1, les_ext)), get_lesion_volume(
+        get_absolute_path(path2, les_ext))
+
+    print(f"Lesion Volume: {vol1}, Lesion Volume 2: {vol2}")
+
+    new_img, new_label, _, _ = generate_new_sample(get_absolute_path(path1, img_ext), get_absolute_path(path2, img_ext),
+                                                   get_absolute_path(path1, les_ext), get_absolute_path(path2, les_ext))
+    new_file = path1.split("/")[-1] + "_" + path2.split("/")[-1] + "_cm"
+    path_new = os.path.join(out_pth, new_file)
+    os.makedirs(path_new, exist_ok=True)
+
+    sitk.WriteImage(new_img, os.path.join(path_new, new_file + "_" + img_ext))
+    sitk.WriteImage(new_label, os.path.join(path_new, new_file + "_" + les_ext))
+
+
+def get_voxel_sizes(file_path):
+    nifti_img = nib.load(file_path)
+    return nifti_img.header.get_zooms()
+
+
+def get_image_dimensions(file_path):
+    nifti_img = nib.load(file_path)
+    return nifti_img.shape
+
+
+def get_nifti_info(file_path):
+    nifti_img = nib.load(file_path)
+    voxel_sizes = nifti_img.header.get_zooms()
+    dimensions = nifti_img.shape
+    affine_matrix = nifti_img.affine
+
+    return {
+        'FilePath': file_path,
+        'VoxelSizes': voxel_sizes,
+        'Dimensions': dimensions,
+        'AffineMatrix': affine_matrix.tolist()
+    }
+
+
+def get_nifti_info(input_path="/home/mmal151/Desktop/Dummy_Data/INPUT", ext="T1.nii.gz"):
+    info = []
+    for i in get_all_possible_files_paths(input_path, ext):
+        info.append(get_nifti_info(i))
+
+    df_resampled_info = pd.DataFrame(info)
+    df_resampled_info.to_csv('/home/mmal151/Desktop/Dummy_Data/nifti_info.csv', index=False)
+
+
+def rename_files(input_path, old_ext, new_ext):
+    for i in get_all_possible_files_paths(input_path, old_ext):
+        os.renames(i, i.split(old_ext)[0] + new_ext)
+
+
+def down_sample(image_path, lbl_path, img_shape=(128, 128, 64)):
+    image_data = nib.load(image_path).get_fdata()
+    mask_data = nib.load(lbl_path).get_fdata()
+
+    img = zoom(image_data, img_shape / np.array(image_data.shape)).astype(np.float32)
+    lbl = zoom(mask_data, img_shape / np.array(mask_data.shape), order=0).astype(np.float32)
+
+    sitk.WriteImage(img, image_path)
+    sitk.WriteImage(lbl, lbl_path)
+
+
+def extract_all_zips(input_path, file_ext, mode='T'):
+    for i in get_all_possible_files_paths(input_path, file_ext):
+        command = "tar -xzf " + i
+        if mode == 'G':
+            command = "gzip -d " + i  # -- for gz files
+        os.system(command)
+
+
+def clean_csv_file(path, column, val):
+    df = pd.read_csv(path, sep=",")
+
+    # Efficiently filter rows to keep only those where the column value is not the target value
+    for i in range(0, len(column)):
+        df = df[df[column[i]] != val[i]]
+
+    # Save the cleaned DataFrame to a new CSV file
+    df.to_csv(path.split(".csv")[0] + "_cleaned.csv", index=False)
+
+
+def generate_patch_idx(image_shape, stride, patch_shape, repeat=1):
+    idx = []
+    total_patches = 0
+
+    for i in range(0, image_shape[0], stride):
+        for j in range(0, image_shape[1], stride):
+            for k in range(0, image_shape[2], stride):
+                if (i + patch_shape[0]) < image_shape[0] and (j + patch_shape[1]) < image_shape[1] and \
+                        (k + patch_shape[2] < image_shape[2]):
+                    total_patches += 1
+                    for m in range(0, repeat):
+                        idx.append((i, j, k))
+
+    return total_patches, idx
+
+
+def generate_patches(img_path, lbl_path, patch_shape=(128, 128, 128), stride=32):
+    img = (nib.load(img_path).get_fdata())
+    lbl = (nib.load(lbl_path).get_fdata())
+
+    _, patch_idx = generate_patch_idx(img.shape, stride, patch_shape)
+
+    idx = 0
+    for i in patch_idx:
+        (ax_1, ax_2, ax_3) = i
+        img_patch = img[ax_1: ax_1 + patch_shape[0], ax_2: ax_2 + patch_shape[1], ax_3: ax_3 + patch_shape[2]]
+        lbl_patch = lbl[ax_1: ax_1 + patch_shape[0], ax_2: ax_2 + patch_shape[1], ax_3: ax_3 + patch_shape[2]]
+
+        sitk.WriteImage(img_patch, img_path.split(".nii.gz")[0] + "_" + idx.__str__() + ".nii.gz")
+        sitk.WriteImage(lbl_patch, img_path.split(".nii.gz")[0] + "_" + idx.__str__() + ".nii.gz")
+
+        idx = idx + 1
+
+
+

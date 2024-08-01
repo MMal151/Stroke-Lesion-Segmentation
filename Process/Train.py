@@ -83,8 +83,9 @@ def fit_model(cfg, train_gen, valid_gen, test_gen):
         callbacks.append(tensorboard_callback)
 
         if cfg["aply_early_stpng"]:
-            early_stopping = EarlyStopping(monitor='val_loss', patience=20, min_delta=0.001, mode="min",
-                                           restore_best_weights=False)
+            early_stopping = EarlyStopping(monitor=cfg["es"]["monitor"], patience=cfg["es"]["patience"],
+                                           min_delta=cfg["es"]["min_delta"], mode=cfg["es"]["mode"],
+                                           restore_best_weights=cfg["es"]["restore_best_weights"])
             callbacks.append(early_stopping)
 
         history = model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=len(train_gen),
